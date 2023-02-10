@@ -1,0 +1,29 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{2}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Definitions}{3}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Browser fingerprinting}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}History of browser fingerprinting}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Fingerprinting countermeasures}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Approaches to fingerprinting}{5}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Active fingerprinting}{5}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Passive fingerprinting}{6}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Inconsistencies}{7}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Threats and opportunities of fingerprinting}{7}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Threats}{7}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Opportunities}{7}{subsection.2.4.2}%
+\contentsline {chapter}{\numberline {3}Browser extensions}{8}{chapter.3}%
+\contentsline {section}{\numberline {3.1}WebExtensions API}{8}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Manifest V3}{8}{section.3.2}%
+\contentsline {section}{\numberline {3.3}JShelter}{9}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}JavaScript Shield}{10}{subsection.3.3.1}%
+\contentsline {chapter}{\numberline {4}Design proposal}{11}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Minimizing the impact on users}{11}{section.4.1}%
+\contentsline {section}{\numberline {4.2}HTTP header: User-Agent}{11}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Consistency}{12}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}HTTP header: Accept}{12}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Consistency}{13}{subsection.4.3.1}%
+\contentsline {section}{\numberline {4.4}HTTP header: Accept-Language}{13}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Consistency}{13}{subsection.4.4.1}%
+\contentsline {section}{\numberline {4.5}List of HTTP headers}{13}{section.4.5}%
+\contentsline {chapter}{Bibliography}{15}{chapter*.2}%
+\contentsfinish 

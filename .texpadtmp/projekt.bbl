@@ -1,0 +1,196 @@
+\makeatletter
+\makeatother
+\begin{thebibliography}{10}
+
+\bibitem{AppleSafariWebExtensions}
+{\em Apple Developer Documentation - Safari web extensions} [online].
+\newblock Apple, Inc {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.apple.com/documentation/safariservices/safari_web_extensions}}.
+
+\bibitem{ChromeManifestV2}
+{\em Chrome Developers - Manifest V2} [online].
+\newblock Google LLC {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.chrome.com/docs/extensions/mv2/}}.
+
+\bibitem{ChromeManifestV3}
+{\em Chrome Developers - Manifest V3} [online].
+\newblock Google LLC {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.chrome.com/docs/extensions/mv3/intro/}}.
+
+\bibitem{ChromeWebExtensionsAPIReference}
+{\em Chrome Developers - WebExtensions API reference} [online].
+\newblock Google LLC {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.chrome.com/docs/extensions/reference/}}.
+
+\bibitem{JShelterHome}
+{\em JShelter} [online].
+\newblock JShelter {\small [cit. 2022-12-30]}.
+\newblock Available at: ~{\small\url{https://jshelter.org/}}.
+
+\bibitem{JShelterJavaScriptShield}
+{\em JShelter - JavaScript Shield} [online].
+\newblock JShelter {\small [cit. 2022-12-30]}.
+\newblock Available at: ~{\small\url{https://jshelter.org/levels/}}.
+
+\bibitem{MDNHeaderAccept}
+{\em Mozilla Developer Network - Accept HTTP header} [online].
+\newblock Mozilla Corporation {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept}}.
+
+\bibitem{MDNHeaderAcceptLanguage}
+{\em Mozilla Developer Network - Accept-Language HTTP header} [online].
+\newblock Mozilla Corporation {\small [cit. 2023-01-1]}.
+\newblock Available at:
+  ~{\small\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language}}.
+
+\bibitem{MDNWebExtensions}
+{\em Mozilla Developer Network - Browser extensions} [online].
+\newblock Mozilla Corporation {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions}}.
+
+\bibitem{MDNNavigatorInterface}
+{\em Mozilla Developer Network - Navigator Web API} [online].
+\newblock Mozilla Corporation {\small [cit. 2023-01-9]}.
+\newblock Available at:
+  ~{\small\url{https://developer.mozilla.org/en-US/docs/Web/API/Navigator}}.
+
+\bibitem{MDNScreenInterface}
+{\em Mozilla Developer Network - Screen Web API} [online].
+\newblock Mozilla Corporation {\small [cit. 2023-01-9]}.
+\newblock Available at:
+  ~{\small\url{https://developer.mozilla.org/en-US/docs/Web/API/Screen}}.
+
+\bibitem{MDNHeaderUserAgent}
+{\em Mozilla Developer Network - User-Agent HTTP header} [online].
+\newblock Mozilla Corporation {\small [cit. 2022-12-30]}.
+\newblock Available at:
+  ~{\small\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent}}.
+
+\bibitem{StatcounterGlobalStats}
+{\em Startcounter GlobalStats} [online].
+\newblock {\small [cit. 2023-01-6]}.
+\newblock Available at: ~{\small\url{https://gs.statcounter.com}}.
+
+\bibitem{FingerprintJSUseCases}
+{\em Use Cases} [online].
+\newblock FingerprintJS, Inc. {\small [cit. 2022-12-30]}.
+\newblock Available at: ~{\small\url{https://fingerprint.com/use-cases/}}.
+
+\bibitem{WP224Fingerprinting}
+{\sc\bgroup}{Article 29 Working Party}{\egroup}.
+\newblock Opinion 9/2014 on the application of Directive 2002/58/EC to device
+  fingerprinting.
+\newblock [online].
+\newblock European Commission.
+\newblock [cit. 2022-12-30].
+\newblock Available at:
+  ~{\small\url{https://ec.europa.eu/justice/article-29/documentation/opinion-recommendation/files/2014/wp224_en.pdf}}.
+
+\bibitem{WWWProposal}
+{\sc\bgroup}Berners Lee{\egroup}, T.
+\newblock {\em Information Management: A Proposal} [online].
+\newblock 1989 [cit. 2022-12-30].
+\newblock Available at:
+  ~{\small\url{https://www.w3.org/History/1989/proposal.html}}.
+
+\bibitem{BraveFingerprintingDefences2}
+{\sc\bgroup}{Brave Privacy Team}{\egroup}.
+\newblock {\em Brave browsers - Fingerprinting defenses 2.0} [online].
+\newblock Brave Software, Inc. {\small [cit. 2023-01-10]}.
+\newblock Available at:
+  ~{\small\url{https://brave.com/privacy-updates/4-fingerprinting-defenses-2.0/}}.
+
+\bibitem{EckersleyHowUnique}
+{\sc\bgroup}Eckersley{\egroup}, P.
+\newblock How Unique is Your Web Browser?
+\newblock In:.
+\newblock Berlin, Heidelberg: Springer-Verlag, 2010 [cit. 2022-12-30].
+\newblock PETS'10.
+\newblock ISBN 3642145264.
+
+\bibitem{JShelterPaper}
+{\sc\bgroup}L. Polčák{\egroup}, G. M. R.~H. and~{\sc\bgroup}McMahon{\egroup},
+  M.
+\newblock {\em JShelter: Give Me My Browser Back}.
+\newblock arXiv, 2022 {\small [cit. 2022-12-30]}.
+\newblock DOI: 10.48550/ARXIV.2204.01392.
+\newblock Available at: ~{\small\url{https://arxiv.org/abs/2204.01392}}.
+
+\bibitem{FPRandom}
+{\sc\bgroup}Laperdrix{\egroup}, P., {\sc\bgroup}Baudry{\egroup}, B.
+  and~{\sc\bgroup}Mishra{\egroup}, V.
+\newblock {FPRandom: Randomizing core browser objects to break advanced device
+  fingerprinting techniques}.
+\newblock In:~{\em {ESSoS 2017 - 9th International Symposium on Engineering
+  Secure Software and Systems}}.
+\newblock Bonn, Germany: [b.n.], July 2017 [cit. 2023-01-6].
+\newblock Available at: ~{\small\url{https://hal.inria.fr/hal-01527580}}.
+
+\bibitem{FingerprintingSurvey}
+{\sc\bgroup}Laperdrix{\egroup}, P., {\sc\bgroup}Bielova{\egroup}, N.,
+  {\sc\bgroup}Baudry{\egroup}, B. and~{\sc\bgroup}Avoine{\egroup}, G.
+\newblock Browser Fingerprinting: A survey.
+\newblock arXiv.
+\newblock 2019, [cit. 2022-12-30].
+\newblock DOI: 10.48550/ARXIV.1905.01051.
+\newblock Available at: ~{\small\url{https://arxiv.org/abs/1905.01051}}.
+
+\bibitem{PriVaricator}
+{\sc\bgroup}Nikiforakis{\egroup}, N., {\sc\bgroup}Joosen{\egroup}, W.
+  and~{\sc\bgroup}Livshits{\egroup}, B.
+\newblock PriVaricator: Deceiving Fingerprinters with Little White Lies.
+\newblock In:~{\em Proceedings of the 24th International Conference on World
+  Wide Web}.
+\newblock Republic and Canton of Geneva, CHE: International World Wide Web
+  Conferences Steering Committee, 2015 [cit. 2023-01-6].
+\newblock WWW '15.
+\newblock DOI: 10.1145/2736277.2741090.
+\newblock ISBN 9781450334693.
+\newblock Available at: ~{\small\url{https://doi.org/10.1145/2736277.2741090}}.
+
+\bibitem{RFC6648}
+{\sc\bgroup}P. Saint Andre{\egroup}, D.~C. and~{\sc\bgroup}Nottingham{\egroup},
+  M.
+\newblock {\em Deprecating the \uv{X-} Prefix and Similar Constructs in
+  Application Protocols} [Internet Requests for Comments].
+\newblock RFC.
+\newblock RFC Editor, june 2012 [cit. 2023-01-6].
+\newblock Available at: ~{\small\url{https://www.rfc-editor.org/rfc/rfc6648}}.
+
+\bibitem{SemVerWebsite}
+{\sc\bgroup}Preston Werner{\egroup}, T.
+\newblock {\em Semantic Versioning Specification} [online].
+\newblock {\small [cit. 2022-12-30]}.
+\newblock Available at: ~{\small\url{https://semver.org}}.
+
+\bibitem{MatejTimkoDP}
+{\sc\bgroup}Timko{\egroup}, M.
+\newblock {\em Vylep\v{s}en\'{i} roz\v{s}\'{i}\v{r}en\'{i} pro omezen\'{i}
+  vol\'{a}n\'{i} JavaScriptu}.
+\newblock Brno, CZ, 2019.
+\newblock {\small [cit. 2022-12-30]}.
+\newblock Diplomov\'{a} pr\'{a}ce.
+\newblock Vysok\'{e} u\v{c}en\'{i} technick\'{e} v Brn\v{e}, Fakulta
+  informa\v{c}n\'{i}ch technologi\'{i}.
+\newblock Available at:
+  ~{\small\url{https://www.fit.vut.cz/study/thesis/21824/}}.
+
+\bibitem{VondracekDP}
+{\sc\bgroup}Vondr\'{a}\v{c}ek{\egroup}, T.
+\newblock {\em Z\'{i}sk\'{a}v\'{a}n\'{i} informac\'{i} o u\v{z}ivatel\'{i}ch na
+  webov\'{y}ch str\'{a}nk\'{a}ch}.
+\newblock Brno, CZ, 2021.
+\newblock {\small [cit. 2022-01-08]}.
+\newblock Diplomov\'{a} pr\'{a}ce.
+\newblock Vysok\'{e} u\v{c}en\'{i} technick\'{e} v Brn\v{e}, Fakulta
+  informa\v{c}n\'{i}ch technologi\'{i}.
+\newblock Available at:
+  ~{\small\url{https://www.fit.vut.cz/study/thesis/23972/}}.
+
+\end{thebibliography}
