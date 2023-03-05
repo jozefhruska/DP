@@ -36,6 +36,147 @@ Finally, the last chapter \ref{Chapter:Design} proposes a design of passive fing
 
 % -------------------------------------------------------------------- %
 
+\chapter{Web browsers}
+% TODO: Chapter description. The part below is copied from the old chapter "web extensions".
+
+In this chapter, the first section, \ref{Section:WebExtensionsAPI}, describes the WebExtensions API exposed by a browser to give extensions more capabilities. Recently, significant changes to the ecosystem of extensions were announced with the introduction of Manifest V3, described in section \ref{Section:ManifestV3}. The last section, \ref{Section:JShelter}, is dedicated to the JShelter extension on which this work builds.
+
+\section{History of web browsers}
+
+Web browsers have come a long way since the early days of the World Wide Web. From their humble beginnings as basic applications for viewing text-only web pages, modern browsers have evolved into the powerful tools we know today. Following paragraphs outline the evolution of browsers, highlighting a few of the most significant features added over the years.
+
+The first browser, named WorldWideWeb\footnote{\url{https://worldwideweb.cern.ch}}, was created at CERN by Tim Berners-Lee only a year after he published the first World Wide Web proposal \cite{WWWProposal}. The very early browser aimed to demonstrate how the user-facing layer of the WWW (browsers) could work in the future. The browser was only available on the NeXTSTEP\footnote{\url{https://en.wikipedia.org/wiki/NeXTSTEP}} operating system and had limited features.
+
+One of the earliest features added to browsers was support for images. The Mosaic browser\footnote{\url{https://en.wikipedia.org/wiki/Mosaic_(web_browser)}}, released in 1993, was the first to allow users to view images on the web, followed by support for tables, which allowed for more complex web page layouts.
+
+As the web gained popularity, developers needed a way to make web pages more interactive and dynamic. The birth of JavaScript programming language addressed this need. JavaScript was first introduced in 1995\footnote{\url{https://en.wikipedia.org/wiki/Netscape_Navigator_2}} by Netscape Communications Corporation to add interactivity to static HTML pages. Since then, it has become one of the world's most widely used programming languages, with a vast ecosystem of libraries and frameworks\footnote{\url{https://www.npmjs.com/}}.
+
+Nowadays, web browsers expose a variety of JavaScript APIs that allow web developers to interact with the browser and its underlying components, such as the operating system or even the hardware. While it is true that these APIs gave the developers much-needed possibilities, they come at the cost of compromised privacy, described in detail in the following chapters.
+
+\section{JavaScript}
+
+In its original form, JavaScript is a client-side language executed in the user's web browser rather than on a web server \cite{JSDefinitiveGuide}. It allows applications to respond to user actions in real time without making a round trip to the server. However, the rise of popularity and the fact that JavaScript is a relatively developer-friendly language meant that, eventually, runtimes that allowed running JavaScript outside the browser emerged. The most popular JavaScript runtimes include Node.js\footnote{\url{https://nodejs.org/}}, Deno\footnote{\url{https://deno.land/}}, or Bun\footnote{\url{https://bun.sh/}}.
+
+\subsection{ECMAScript}
+
+As the web was rapidly gaining popularity, developers started using JavaScript to create dynamic and interactive web pages. However, there was no standardization for the language, meaning different browsers implemented JavaScript differently. This made it difficult for developers to create web applications that worked consistently across different platforms and browsers \cite{JSDefinitiveGuide}.
+
+In 1996, Netscape Communications Corporation, the company behind the Netscape Navigator web browser, submitted JavaScript to ECMA International\footnote{\url{https://www.ecma-international.org/}}. This standards organization develops and maintains standards for several technologies, including programming languages. The goal was to create a standardized language version that could be implemented across different platforms and browsers.
+
+ECMA International established a committee to develop a standardized scripting language, which was initially called ECMA-262. The standard's first version, ECMAScript 1, was released in June 1997. Since then, ECMAScript has undergone several revisions, the latest being ECMAScript 2022. Each standard version adds new features and capabilities to the language while maintaining backward compatibility with previous versions \cite{JSDefinitiveGuide}.
+
+Although ECMAScript is technically the correct name for the language, JavaScript is used in the following chapters as the industry uses this name predominantly.
+
+\subsection{Web APIs}
+
+Web applications can use JavaScript Web APIs to interact with various web browser features and functionality. The number of available APIs depends on the browser. For example, at the time of the writing, Firefox had more than 100 APIs\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API}}, with more APIs still being added. Here is a short selection of Web APIs important to the topic of this thesis \cite{SecurityWebDevs, SchauerDP}:
+
+\begin{itemize}
+	\item \textbf{Canvas API}: Provides a way to dynamically create and manipulate graphics and animations in a web page using JavaScript.
+	\item \textbf{Navigator}: Provides information about the web browser or user agent in which the code runs.
+	\item \textbf{Web Audio API}: Provides advanced audio processing and synthesis capabilities, allowing developers to create interactive audio experiences on the web.
+	\item \textbf{WebGL}: Allows for creating and rendering interactive 3D and 2D graphics within a web browser using the computer's graphics hardware capabilities.
+\end{itemize}
+
+All the APIs listed above are commonly used in fingerprinting to identify devices and their users uniquely \cite{FingerprintingSurvey}. Fingerprinting, the main focus of this thesis, is described more in-depth in the following chapter.
+
+\section{HTTP}
+
+HTTP (Hypertext Transfer Protocol) is a request-response protocol that allows web browsers to request resources from web servers and to receive responses that include the requested resources \cite{MasteringNodeJS}.
+
+When a user types a URL into a web browser's address bar, the browser sends an HTTP request to the server hosting the resource. This request typically contains information such as the request's method, the URL of the requested resource, and any HTTP headers or other metadata associated with the request. The server then resolves the request and sends a response containing the response status code and body, among other things.
+
+Web applications can also ask the browser to send HTTP requests on their behalf with the help of XMLHttpRequest (XHR)\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest}} or Fetch API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}} APIs. Web applications commonly transfer only minimal HTML and JavaScript with the first request to improve performance. Once loaded, this skeleton can load additional resources if needed.
+
+\subsection{Headers}
+
+The client and the server use HTTP headers\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers}} to transfer additional information with the HTTP request or response. Headers consist of a case-insensitive name and a value separated by a colon (\uv{:}). HTTP defines standardized headers for content negotiation, authentication, or passing additional context \cite{RFC9110}. The protocol also allows the use of entirely custom headers.
+
+When an application sends a request, the browser automatically includes default headers. Web applications can add additional headers or overwrite the default ones.
+
+\section{Browser extensions}
+
+Browser extensions, or add-ons, can modify and enhance the capability of a browser \cite{MDNWebExtensions}. Users install extensions for various reasons, such as to increase security or productivity, remove ads, or modify the browser UI to their liking. Each browser implements extensions slightly differently, but to a large extent, most browsers follow the WebExtensions API standard.
+
+This section describes the WebExtensions API standard mentioned before and the recently introduced Manifest V3, which significantly affects the ecosystem of browser extensions.
+
+\label{Chapter:Extensions}
+
+\subsection{WebExtensions API}
+\label{Section:WebExtensionsAPI}
+
+WebExtensions API, first introduced by Google in chromium-based browsers, is a set of special-purpose APIs the browser provides to installed extensions. Firefox\footnote{\url{https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions}}, Safari\footnote{\url{https://developer.apple.com/documentation/safariservices/safari_web_extensions}}, and Opera\footnote{\url{https://dev.opera.com/extensions/apis}} have become widely compatible with the WebExtensions API, making it the standard across all major web browsers. This broad adoption allowed developers to create cross-browser extensions with minor changes to the original codebase.
+
+WebExtensions API provides a wide range of functionality for building browser extensions, including access to browser tabs and windows, manipulating web pages and user settings, and interacting with other extensions and websites \cite{ChromeWebExtensionsAPIReference}.
+
+WebExtension API differs from the standard JavaScript Web APIs described in the previous section. Applications use the standard Web APIs to interact with the content and functionality of a web page. In contrast, extensions use the WebExtensions APIs to interact with the browser itself. Some of the interfaces provided by the WebExtensions API are \cite{ChromeWebExtensionsAPIReference}:
+
+\begin{itemize}
+	\item \textbf{Cookies API}: Allows to query and modify cookies. Extensions can also configure a callback function browser calls whenever a particular cookie changes.
+	\item \textbf{DeclarativeNetRequest API}: Allows to block or modify network requests by specifying declarative rules. This API allows extensions to modify requests without giving them direct access to their content.
+	\item \textbf{History API}: Allows interaction with the browser's record of previously visited pages. Extensions can add, remove, and query for URLs in the browser's history.
+	\item \textbf{Tabs API}: Allows interaction with the browser's tab system. Extensions can create new, modify, or rearrange existing tabs.
+\end{itemize}
+
+The WebExtensions API is easy to use and provides consistent interfaces and functionality across different browsers. Lately, a push for increased security and privacy rules for extensions resulted in Manifest V3, described more in-depth in the following section.
+
+\subsection{Manifest V3}
+\label{Section:ManifestV3}
+
+Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeManifestV3}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeManifestV3}:
+
+\begin{itemize}
+	\item \textbf{Service workers}: Manifest V3 replaces background pages\footnote{Manifest V2 extensions used background pages to run a single persistent script to manage tasks, or a state of the extension \cite{ChromeManifestV2}.} with extension service workers, similar to traditional web service workers.
+	\item \textbf{Network request modification}: In the outgoing Manifest V2, extensions could intercept and modify requests procedurally. In contrast, in the Manifest V3, extensions have to define rules and ask the browser engine to modify requests on their behalf. The primary motivation behind this change was privacy, as extensions could previously access requests with little or no limitations.
+	\item \textbf{Support for Promises}: The Chrome team added Promise support to some WebExtensions APIs so that extension developers can use modern JavaScript features such as promise chains or async/await patterns.
+\end{itemize}
+
+Although welcomed from a privacy-concerned standpoint, these changes made it more difficult for developers to create extensions to protect from fingerprinting, mainly because of the network request modification differences.
+
+\bigbreak
+
+\begin{lstlisting}[language={JSON},caption={An example of a declarative rule which modifies selected response headers \cite{ChromeManifestV3}.}, label={Listing:ManifestV3RuleExample}]
+[
+  {
+    "id": 10,
+    "priority": 2,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "h1",
+          "operation": "remove"
+        },
+        {
+          "header": "h2",
+          "operation": "set",
+          "value": "v2"
+        },
+        {
+          "header": "h3",
+          "operation": "append",
+          "value": "v3"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "headers.com/123",
+      "resourceTypes": ["main_frame"]
+    }
+  }
+]
+\end{lstlisting}
+
+\medbreak
+
+Listing \ref{Listing:ManifestV3RuleExample} shows an example of the new declarative rule syntax. The rule defined above modifies request headers, specifically removing a header named \texttt{h1}, changing the value of \texttt{h2}, and adding a new header, \texttt{h3}.
+
+% TODO: Extend Manifest V3 section (https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/)
+
+% TODO: Mention the network request modification changes made it difficult for extensions to alter fingerprints (probably in the implementation section)
+
+% -------------------------------------------------------------------- %
+
 \chapter{Browser fingerprinting}
 \label{Chapter:BrowserFingerprinting}
 
@@ -160,76 +301,7 @@ The ability to uniquely identify a device and transitively the user of the devic
 
 % -------------------------------------------------------------------- %
 
-\chapter{Browser extensions}
-\label{Chapter:Extensions}
-
-Browser extensions, or add-ons, can modify and enhance the capability of a browser \cite{MDNWebExtensions}.
-
-In this chapter, the first section, \ref{Section:WebExtensionsAPI}, describes the WebExtensions API exposed by a browser to give extensions more capabilities. Recently, significant changes to the ecosystem of extensions were announced with the introduction of Manifest V3, described in section \ref{Section:ManifestV3}. The last section, \ref{Section:JShelter}, is dedicated to the JShelter extension on which this work builds.
-
-\section{WebExtensions API}
-\label{Section:WebExtensionsAPI}
-
-WebExtensions API, first introduced by Google in chromium-based browsers, is a set of special-purpose APIs the browser provides to installed extensions. Later, Firefox \cite{MDNWebExtensions} and Safari \cite{AppleSafariWebExtensions} became widely compatible with the WebExtensions API, making it a standard across all major web browsers. This broad adoption allowed developers to create cross-browser extensions with minor changes to the original codebase.
-
-Extension developers can use the WebExtensions API to manipulate with the UI of the browser, cookies storage, or preferences \cite{ChromeWebExtensionsAPIReference}.
-
-\section{Manifest V3}
-\label{Section:ManifestV3}
-
-Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeManifestV3}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeManifestV3}:
-
-\begin{itemize}
-	\item \textbf{Service workers}: Manifest V3 replaces background pages\footnote{Manifest V2 extensions used background pages to run a single persistent script to manage tasks, or a state of the extension \cite{ChromeManifestV2}.} with extension service workers, similar to traditional web service workers.
-	\item \textbf{Network request modification}: In the outgoing Manifest V2, extensions could intercept and modify requests procedurally. In contrast, in the Manifest V3, extensions have to define rules and ask the browser engine to modify requests on their behalf. The primary motivation behind this change was privacy, as extensions could previously access requests with little or no limitations.
-	\item \textbf{Support for Promises}: The Chrome team added Promise support to some WebExtensions APIs so that extension developers can use modern JavaScript features such as promise chains or async/await patterns.
-\end{itemize}
-
-Although welcomed from a privacy-concerned standpoint, these changes made it more difficult for developers to create extensions to protect from fingerprinting, mainly because of the network request modification differences.
-
-\bigbreak
-
-\begin{lstlisting}[language={JSON},caption={An example of a declarative rule which modifies selected response headers \cite{ChromeManifestV3}.}, label={Listing:ManifestV3RuleExample}]
-[
-  {
-    "id": 10,
-    "priority": 2,
-    "action": {
-      "type": "modifyHeaders",
-      "responseHeaders": [
-        {
-          "header": "h1",
-          "operation": "remove"
-        },
-        {
-          "header": "h2",
-          "operation": "set",
-          "value": "v2"
-        },
-        {
-          "header": "h3",
-          "operation": "append",
-          "value": "v3"
-        }
-      ]
-    },
-    "condition": {
-      "urlFilter": "headers.com/123",
-      "resourceTypes": ["main_frame"]
-    }
-  }
-]
-\end{lstlisting}
-
-\medbreak
-
-Listing \ref{Listing:ManifestV3RuleExample} shows an example of the new declarative rule syntax. The rule defined above modifies request headers, specifically removing a header named \texttt{h1}, changing the value of \texttt{h2}, and adding a new header, \texttt{h3}.
-
-% TODO: Extend Manifest V3 section (https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/)
-
-% TODO: Mention the network request modification changes made it difficult for extensions to alter fingerprints (probably in the implementation section)
-
-\section{JShelter}
+\chapter{JShelter}
 \label{Section:JShelter}
 
 In 2019, Martin Timko designed and implemented a proof of concept browser extension called \uv{Javascript Restricter} as a part of his master's thesis \cite{MatejTimkoDP}. Inspired by his work, Libor Polčák et al. \cite{JShelterPaper} created JShelter, a browser extension focused on fingerprinting prevention, limitations of rich web APIs, prevention of attacks connected to timing, and learning information about the device, the browser, the user, and surrounding physical environment and location. JShelter offers versions for three major browsers - Firefox, Chrome, and Opera.
