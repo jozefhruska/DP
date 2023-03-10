@@ -180,22 +180,22 @@ Listing \ref{Listing:ManifestV3RuleExample} shows an example of the new declarat
 \chapter{Browser fingerprinting}
 \label{Chapter:BrowserFingerprinting}
 
-Fingerprinting is a process of obtaining information about a user's device to construct a digital marker called a fingerprint. Applications can construct a fingerprint from various data, such as information about the device hardware, operating system, browser, or even seemingly unimportant information, such as installed fonts or a language preference.
+Fingerprinting is a process of obtaining information about a user's device to construct a digital marker called a fingerprint. Applications can construct a fingerprint from various characteristics, such as information about the device hardware, operating system, and browser, or seemingly unimportant information, such as installed fonts or a language preference. Given that the selected characteristics are uncommon, either individually or in combination with others, applications can track devices until the characteristics change enough to affect the fingerprint.
 
-Browser fingerprinting \cite{FingerprintingSurvey} is a subcategory where the application tries to create a fingerprint from the information available in a browser. As the main focuses of this theses are browsers and browser extensions, the term fingerprinting will be used predominantly over browser fingerprinting for ease of reading.
+Browser fingerprinting is a subcategory where the application tries to create a fingerprint from the information available in a browser \cite{FingerprintingSurvey}. As the main focuses of this theses are browsers and browser extensions, the term fingerprinting will be used predominantly over browser fingerprinting for ease of reading. Contrary to other identification techniques like cookies that rely on a unique identifier (ID) directly stored inside the browser, browser fingerprinting is qualified as entirely stateless. It does not leave any trace as it does not require storing information inside the browser \cite{FingerprintingSurvey}.
 
-Information to form a fingerprint may be collected either actively, typically by running a JavaScript code inside a browser, or passively by monitoring the network communication.
+The characteristics to construct a fingerprint may be collected either actively, typically by running a JavaScript code inside a browser, or passively by monitoring the network communication. Most characteristics commonly used for fingerprinting are obtainable only through the browser Web APIs \cite{VondracekDP}. For this reason, the majority of available anti-fingerprinting solutions focus primarily on mitigating the active fingerprinting.
 
 The first section, \ref{Section:FingerprintingHistory}, briefly tells the history of browser fingerprinting, from the time it was explored for the first time to its current form. Section \ref{Section:FingerprintingCounter} describes the most common fingerprinting countermeasures, and the third section, \ref{Section:FingerprintingApproaches}, compares the active and passive fingerprinting approaches fingerprinting applications use to collect data. The last section, \ref{FingerprintingThreatsOpportunities}, summarizes the threats and opportunities fingerprinting brings to the table.
 
 \section{History of browser fingerprinting}
 \label{Section:FingerprintingHistory}
 
-Laperdrix et al. provide excellent insight into the history of browser fingerprinting \cite{FingerprintingSurvey}. It all started in 2009 when Jonathan Mayer first investigated if differences presented by browsers of various users could be used to identify these users uniquely. He conducted an experiment where he collected the contents of the navigator, screen, \texttt{Navigator.plugins}, and \texttt{Navigator.mimeTypes} objects of browsers that connected to the website of his experiment. Of 1328 clients, he uniquely identified 1278 (96.23\%).
+Laperdrix et al. \cite{FingerprintingSurvey} provide excellent insight into the history of browser fingerprinting. In 2009, Johnathan R. Mayer investigated \cite{MayerAnyPerson} if remote servers could exploit the differences presented by browsers to deanonymize or uniquely identify their users. He conducted an experiment where he collected the contents of the \texttt{Navigator}, \texttt{Screen}, \texttt{Navigator.plugins}, and \texttt{Navigator.mimeTypes} objects of browsers that connected to the website of his experiment. Once collected, the contents were concatenated, hashed using the MD5 algorithm, and sent to a remote server for storage. Of 1328 clients, he uniquely identified 1278 (96.23\%). However, he added that the scale of his experiment was too small to draw any meaningful conclusions and that the hashing-based algorithm masks which properties contributed to the uniqueness.
 
-A year later, in 2010, Peter Eckersley pushed this research further when he conducted a Panopticlick experiment \cite{EckersleyHowUnique}. In this experiment, he obtained over 470 thousand fingerprints, uniquely identifying 83.6\% (94.2\% with Flash or Java enabled).
+A year later, in 2010, Peter Eckersley pushed the research of fingerprinting further when he conducted a Panopticlick experiment \cite{EckersleyHowUnique}. He obtained over 470 thousand fingerprints in this experiment, uniquely identifying 83.6\%. The number of identified browsers was even higher if browsers supported Flash or Java. Out of these browsers, he was able to identify 94.2\% uniquely.
 
-Although only a short time has passed since these two pioneering works were published, fingerprinting became a standard in the industry thanks to easy-to-use solutions like FingerprintJS\footnote{https://fingerprint.com}, which has an open-source core. However, this broad adoption of fingerprinting solutions brought severe security and privacy implications \cite{WP224Fingerprinting}.
+Since these two works were published, fingerprinting became a standard in the industry thanks to easy-to-use solutions like FingerprintJS\footnote{\url{https://fingerprint.com}}, which has an open-source core. This broad and rapid adoption of fingerprinting practices brought severe security and privacy implications \cite{WP224Fingerprinting}, resulting in the growing popularity of solutions focusing on mitigating fingerprinting.
 
 \section{Fingerprinting countermeasures}
 \label{Section:FingerprintingCounter}
@@ -203,22 +203,24 @@ Although only a short time has passed since these two pioneering works were publ
 Although not straightforward, to a certain degree, it is possible to fight against fingerprinting. Fingerprinting countermeasures are typically categorized followingly \cite{JShelterPaper, PriVaricator}:
 
 \begin{itemize}
-	\item \textbf{Creating a homogenous fingerprint}: Fingerprinting tries to find differences between devices to identify them. Hypothetically, if every device in the world had the same characteristics (and thus the same fingerprint), identification would not be possible because each device would be indistinguishable from others. However, to create absolute homogeneity, every valuable device characteristic exposed to the fingerprinting application must be the same. If one or more characteristics differ, the anonymity set breaks into smaller ones, making the identification possible again.
-	\item \textbf{Altering the fingerprint for each domain to prevent cross-domain tracking}: Values of characteristics typically used to create a fingerprint are adjusted for each domain, making it challenging to track the device across multiple domains. Algorithms performing these adjustments are doing so in a seemingly random way to avoid patterns the fingerprinting applications could use for identification.
-	\item \textbf{Altering the fingerprint for each session to prevent cross-session tracking}: Similar to the previous cross-domain countermeasure, but values of characteristics are changed for each browsing session. In other words, the fingerprint is different whenever the browser is closed and reopened again.
-	\item \textbf{Detecting and blocking fingerprinting}: An attempt to detect fingerprinting in real-time, block access to the data, or limit the page's ability to upload the fingerprint. This approach is strict and intrusive as it can limit the functionality of the visited application, or, in the worst scenario, it could break the page completely.
+	\item \textbf{Creating a homogenous fingerprint}: Fingerprinting tries to find differences between devices to identify them. Hypothetically, if every device in the world had the same characteristics (and thus the same fingerprint), identification would not be possible because each device would be indistinguishable from others. However, every valuable device characteristic exposed to the fingerprinting application must be the same to create absolute homogeneity. If one or more characteristics differ, the anonymity set breaks into smaller ones, making the identification possible again. As Mayer discovered in his work \cite{MayerAnyPerson}, systems with fewer customization options create larger anonymity sets due to the need for more differentiating characteristics.
+	\item \textbf{Altering the fingerprint for each domain to prevent cross-domain tracking}: Values of characteristics commonly used to construct a fingerprint are adjusted for each domain, making tracking the device across multiple domains challenging. Algorithms performing these adjustments are doing so in a seemingly random way to avoid being detected by the fingerprinting application.
+	\item \textbf{Altering the fingerprint for each session to prevent cross-session tracking}: Similar to the previous cross-domain countermeasure, but values of characteristics are changed for each browsing session. In other words, the fingerprint is different whenever the browser is closed and reopened again. Compared to the previous cross-domain countermeasure, the fingerprint typically changes less frequently.
+	\item \textbf{Detecting and blocking fingerprinting}: Protection tools implementing this countermeasure attempt to detect fingerprinting in real-time, block access to the Web APIs commonly misused for fingerprinting, or limit the page's ability to upload the fingerprint. This approach is strict and potentially intrusive as it can limit the functionality of the visited application, or, in the worst scenario, it could break the page completely.
 \end{itemize}
 
-Applications implementing these countermeasures typically combine two or more categories for better overall protection \cite{JShelterPaper}. The type of application is also important. Browsers are more capable of combating fingerprinting as they are closer to the operating system than browser extensions.
+A common practice for applications implementing these countermeasures is combining two or more categories for better overall protection \cite{JShelterPaper}. The type of application is also significant. Usually, the closer the algorithm is to the operating system's core, the more capabilities it has to fight fingerprinting. Browser extensions are more restricted than browsers, which are more restricted than the operating system.
+
+It is also important to note that it is very complicated to counter fingerprinting fully. The process of collecting the fingerprint can be detected, but it is impossible to verify if changes made to the data affected the fingerprint. Current protection tools are only mitigating the threat rather than eradicating it completely.
 
 \section{Approaches to fingerprinting}
 \label{Section:FingerprintingApproaches}
 
-Fingerprinting is typically divided into two categories -- active and passive fingerprinting. This section briefly explains both, including examples of data that can be collected and the danger of inconsistencies that the fingerprinting application can detect.
+Based on the type of data collected, browser fingerprinting can be categorized as either passive or active \cite{JShelterPaper}. This section briefly explains both, including examples of inconsistencies caused by incorrect manipulation done by protection tools that the fingerprinting application can detect.
 
 \subsection{Active fingerprinting}
 
-When a fingerprinter has to perform explicit actions to obtain the information it needs, it is called active fingerprinting. By actions, we typically mean running a code to collect the data from a remote machine (i.e., port scanning) or directly on the targeted device (i.e., running a JavaScript code in a browser).
+When a fingerprinting application has to explicitly run code to obtain the data to construct a fingerprint, it is considered active fingerprinting \cite{JShelterPaper}. Examples of such code are port scanning executed on a remote machine or JavaScript code executed inside the target device's browser.
 
 \bigbreak
 
@@ -228,7 +230,7 @@ Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, lik
 
 \medbreak
 
-Running a JavaScript code in a browser is a potent tool to collect data about the software and hardware on the device. Modern browsers provide sets of APIs to give web applications native-like capabilities, often giving developers access to detailed data. Among the most noteworthy interfaces used for fingerprinting is the \texttt{Navigator} interface \cite{MDNNavigatorInterface}, which provides information about the application running the script, usually the browser or the \texttt{Screen} interface \cite{MDNScreenInterface}, which represents the screen on which the current window is rendered.
+Running a JavaScript code in a browser is a potent tool to collect data about the software and hardware on the device. Modern browsers provide Web APIs to give websites native-like capabilities, often allowing developers to access detailed data about the system's underlying components \cite{VondracekDP}. A commonly misused Web API is the Navigator\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Navigator}} interface which represents the state and the identity of the user agent running the script. Another example is the Screen\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Screen}} interface which represents a screen, usually the one on which the current window is being rendered. Scripts often collect binary data to complement the textual data collected from other Web APIs. For example, it is typical for a fingerprinting application to use the Canvas API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API}} to draw an image to test how the system renders text, emojis, or shapes. Even slight differences in the rendered image can help the fingerprinting application identify the device \cite{VondracekDP}.
 
 \begin{table}[H]
 	\centering
@@ -252,7 +254,7 @@ Running a JavaScript code in a browser is a potent tool to collect data about th
 	\label{Table:ActiveDataExamples}
 \end{table}
 
-Table \ref{Table:ActiveDataExamples} shows examples of information obtainable through browser APIs. The fingerprinting applications prefer characteristics that change less frequently or are entirely static. For example, the battery percentage will likely change often, which can affect the resulting fingerprint. On the other hand, the number of logical processors will presumably remain the same for the device.
+Table \ref{Table:ActiveDataExamples} shows a few examples of information obtainable through browser APIs. The fingerprinting applications prefer characteristics that change less frequently or are entirely static. For example, the battery percentage will likely change often, which can affect the resulting fingerprint. On the other hand, the number of logical processors will remain the same for the device unless it is virtualized or the user replaces its CPU.
 
 \subsection{Passive fingerprinting}
 
@@ -281,6 +283,13 @@ Table \ref{Table:PassiveDataExamples} shows examples of data directly available 
 \subsection{Inconsistencies}
 
 Fingerprinting countermeasures described in section \ref{Section:FingerprintingCounter} often modify browser characteristics to affect the fingerprint. Suppose a characteristic can be obtained by active as well as passive fingerprinting, meaning it has multiple data sources. In that case, the countermeasure algorithm must apply these modifications to all data sources to avoid introducing inconsistent pieces of information. A piece of inconsistent information has a valid but conflicting value between various data sources \cite{VondracekDP}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{obrazky-figures/inconsistencies_schema}
+    \caption{A scheme highlighting common properties obtainable with active and passive fingerprinting.}
+    \label{fig:mesh1}
+\end{figure}
 
 Among the examples shown in tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} are characteristics with multiple data sources, namely the available memory, preferred languages, and the User-Agent string. Values of specific characteristics, such as the available memory or the User-Agent string, are one-to-one copies meaning the countermeasure algorithm can apply the same transformation to all data sources. However, this is not the case for the values of preferred languages characteristic. Preferred languages transferred in HTTP headers include the quality factor\footnote{Quality weights or quality values are used in HTTP headers to specify the order of priority in a comma-separated list (\url{https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}).} for each language tag, but it is absent from the value obtainable from the JavaScript API. Tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} illustrate this difference. An algorithm cannot apply the same transformation for all data sources as it has to be aware of these differences in representation.
 
