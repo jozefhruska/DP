@@ -258,7 +258,9 @@ Table \ref{Table:ActiveDataExamples} shows a few examples of information obtaina
 
 \subsection{Passive fingerprinting}
 
-Intuitively, passive fingerprinting is the alternative method to active fingerprinting. In passive fingerprinting, the information required to create a fingerprint is collected from characteristics observable in the network traffic, which means there is no need to execute a data-gathering code directly in the browser. Because no code is executed on the fingerprinted device, the fingerprinting is not observable from it, making it difficult to detect an attempt at fingerprinting. 
+Passive fingerprinting collects information needed to create a browser fingerprint from data observable in network traffic. As the name suggests, this approach does not require running a script directly in the browser, but instead, it only consumes incoming network traffic and picks the information it needs.
+
+Passive fingerprinting typically collects data from HTTP request headers or other parts of incoming network traffic \cite{JShelterPaper}. Network requests include fewer suitable characteristics than active fingerprinting with access to browser Web APIs. However, fingerprinting is not observable from the device as there is no need to execute a script in the browser. This lack of observability makes it very complicated to detect passive fingerprinting.
 
 \begin{table}[H]
 	\centering
@@ -278,11 +280,11 @@ Intuitively, passive fingerprinting is the alternative method to active fingerpr
 	\label{Table:PassiveDataExamples}
 \end{table}
 
-Table \ref{Table:PassiveDataExamples} shows examples of data directly available in request headers. These HTTP headers and other characteristics are used to create a passive device fingerprint.
+Table \ref{Table:PassiveDataExamples} shows examples of data directly available in request headers typically used in passive fingerprinting.
 
 \subsection{Inconsistencies}
 
-Fingerprinting countermeasures described in section \ref{Section:FingerprintingCounter} often modify browser characteristics to affect the fingerprint. Suppose a characteristic can be obtained by active as well as passive fingerprinting, meaning it has multiple data sources. In that case, the countermeasure algorithm must apply these modifications to all data sources to avoid introducing inconsistent pieces of information. A piece of inconsistent information has a valid but conflicting value between various data sources \cite{VondracekDP}.
+Fingerprinting countermeasures described in section \ref{Section:FingerprintingCounter} often modify browser characteristics to affect the fingerprint and confuse the fingerprinter. However, some characteristics are fully or partially obtainable by both active and passive fingerprinting. In other words, these characteristics have multiple data sources. When a characteristic has multiple data sources, protections manipulating its value must apply these modifications to all data sources to avoid introducing inconsistent (conflicting) pieces of information. A piece of inconsistent information has a valid but conflicting value between various data sources \cite{VondracekDP}.
 
 \begin{figure}[h]
     \centering
@@ -291,9 +293,9 @@ Fingerprinting countermeasures described in section \ref{Section:FingerprintingC
     \label{fig:mesh1}
 \end{figure}
 
-Among the examples shown in tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} are characteristics with multiple data sources, namely the available memory, preferred languages, and the User-Agent string. Values of specific characteristics, such as the available memory or the User-Agent string, are one-to-one copies meaning the countermeasure algorithm can apply the same transformation to all data sources. However, this is not the case for the values of preferred languages characteristic. Preferred languages transferred in HTTP headers include the quality factor\footnote{Quality weights or quality values are used in HTTP headers to specify the order of priority in a comma-separated list (\url{https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}).} for each language tag, but it is absent from the value obtainable from the JavaScript API. Tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} illustrate this difference. An algorithm cannot apply the same transformation for all data sources as it has to be aware of these differences in representation.
+Among the examples shown in tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} are characteristics with multiple data sources, namely the available memory, preferred languages, and the User-Agent string. Values of specific characteristics, such as the available memory or the User-Agent string, are one-to-one copies meaning the countermeasure algorithm can apply the same transformation to all data sources. However, this is not the case for the values of preferred languages characteristic. Preferred languages transferred in HTTP headers include the quality factor\footnote{Quality weights or quality values are used in HTTP headers to specify the order of priority in a comma-separated list (\url{https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}).} for each language tag, but this value is absent in the version obtainable from the browser Web API. Tables Tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} illustrate this difference. An algorithm cannot apply the same transformation for all data sources as it has to be aware of these differences in representation.
 
-Suppose the countermeasure algorithm misapplies the transformation to a data source, or the data source is left unchanged entirely. In that case, the fingerprinting application can detect and act on this attempt at fingerprint manipulation.
+Suppose a countermeasure algorithm misapplies the transformation to a data source, or the data source is left unchanged entirely. In that case, the fingerprinting application can detect and act on this attempt at fingerprint manipulation.
 
 \section{Threats and opportunities of fingerprinting}
 \label{FingerprintingThreatsOpportunities}
