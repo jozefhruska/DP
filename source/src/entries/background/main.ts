@@ -1,28 +1,12 @@
-import browser from 'webextension-polyfill';
+import { updateHeaderRule } from '~/utilities/declarativeNetRequest';
+import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
+import { Header } from '~/types';
 
-console.log('Service worker started.');
+if (process.env.NODE_ENV === 'development' && chrome) {
+  chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
+    console.log(info);
+  });
+}
 
-browser.declarativeNetRequest.updateSessionRules({
-  addRules: [
-    {
-      id: 3,
-      priority: 1,
-      action: {
-        type: 'modifyHeaders',
-        requestHeaders: [
-          {
-            header: 'accept-language',
-            operation: 'set',
-            value: 'en-GB,en;q=0.9',
-          },
-        ],
-      },
-      condition: {
-        urlFilter: 'amiunique.org',
-        resourceTypes: ['main_frame'],
-      },
-    },
-  ],
-});
-
-console.log(browser.declarativeNetRequest.getSessionRules());
+// TODO: Enable / disable based on the preferences
+updateHeaderRule(Header.ACCEPT_LANGUAGE, getAcceptLanguageValue());

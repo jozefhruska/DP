@@ -22,16 +22,11 @@ const manifest: Omit<
       matches: ['*://*/*'],
     },
   ],
-  declarative_net_request: {
-    rule_resources: [
-      {
-        id: 'ruleset',
-        enabled: false,
-        path: 'rules.json',
-      },
-    ],
-  },
-  permissions: ['declarativeNetRequest', 'declarativeNetRequestFeedback'],
+  permissions: [
+    'declarativeNetRequest',
+    'declarativeNetRequestFeedback',
+    'storage',
+  ],
   host_permissions: ['*://*/*'],
   icons: {
     16: 'icons/16.png',
