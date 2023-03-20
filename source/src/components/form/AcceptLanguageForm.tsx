@@ -6,7 +6,12 @@ import * as Select from '~/components/common/Select';
 import { ACCEPT_LANGUAGE_PROTECTION_OPTIONS } from '~/constants';
 import { Switch } from '~/components/common/Switch';
 import { useStore } from '~/utilities/store';
-import { StoreValue } from '~/types';
+import { AcceptLanguageProtectionMode, Header, StoreValue } from '~/types';
+import {
+  removeHeaderRule,
+  updateHeaderRule,
+} from '~/utilities/declarativeNetRequest';
+import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
 
 export const AcceptLanguageForm: React.FC = () => {
   const { enabled, setEnabled, mode, setMode } = useStore(
@@ -28,6 +33,30 @@ export const AcceptLanguageForm: React.FC = () => {
   const switchId = useId();
   const selectId = useId();
 
+  const handleEnabledChange = (checked: boolean) => {
+    setEnabled(checked);
+
+    if (checked) {
+      updateHeaderRule(
+        Header.ACCEPT_LANGUAGE,
+        getAcceptLanguageValue(mode)
+      );
+    } else {
+      removeHeaderRule(Header.ACCEPT_LANGUAGE);
+    }
+  };
+
+  const handleModeChange = (mode: AcceptLanguageProtectionMode) => {
+    setMode(mode);
+
+    if (enabled) {
+      updateHeaderRule(
+        Header.ACCEPT_LANGUAGE,
+        getAcceptLanguageValue(mode)
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
@@ -35,7 +64,7 @@ export const AcceptLanguageForm: React.FC = () => {
         <div className="flex items-center gap-x-2">
           <Switch
             checked={enabled}
-            onCheckedChange={setEnabled}
+            onCheckedChange={handleEnabledChange}
             id={switchId}
           />
           <Label htmlFor={switchId}>Enabled</Label>
@@ -43,7 +72,7 @@ export const AcceptLanguageForm: React.FC = () => {
       </div>
       <div className="flex flex-col gap-y-2">
         <Label htmlFor={selectId}>Mode</Label>
-        <Select.Root value={mode} onValueChange={setMode}>
+        <Select.Root value={mode} onValueChange={handleModeChange}>
           <Select.Trigger id={selectId}>
             <Select.Value placeholder="Select protection mode..." />
           </Select.Trigger>

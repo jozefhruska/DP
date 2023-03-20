@@ -1,6 +1,8 @@
+import browser from 'webextension-polyfill';
 import { updateHeaderRule } from '~/utilities/declarativeNetRequest';
 import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
-import { Header } from '~/types';
+import { Header, StoreValue } from '~/types';
+import { isStoreInitialized } from '~/utilities/store';
 
 if (process.env.NODE_ENV === 'development' && chrome) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
@@ -8,5 +10,13 @@ if (process.env.NODE_ENV === 'development' && chrome) {
   });
 }
 
-// TODO: Enable / disable based on the preferences
-updateHeaderRule(Header.ACCEPT_LANGUAGE, getAcceptLanguageValue());
+browser.storage.sync.get().then((store: StoreValue | {}) => {
+  if (isStoreInitialized(store)) {
+    if (store.acceptLanguage.enabled) {
+      updateHeaderRule(
+        Header.ACCEPT_LANGUAGE,
+        getAcceptLanguageValue(store.acceptLanguage.mode)
+      );
+    }
+  }
+});

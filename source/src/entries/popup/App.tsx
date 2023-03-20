@@ -51,11 +51,6 @@ export const App: React.FC = () => {
 
           <Tabs.Content value={PopupTab.OTHER}>Other</Tabs.Content>
         </Tabs.Root>
-
-        <p className="mt-4">
-          Place the carrots in a bucket, and whisk fully with rich
-          worcestershire sauce.
-        </p>
       </PopupContent>
     </>
   );

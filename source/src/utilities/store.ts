@@ -16,3 +16,9 @@ export const useStore = create<StoreValue>((set) => ({
       })),
   },
 }));
+
+export const isStoreInitialized = (
+  store: StoreValue | {}
+): store is StoreValue => {
+  return store.hasOwnProperty('acceptLanguage');
+};

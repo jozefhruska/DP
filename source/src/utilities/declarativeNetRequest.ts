@@ -5,7 +5,7 @@ import { HEADER_RULE_IDS } from '~/constants';
 export const updateHeaderRule = (header: Header, value: string) => {
   const id = HEADER_RULE_IDS[header];
 
-  browser.declarativeNetRequest.updateSessionRules({
+  void browser.declarativeNetRequest.updateSessionRules({
     removeRuleIds: [id],
     addRules: [
       {
@@ -27,5 +27,13 @@ export const updateHeaderRule = (header: Header, value: string) => {
         },
       },
     ],
+  });
+};
+
+export const removeHeaderRule = (header: Header) => {
+  const id = HEADER_RULE_IDS[header];
+
+  void browser.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [id],
   });
 };

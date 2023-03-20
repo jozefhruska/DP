@@ -1,4 +1,5 @@
 import { LANGUAGE_REGIONS } from '~/constants';
+import { AcceptLanguageProtectionMode } from '~/types';
 
 const isMultiRegionLanguage = (
   code: string
@@ -8,26 +9,49 @@ const isMultiRegionLanguage = (
   );
 };
 
-export const getAcceptLanguageValue = (): string => {
-  const languages = navigator.languages.map((language) => {
-    if (language.includes('-')) {
-      const [code] = language.split('-');
+export const getAcceptLanguageValue = (
+  mode: AcceptLanguageProtectionMode
+): string => {
+  let languages: string[] = [];
 
-      if (!isMultiRegionLanguage(code)) {
-        return language;
-      }
+  switch (mode) {
+    case AcceptLanguageProtectionMode.RANDOM_REGIONS: {
+      navigator.languages.forEach((language) => {
+        if (language.includes('-')) {
+          const [code] = language.split('-');
 
-      const availableRegions = LANGUAGE_REGIONS[code];
-      const randomIndex = Math.floor(
-        Math.random() * (availableRegions.length - 1)
-      );
+          if (!isMultiRegionLanguage(code)) {
+            return language;
+          }
 
-      return code + '-' + availableRegions[randomIndex];
+          const availableRegions = LANGUAGE_REGIONS[code];
+          const randomIndex = Math.floor(
+            Math.random() * (availableRegions.length - 1)
+          );
+
+          languages.push(code + '-' + availableRegions[randomIndex]);
+        } else {
+          // Leave languages without regions unchanged
+          languages.push(language);
+        }
+      });
+
+      break;
     }
 
-    // TODO: Implement generalization
-    return language;
-  });
+    case AcceptLanguageProtectionMode.REMOVE_REGIONS: {
+      languages = navigator.languages.filter((language) => {
+        return !language.includes('-');
+      });
+
+      break;
+    }
+
+    default: {
+      languages = [...navigator.languages];
+      break;
+    }
+  }
 
   // TODO: Figure out quality values
   return languages.join(',') + ';q=0.9';
