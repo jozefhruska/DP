@@ -1,14 +1,19 @@
 export enum Header {
   ACCEPT_LANGUAGE = 'accept-language',
+  DEVICE_MEMORY = 'device-memory',
 }
 
 export type StoreValue = {
-  initialize: (value: StoreValue) => void;
+  initialize: (store: StoreValue) => void;
   acceptLanguage: {
     enabled: boolean;
     setEnabled: (enabled: boolean) => void;
     mode: AcceptLanguageProtectionMode;
     setMode: (mode: AcceptLanguageProtectionMode) => void;
+  };
+  deviceMemory: {
+    enabled: boolean;
+    setEnabled: (enabled: boolean) => void;
   };
 };
 

@@ -1,12 +1,11 @@
-import React, { useEffect, useId } from 'react';
-import browser from 'webextension-polyfill';
+import React, { useId } from 'react';
 import { shallow } from 'zustand/shallow';
 import { Label } from '~/components/common/Label';
 import * as Select from '~/components/common/Select';
 import { ACCEPT_LANGUAGE_PROTECTION_OPTIONS } from '~/constants';
 import { Switch } from '~/components/common/Switch';
 import { useStore } from '~/utilities/store';
-import { AcceptLanguageProtectionMode, Header, StoreValue } from '~/types';
+import { AcceptLanguageProtectionMode, Header } from '~/types';
 import {
   removeHeaderRule,
   updateHeaderRule,
@@ -18,17 +17,6 @@ export const AcceptLanguageForm: React.FC = () => {
     (store) => store.acceptLanguage,
     shallow
   );
-
-  useEffect(() => {
-    void browser.storage.sync
-      .get('acceptLanguage')
-      .then((defaultValues: StoreValue | {}) => {
-        if ('acceptLanguage' in defaultValues) {
-          setEnabled(defaultValues.acceptLanguage.enabled);
-          setMode(defaultValues.acceptLanguage.mode);
-        }
-      });
-  }, []);
 
   const switchId = useId();
   const selectId = useId();

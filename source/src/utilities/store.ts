@@ -2,7 +2,19 @@ import { create } from 'zustand';
 import { AcceptLanguageProtectionMode, StoreValue } from '~/types';
 
 export const useStore = create<StoreValue>((set) => ({
-  initialize: (value: StoreValue) => set({ ...value }),
+  initialize: (store) =>
+    set((prevStore) => ({
+      initialize: prevStore.initialize,
+      acceptLanguage: {
+        ...prevStore.acceptLanguage,
+        enabled: store.acceptLanguage.enabled,
+        mode: store.acceptLanguage.mode,
+      },
+      deviceMemory: {
+        ...prevStore.deviceMemory,
+        enabled: store.deviceMemory.enabled,
+      },
+    })),
   acceptLanguage: {
     enabled: false,
     setEnabled: (enabled) =>
@@ -13,6 +25,13 @@ export const useStore = create<StoreValue>((set) => ({
     setMode: (mode) =>
       set((store) => ({
         acceptLanguage: { ...store.acceptLanguage, mode },
+      })),
+  },
+  deviceMemory: {
+    enabled: false,
+    setEnabled: (enabled) =>
+      set((store) => ({
+        deviceMemory: { ...store.deviceMemory, enabled },
       })),
   },
 }));

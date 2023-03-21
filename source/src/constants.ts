@@ -6,6 +6,7 @@ import {
 
 export const HEADER_RULE_IDS: Record<Header, number> = {
   [Header.ACCEPT_LANGUAGE]: 1,
+  [Header.DEVICE_MEMORY]: 2,
 };
 
 export const ACCEPT_LANGUAGE_PROTECTION_OPTIONS: SelectOption<AcceptLanguageProtectionMode>[] =

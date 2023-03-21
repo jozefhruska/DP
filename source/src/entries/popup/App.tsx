@@ -1,31 +1,43 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Globe, Languages, MoreVertical } from 'lucide-react';
 import browser from 'webextension-polyfill';
 import { PopupHeader } from '~/components/PopupHeader';
 import { PopupContent } from '~/components/PopupContent';
 import { AcceptLanguageForm } from '~/components/form/AcceptLanguageForm';
 import * as Tabs from '../../components/common/Tabs';
-import { PopupTab } from '~/types';
+import { PopupTab, StoreValue } from '~/types';
+import { isStoreInitialized, useStore } from '~/utilities/store';
+import { DeviceMemoryForm } from '~/components/form/DeviceMemoryForm';
 import '../../styles.css';
-import { useStore } from '~/utilities/store';
 
 export const App: React.FC = () => {
-  useEffect(() => {
-    // noinspection TypeScriptValidateJSTypes
-    const unsubscribe = useStore.subscribe((store) => {
-      void browser.storage.sync.set(store);
-    });
+  const initializeStore = useStore((store) => store.initialize);
 
-    return () => {
-      unsubscribe();
-    };
+  const unsubscribe = useRef<() => void>();
+
+  useEffect(() => {
+    if (typeof unsubscribe.current === 'function') {
+      unsubscribe.current();
+    }
+
+    void browser.storage.sync.get().then((store: StoreValue | {}) => {
+      if (isStoreInitialized(store)) {
+        initializeStore(store);
+      }
+
+      // noinspection TypeScriptValidateJSTypes
+      unsubscribe.current = useStore.subscribe((store) => {
+        console.log('sub', store);
+        void browser.storage.sync.set(store);
+      });
+    });
   }, []);
 
   return (
     <>
       <PopupHeader />
       <PopupContent>
-        <Tabs.Root defaultValue={PopupTab.ACCEPT_LANGUAGE}>
+        <Tabs.Root defaultValue={PopupTab.OTHER}>
           <Tabs.List>
             <Tabs.Trigger value={PopupTab.USER_AGENT}>
               <Globe className="mr-2 h-3.5 w-3.5 text-gray-500" />
@@ -49,7 +61,9 @@ export const App: React.FC = () => {
             <AcceptLanguageForm />
           </Tabs.Content>
 
-          <Tabs.Content value={PopupTab.OTHER}>Other</Tabs.Content>
+          <Tabs.Content value={PopupTab.OTHER}>
+            <DeviceMemoryForm />
+          </Tabs.Content>
         </Tabs.Root>
       </PopupContent>
     </>
