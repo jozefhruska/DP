@@ -21,7 +21,7 @@ const Slider = React.forwardRef<
         'dark:bg-slate-800'
       )}
     >
-      <SliderPrimitive.Range className="absolute h-full bg-slate-700 dark:bg-slate-700" />
+      <SliderPrimitive.Range className="absolute h-full bg-slate-600 dark:bg-slate-700" />
     </SliderPrimitive.Track>
 
     {!!value?.length &&
@@ -29,7 +29,7 @@ const Slider = React.forwardRef<
         <SliderPrimitive.Thumb
           key={index}
           className={clsx(
-            'block h-5 w-5 rounded-full border-2 border-slate-800 bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+            'block h-5 w-5 rounded-full border-2 border-slate-600 bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:pointer-events-none disabled:opacity-50',
             'dark:border-slate-700 dark:bg-slate-800 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900'
           )}
         />
