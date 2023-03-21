@@ -1,5 +1,8 @@
-export const getDeviceMemoryValue = (): string => {
-  const power = Math.max(Math.floor(Math.random() * 5), 1);
+export const getDeviceMemoryValue = ([min, max]: [
+  number,
+  number
+]): string => {
+  const power = Math.max(Math.floor(Math.random() * max), min);
 
   return (2 ** power).toString();
 };

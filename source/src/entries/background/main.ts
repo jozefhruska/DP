@@ -21,7 +21,10 @@ browser.storage.sync.get().then((store: StoreValue | {}) => {
     }
 
     if (store.deviceMemory.enabled) {
-      updateHeaderRule(Header.DEVICE_MEMORY, getDeviceMemoryValue());
+      updateHeaderRule(
+        Header.DEVICE_MEMORY,
+        getDeviceMemoryValue(store.deviceMemory.minMax)
+      );
     }
   }
 });

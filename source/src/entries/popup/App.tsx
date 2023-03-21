@@ -27,7 +27,6 @@ export const App: React.FC = () => {
 
       // noinspection TypeScriptValidateJSTypes
       unsubscribe.current = useStore.subscribe((store) => {
-        console.log('sub', store);
         void browser.storage.sync.set(store);
       });
     });

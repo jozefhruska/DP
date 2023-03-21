@@ -13,6 +13,7 @@ export const useStore = create<StoreValue>((set) => ({
       deviceMemory: {
         ...prevStore.deviceMemory,
         enabled: store.deviceMemory.enabled,
+        minMax: store.deviceMemory.minMax,
       },
     })),
   acceptLanguage: {
@@ -32,6 +33,11 @@ export const useStore = create<StoreValue>((set) => ({
     setEnabled: (enabled) =>
       set((store) => ({
         deviceMemory: { ...store.deviceMemory, enabled },
+      })),
+    minMax: [1, 5],
+    setMinMax: (minMax) =>
+      set((store) => ({
+        deviceMemory: { ...store.deviceMemory, minMax },
       })),
   },
 }));

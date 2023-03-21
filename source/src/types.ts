@@ -14,6 +14,8 @@ export type StoreValue = {
   deviceMemory: {
     enabled: boolean;
     setEnabled: (enabled: boolean) => void;
+    minMax: [number, number];
+    setMinMax: (minMax: [number, number]) => void;
   };
 };
 

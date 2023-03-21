@@ -9,9 +9,10 @@ import {
 } from '~/utilities/declarativeNetRequest';
 import { Header } from '~/types';
 import { getDeviceMemoryValue } from '~/utilities/deviceMemory';
+import { Slider } from '~/components/common/Slider';
 
 export const DeviceMemoryForm: React.FC = () => {
-  const { enabled, setEnabled } = useStore(
+  const { enabled, setEnabled, minMax, setMinMax } = useStore(
     (store) => store.deviceMemory,
     shallow
   );
@@ -21,14 +22,23 @@ export const DeviceMemoryForm: React.FC = () => {
   const handleEnabledChange = (checked: boolean) => {
     setEnabled(checked);
 
-    console.log(checked);
-
     if (checked) {
-      updateHeaderRule(Header.DEVICE_MEMORY, getDeviceMemoryValue());
+      updateHeaderRule(Header.DEVICE_MEMORY, getDeviceMemoryValue(minMax));
     } else {
       removeHeaderRule(Header.DEVICE_MEMORY);
     }
   };
+
+  const handleSliderValueChange = (minMax: [number, number]) => {
+    setMinMax(minMax);
+
+    if (enabled) {
+      updateHeaderRule(Header.DEVICE_MEMORY, getDeviceMemoryValue(minMax));
+    }
+  };
+
+  const min = 2 ** minMax[0];
+  const max = 2 ** minMax[1];
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -42,6 +52,22 @@ export const DeviceMemoryForm: React.FC = () => {
           />
           <Label htmlFor={switchId}>Enabled</Label>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-y-3.5">
+        <div className="flex items-center justify-between">
+          <span>{min} GB</span>
+          <span>{max} GB</span>
+        </div>
+
+        <Slider
+          min={0}
+          max={8}
+          step={1}
+          value={minMax}
+          onValueChange={handleSliderValueChange}
+          minStepsBetweenThumbs={1}
+        />
       </div>
     </div>
   );
