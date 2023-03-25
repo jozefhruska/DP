@@ -197,6 +197,23 @@ A year later, in 2010, Peter Eckersley pushed the research of fingerprinting fur
 
 Since these two works were published, fingerprinting became a standard in the industry thanks to easy-to-use solutions like FingerprintJS\footnote{\url{https://fingerprint.com}}, which has an open-source core. This broad and rapid adoption of fingerprinting practices brought severe security and privacy implications \cite{WP224Fingerprinting}, resulting in the growing popularity of solutions focusing on mitigating fingerprinting.
 
+\section{Understanding the impacts of fingerprinting}
+\label{FingerprintingThreatsOpportunities}
+
+The practice of fingerprinting is widely recognized for its potential invasion of privacy. However, its impacts are not simply positive or negative like many things in life. This chapter explores the various effects of fingerprinting, including both its benefits and drawbacks. Additionally, real-world examples are provided to illustrate these impacts in practice.
+
+\subsection{Benefits of fingerprinting}
+
+The ability to uniquely identify a device and, by extension, its owner allows third parties to modify the behavior of their services and applications. One essential application of browser fingerprinting is to enhance security and user experiences.
+
+Specifically, applications can utilize fingerprinting for payment fraud prevention and detection \cite{FingerprintJSUseCases}. By doing so, they can block users who attempt to use stolen credit, debit, or checking information to make illicit transactions. In this context, fingerprinting serves as an additional layer of protection for both businesses and consumers, ensuring that financial transactions remain secure and trustworthy.
+
+\subsection{Drawbacks of fingerprinting}
+
+Fingerprinting, despite its numerous benefits, has gained popularity primarily due to its potential to violate users' privacy \cite{WP224Fingerprinting}. Tracking individuals over extended periods is possible until the device's characteristics change sufficiently to alter the fingerprint. This pervasive surveillance capability has raised concerns about balancing utility and personal privacy.
+
+When a person is being tracked, applications can display advertisements or products tailored to the user based on their browsing history and online activity. This targeted marketing approach is designed to boost business sales, but it further highlights the potential intrusion of privacy associated with fingerprinting.
+
 \section{Fingerprinting countermeasures}
 \label{Section:FingerprintingCounter}
 
@@ -296,19 +313,6 @@ Fingerprinting countermeasures described in section \ref{Section:FingerprintingC
 Among the examples shown in tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} are characteristics with multiple data sources, namely the available memory, preferred languages, and the User-Agent string. Values of specific characteristics, such as the available memory or the User-Agent string, are one-to-one copies meaning the countermeasure algorithm can apply the same transformation to all data sources. However, this is not the case for the values of preferred languages characteristic. Preferred languages transferred in HTTP headers include the quality factor\footnote{Quality weights or quality values are used in HTTP headers to specify the order of priority in a comma-separated list (\url{https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}).} for each language tag, but this value is absent in the version obtainable from the browser Web API. Tables Tables \ref{Table:ActiveDataExamples} and \ref{Table:PassiveDataExamples} illustrate this difference. An algorithm cannot apply the same transformation for all data sources as it has to be aware of these differences in representation.
 
 Suppose a countermeasure algorithm misapplies the transformation to a data source, or the data source is left unchanged entirely. In that case, the fingerprinting application can detect and act on this attempt at fingerprint manipulation.
-
-\section{Threats and opportunities of fingerprinting}
-\label{FingerprintingThreatsOpportunities}
-
-Fingerprinting is predominantly known for its often privacy-invading practices, but as with most things in our world, nothing is purely black and white. Fingerprinting brings good things (opportunities) and bad things (threats) to the table. This section discusses both, including example use cases.
-
-\subsection{Threats}
-
-Although fingerprinting is also used for good, it became popular mainly for reasons which could be considered a violation of privacy \cite{WP224Fingerprinting}. A person could be tracked for a long time until the device's characteristics change enough to affect the fingerprint. During this period, applications can show ads or products personalized to users based on browsing history and activity to boost their sales.
-
-\subsection{Opportunities}
-
-The ability to uniquely identify a device and transitively the user of the device allows third parties to change the behavior of their services and applications. Applications can use fingerprinting for payment fraud prevention and detection \cite{FingerprintJSUseCases} to prevent fraudsters from using stolen credit, debit, or checking data.
 
 % -------------------------------------------------------------------- %
 
