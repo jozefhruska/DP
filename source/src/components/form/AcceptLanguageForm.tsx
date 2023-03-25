@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useEffect, useId } from 'react';
 import { shallow } from 'zustand/shallow';
 import { Label } from '~/components/common/Label';
 import * as Select from '~/components/common/Select';
@@ -11,9 +11,10 @@ import {
   updateHeaderRule,
 } from '~/utilities/declarativeNetRequest';
 import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
+import { Preview } from '~/components/common/Preview';
 
 export const AcceptLanguageForm: React.FC = () => {
-  const { enabled, setEnabled, mode, setMode } = useStore(
+  const { value, setValue, enabled, setEnabled, mode, setMode } = useStore(
     (store) => store.acceptLanguage,
     shallow
   );
@@ -21,16 +22,21 @@ export const AcceptLanguageForm: React.FC = () => {
   const switchId = useId();
   const selectId = useId();
 
+  useEffect(() => {
+    if (enabled && value !== null) {
+      updateHeaderRule(Header.ACCEPT_LANGUAGE, value);
+    } else {
+      removeHeaderRule(Header.ACCEPT_LANGUAGE);
+    }
+  }, [value, enabled]);
+
   const handleEnabledChange = (checked: boolean) => {
     setEnabled(checked);
 
     if (checked) {
-      updateHeaderRule(
-        Header.ACCEPT_LANGUAGE,
-        getAcceptLanguageValue(mode)
-      );
+      setValue(getAcceptLanguageValue(mode));
     } else {
-      removeHeaderRule(Header.ACCEPT_LANGUAGE);
+      setValue(null);
     }
   };
 
@@ -38,10 +44,7 @@ export const AcceptLanguageForm: React.FC = () => {
     setMode(mode);
 
     if (enabled) {
-      updateHeaderRule(
-        Header.ACCEPT_LANGUAGE,
-        getAcceptLanguageValue(mode)
-      );
+      setValue(getAcceptLanguageValue(mode));
     }
   };
 
@@ -58,6 +61,7 @@ export const AcceptLanguageForm: React.FC = () => {
           <Label htmlFor={switchId}>Enabled</Label>
         </div>
       </div>
+
       <div className="flex flex-col gap-y-2">
         <Label htmlFor={selectId}>Mode</Label>
         <Select.Root value={mode} onValueChange={handleModeChange}>
@@ -73,6 +77,13 @@ export const AcceptLanguageForm: React.FC = () => {
           </Select.Content>
         </Select.Root>
       </div>
+
+      {value !== null && (
+        <div className="flex flex-col gap-y-2">
+          <Label>Preview</Label>
+          <Preview header={Header.ACCEPT_LANGUAGE} value={value} />
+        </div>
+      )}
     </div>
   );
 };

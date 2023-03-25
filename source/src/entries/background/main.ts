@@ -1,10 +1,7 @@
 import browser from 'webextension-polyfill';
 import { updateHeaderRule } from '~/utilities/declarativeNetRequest';
-import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
 import { Header, StoreValue } from '~/types';
 import { isStoreInitialized } from '~/utilities/store';
-import { getDeviceMemoryValue } from '~/utilities/deviceMemory';
-import { getUserAgentValue } from '~/utilities/userAgent';
 
 if (process.env.NODE_ENV === 'development' && chrome) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
@@ -14,22 +11,19 @@ if (process.env.NODE_ENV === 'development' && chrome) {
 
 browser.storage.sync.get().then((store: StoreValue | {}) => {
   if (isStoreInitialized(store)) {
-    if (store.userAgent.enabled) {
-      updateHeaderRule(Header.USER_AGENT, getUserAgentValue());
+    if (store.userAgent.enabled && store.userAgent.value !== null) {
+      updateHeaderRule(Header.USER_AGENT, store.userAgent.value);
     }
 
-    if (store.acceptLanguage.enabled) {
-      updateHeaderRule(
-        Header.ACCEPT_LANGUAGE,
-        getAcceptLanguageValue(store.acceptLanguage.mode)
-      );
+    if (
+      store.acceptLanguage.enabled &&
+      store.acceptLanguage.value !== null
+    ) {
+      updateHeaderRule(Header.ACCEPT_LANGUAGE, store.acceptLanguage.value);
     }
 
-    if (store.deviceMemory.enabled) {
-      updateHeaderRule(
-        Header.DEVICE_MEMORY,
-        getDeviceMemoryValue(store.deviceMemory.minMax)
-      );
+    if (store.deviceMemory.enabled && store.deviceMemory.value !== null) {
+      updateHeaderRule(Header.DEVICE_MEMORY, store.deviceMemory.value);
     }
   }
 });

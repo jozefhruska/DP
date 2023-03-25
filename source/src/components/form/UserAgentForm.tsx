@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useEffect, useId } from 'react';
 import { Switch } from '~/components/common/Switch';
 import { Label } from '~/components/common/Label';
 import { useStore } from '~/utilities/store';
@@ -9,22 +9,31 @@ import {
 } from '~/utilities/declarativeNetRequest';
 import { Header } from '~/types';
 import { getUserAgentValue } from '~/utilities/userAgent';
+import { Preview } from '~/components/common/Preview';
 
 export const UserAgentForm: React.FC = () => {
-  const { enabled, setEnabled } = useStore(
+  const { value, setValue, enabled, setEnabled } = useStore(
     (store) => store.userAgent,
     shallow
   );
 
   const switchId = useId();
 
+  useEffect(() => {
+    if (enabled && value !== null) {
+      updateHeaderRule(Header.USER_AGENT, value);
+    } else {
+      removeHeaderRule(Header.USER_AGENT);
+    }
+  }, [value, enabled]);
+
   const handleEnabledChange = (checked: boolean) => {
     setEnabled(checked);
 
     if (checked) {
-      updateHeaderRule(Header.USER_AGENT, getUserAgentValue());
+      setValue(getUserAgentValue());
     } else {
-      removeHeaderRule(Header.USER_AGENT);
+      setValue(null);
     }
   };
 
@@ -41,6 +50,13 @@ export const UserAgentForm: React.FC = () => {
           <Label htmlFor={switchId}>Enabled</Label>
         </div>
       </div>
+
+      {value !== null && (
+        <div className="flex flex-col gap-y-2">
+          <Label>Preview</Label>
+          <Preview header={Header.USER_AGENT} value={value} />
+        </div>
+      )}
     </div>
   );
 };

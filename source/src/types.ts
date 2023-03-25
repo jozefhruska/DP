@@ -1,24 +1,30 @@
 export enum Header {
-  ACCEPT_LANGUAGE = 'accept-language',
-  DEVICE_MEMORY = 'device-memory',
-  USER_AGENT = 'user-agent',
+  ACCEPT_LANGUAGE = 'Accept-Language',
+  DEVICE_MEMORY = 'Device-Memory',
+  USER_AGENT = 'User-Agent',
 }
 
 export type StoreValue = {
   initialize: (store: StoreValue) => void;
   acceptLanguage: {
+    value: string | null;
+    setValue: (value: string | null) => void;
     enabled: boolean;
     setEnabled: (enabled: boolean) => void;
     mode: AcceptLanguageProtectionMode;
     setMode: (mode: AcceptLanguageProtectionMode) => void;
   };
   deviceMemory: {
+    value: string | null;
+    setValue: (value: string | null) => void;
     enabled: boolean;
     setEnabled: (enabled: boolean) => void;
     minMax: [number, number];
     setMinMax: (minMax: [number, number]) => void;
   };
   userAgent: {
+    value: string | null;
+    setValue: (value: string | null) => void;
     enabled: boolean;
     setEnabled: (enabled: boolean) => void;
   };

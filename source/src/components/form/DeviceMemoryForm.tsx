@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useEffect, useId } from 'react';
 import { shallow } from 'zustand/shallow';
 import { Switch } from '~/components/common/Switch';
 import { Label } from '~/components/common/Label';
@@ -10,22 +10,29 @@ import {
 import { Header } from '~/types';
 import { getDeviceMemoryValue } from '~/utilities/deviceMemory';
 import { Slider } from '~/components/common/Slider';
+import { Preview } from '~/components/common/Preview';
 
 export const DeviceMemoryForm: React.FC = () => {
-  const { enabled, setEnabled, minMax, setMinMax } = useStore(
-    (store) => store.deviceMemory,
-    shallow
-  );
+  const { value, setValue, enabled, setEnabled, minMax, setMinMax } =
+    useStore((store) => store.deviceMemory, shallow);
 
   const switchId = useId();
+
+  useEffect(() => {
+    if (enabled && value !== null) {
+      updateHeaderRule(Header.DEVICE_MEMORY, value);
+    } else {
+      removeHeaderRule(Header.DEVICE_MEMORY);
+    }
+  }, [value, enabled]);
 
   const handleEnabledChange = (checked: boolean) => {
     setEnabled(checked);
 
     if (checked) {
-      updateHeaderRule(Header.DEVICE_MEMORY, getDeviceMemoryValue(minMax));
+      setValue(getDeviceMemoryValue(minMax));
     } else {
-      removeHeaderRule(Header.DEVICE_MEMORY);
+      setValue(null);
     }
   };
 
@@ -33,7 +40,7 @@ export const DeviceMemoryForm: React.FC = () => {
     setMinMax(minMax);
 
     if (enabled) {
-      updateHeaderRule(Header.DEVICE_MEMORY, getDeviceMemoryValue(minMax));
+      setValue(getDeviceMemoryValue(minMax));
     }
   };
 
@@ -69,6 +76,13 @@ export const DeviceMemoryForm: React.FC = () => {
           minStepsBetweenThumbs={1}
         />
       </div>
+
+      {value !== null && (
+        <div className="flex flex-col gap-y-2">
+          <Label>Preview</Label>
+          <Preview header={Header.DEVICE_MEMORY} value={value} />
+        </div>
+      )}
     </div>
   );
 };

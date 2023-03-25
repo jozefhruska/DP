@@ -7,20 +7,28 @@ export const useStore = create<StoreValue>((set) => ({
       initialize: prevStore.initialize,
       acceptLanguage: {
         ...prevStore.acceptLanguage,
+        value: store.acceptLanguage.value,
         enabled: store.acceptLanguage.enabled,
         mode: store.acceptLanguage.mode,
       },
       deviceMemory: {
         ...prevStore.deviceMemory,
+        value: store.deviceMemory.value,
         enabled: store.deviceMemory.enabled,
         minMax: store.deviceMemory.minMax,
       },
       userAgent: {
         ...prevStore.userAgent,
+        value: store.userAgent.value,
         enabled: store.userAgent.enabled,
       },
     })),
   acceptLanguage: {
+    value: null,
+    setValue: (value) =>
+      set((store) => ({
+        acceptLanguage: { ...store.acceptLanguage, value },
+      })),
     enabled: false,
     setEnabled: (enabled) =>
       set((store) => ({
@@ -33,6 +41,11 @@ export const useStore = create<StoreValue>((set) => ({
       })),
   },
   deviceMemory: {
+    value: null,
+    setValue: (value) =>
+      set((store) => ({
+        deviceMemory: { ...store.deviceMemory, value },
+      })),
     enabled: false,
     setEnabled: (enabled) =>
       set((store) => ({
@@ -45,6 +58,11 @@ export const useStore = create<StoreValue>((set) => ({
       })),
   },
   userAgent: {
+    value: null,
+    setValue: (value) =>
+      set((store) => ({
+        userAgent: { ...store.userAgent, value },
+      })),
     enabled: false,
     setEnabled: (enabled) =>
       set((store) => ({
