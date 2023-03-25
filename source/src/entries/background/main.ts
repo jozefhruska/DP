@@ -4,6 +4,7 @@ import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
 import { Header, StoreValue } from '~/types';
 import { isStoreInitialized } from '~/utilities/store';
 import { getDeviceMemoryValue } from '~/utilities/deviceMemory';
+import { getUserAgentValue } from '~/utilities/userAgent';
 
 if (process.env.NODE_ENV === 'development' && chrome) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
@@ -13,6 +14,10 @@ if (process.env.NODE_ENV === 'development' && chrome) {
 
 browser.storage.sync.get().then((store: StoreValue | {}) => {
   if (isStoreInitialized(store)) {
+    if (store.userAgent.enabled) {
+      updateHeaderRule(Header.USER_AGENT, getUserAgentValue());
+    }
+
     if (store.acceptLanguage.enabled) {
       updateHeaderRule(
         Header.ACCEPT_LANGUAGE,

@@ -5,8 +5,9 @@ import {
 } from '~/types';
 
 export const HEADER_RULE_IDS: Record<Header, number> = {
-  [Header.ACCEPT_LANGUAGE]: 1,
-  [Header.DEVICE_MEMORY]: 2,
+  [Header.USER_AGENT]: 1,
+  [Header.ACCEPT_LANGUAGE]: 2,
+  [Header.DEVICE_MEMORY]: 3,
 };
 
 export const ACCEPT_LANGUAGE_PROTECTION_OPTIONS: SelectOption<AcceptLanguageProtectionMode>[] =
@@ -68,3 +69,6 @@ export const LANGUAGE_REGIONS = {
   ],
   zh: ['CN', 'TW', 'HK', 'SG'],
 };
+
+export const VERSION_REGEX =
+  /(\d+\.\d+\.\d+(?!\.\d)|\d+\.\d+\.\d+\.\d+|\d+_\d+_\d+)/g;

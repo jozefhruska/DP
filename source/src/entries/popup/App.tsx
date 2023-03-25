@@ -8,6 +8,7 @@ import * as Tabs from '../../components/common/Tabs';
 import { PopupTab, StoreValue } from '~/types';
 import { isStoreInitialized, useStore } from '~/utilities/store';
 import { DeviceMemoryForm } from '~/components/form/DeviceMemoryForm';
+import { UserAgentForm } from '~/components/form/UserAgentForm';
 import '../../styles.css';
 
 export const App: React.FC = () => {
@@ -35,6 +36,7 @@ export const App: React.FC = () => {
   return (
     <>
       <PopupHeader />
+
       <PopupContent>
         <Tabs.Root defaultValue={PopupTab.OTHER}>
           <Tabs.List>
@@ -53,7 +55,7 @@ export const App: React.FC = () => {
           </Tabs.List>
 
           <Tabs.Content value={PopupTab.USER_AGENT}>
-            User-Agent
+            <UserAgentForm />
           </Tabs.Content>
 
           <Tabs.Content value={PopupTab.ACCEPT_LANGUAGE}>

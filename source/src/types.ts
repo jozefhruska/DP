@@ -1,6 +1,7 @@
 export enum Header {
   ACCEPT_LANGUAGE = 'accept-language',
   DEVICE_MEMORY = 'device-memory',
+  USER_AGENT = 'user-agent',
 }
 
 export type StoreValue = {
@@ -16,6 +17,10 @@ export type StoreValue = {
     setEnabled: (enabled: boolean) => void;
     minMax: [number, number];
     setMinMax: (minMax: [number, number]) => void;
+  };
+  userAgent: {
+    enabled: boolean;
+    setEnabled: (enabled: boolean) => void;
   };
 };
 
