@@ -107,9 +107,9 @@ This section describes the WebExtensions API standard mentioned before and the r
 
 WebExtensions API, first introduced by Google in chromium-based browsers, is a set of special-purpose APIs the browser provides to installed extensions. Firefox\footnote{\url{https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions}}, Safari\footnote{\url{https://developer.apple.com/documentation/safariservices/safari_web_extensions}}, and Opera\footnote{\url{https://dev.opera.com/extensions/apis}} have become widely compatible with the WebExtensions API, making it the standard across all major web browsers. This broad adoption allowed developers to create cross-browser extensions with minor changes to the original codebase.
 
-WebExtensions API provides a wide range of functionality for building browser extensions, including access to browser tabs and windows, manipulating web pages and user settings, and interacting with other extensions and websites \cite{ChromeWebExtensionsAPIReference}.
+WebExtensions API provides a wide range of functionality for building browser extensions, including access to browser tabs and windows, manipulating web pages and user settings, and interacting with other extensions and websites \cite{ChromeWebExtensions}.
 
-WebExtension API differs from the standard JavaScript Web APIs described in the previous section. Applications use the standard Web APIs to interact with the content and functionality of a web page. In contrast, extensions use the WebExtensions APIs to interact with the browser itself. Some of the interfaces provided by the WebExtensions API are \cite{ChromeWebExtensionsAPIReference}:
+WebExtension API differs from the standard JavaScript Web APIs described in the previous section. Applications use the standard Web APIs to interact with the content and functionality of a web page. In contrast, extensions use the WebExtensions APIs to interact with the browser itself. Some of the interfaces provided by the WebExtensions API are \cite{ChromeWebExtensions}:
 
 \begin{itemize}
 	\item \textbf{Cookies API}: Allows to query and modify cookies. Extensions can also configure a callback function browser calls whenever a particular cookie changes.
@@ -120,10 +120,43 @@ WebExtension API differs from the standard JavaScript Web APIs described in the 
 
 The WebExtensions API is easy to use and provides consistent interfaces and functionality across different browsers. Lately, a push for increased security and privacy rules for extensions resulted in Manifest V3, described more in-depth in the following section.
 
-\subsection{Manifest V3}
-\label{Section:ManifestV3}
+\subsection{Browser extension architecture}
 
-Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeManifestV3}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeManifestV3}:
+Extensions, in their essence, are lightweight software modules that are running in the browser. Every extension acts independently from the browser and all other installed extensions. Like regular web pages, extensions are developed using HTML, CSS, and JavaScript.
+
+A typical architecture of a browser extension consists of several components that work together to achieve the desired functionality. These components include \cite{ChromeWebExtensions}:
+
+\begin{itemize}
+	\item \textbf{Manifest file}: A required JSON file in the root of the extension source directory that contains metadata about the extension, such as its name, version, description, and permissions. It also defines the various components of the extension and their roles.
+	\item \textbf{Service workers (background scripts)}: JavaScript files that run in the background and handle the core logic of the extension. They manage persistent states, listen for browser events, and interact with Web APIs.
+	\item \textbf{Content scripts}: JavaScript files that run in the context of a web page and have access to the DOM of that page. They enable the extension to read or modify the content of web pages and interact with user actions. Content scripts run in an isolated environment, limiting their access to the same-origin policy of the web page.
+	\item \textbf{Popups}: An optional user interface that provides a quick and easy way for users to interact with the extension. It usually appears when a user clicks on the extension's icon in the browser toolbar. Popups are transient and close when they lose focus.
+	\item \textbf{Options}: An optional user interface that allows users to configure the settings and preferences of the extension. The options page is accessible through the browser's extension management interface.
+\end{itemize}
+
+In summary, the typical architecture of a browser extension involves a Manifest file that points to other files this extension defines.
+
+\subsubsection{Manifest file}
+
+The Manifest file is the only file that must be present in every extension. The file must have the name `manifest.json` and be in the extension's root directory.
+
+Out of all the configuration fields the Manifest file supports, only three of these fields are mandatory, according to the Manifest file format documentation\footnote{\url{https://developer.chrome.com/docs/extensions/mv3/manifest/}}:
+
+\begin{itemize}
+	\item \textbf{manifest\_version}: An integer value specifying the version of the Manifest file. Since June 2022, the only allowed value by the Chrome Web Store\footnote{{\url{https://chrome.google.com/webstore/category/extensions}}} has been \uv{3} for all newly added extensions. The January 2024 deadline, when the Chrome Web Store stops accepting updates to existing Manifest V2 extensions, has been postponed, meaning there is no official date for the end of life of Manifest V2.
+	\item \textbf{name}: A plain text string identifying the extension in the Chrome Web Store and the Browser UI.
+	\item \textbf{version}: A version string consisting of one to three integers separated by dots. Version numbers must be strictly incremental as the browser uses them to decide whether an extension should be updated.
+\end{itemize}
+
+Apart from the three mandatory fields, the Manifest file supports a wide range of other configuration options, including:
+
+\begin{itemize}
+	\item \textbf{action}: An object defining the extension's button in the browser's toolbar. Clicking on this button opens the popup if the extension defines it. Otherwise, clicking this button will dispatch an event to the extension's background scripts.
+	\item \textbf{background}: Used to include one or more background scripts. For newer Manifest V3 extensions, this configuration field is used to include service worker scripts. Extension service workers do not run on the main thread, meaning they do not interfere with extension content.
+	\item \textbf{permissions}: An array of string keys specifying the granular permissions the extension requires. The browser informs the user what permissions the extension requires during installation.
+\end{itemize}
+
+In January 2022, the Chrome Web Store began the long-awaited transition to the new version of the Manifest file, Manifest V3. The Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeWebExtensions}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeWebExtensions}:
 
 \begin{itemize}
 	\item \textbf{Service workers}: Manifest V3 replaces background pages\footnote{Manifest V2 extensions used background pages to run a single persistent script to manage tasks, or a state of the extension \cite{ChromeManifestV2}.} with extension service workers, similar to traditional web service workers.
@@ -135,7 +168,7 @@ Although welcomed from a privacy-concerned standpoint, these changes made it mor
 
 \bigbreak
 
-\begin{lstlisting}[language={JSON},caption={An example of a declarative rule which modifies selected response headers \cite{ChromeManifestV3}.}, label={Listing:ManifestV3RuleExample}]
+\begin{lstlisting}[language={JSON},caption={An example of a declarative rule which modifies selected response headers \cite{ChromeWebExtensions}.}, label={Listing:ManifestV3RuleExample}]
 [
   {
     "id": 10,
@@ -170,6 +203,34 @@ Although welcomed from a privacy-concerned standpoint, these changes made it mor
 \medbreak
 
 Listing \ref{Listing:ManifestV3RuleExample} shows an example of the new declarative rule syntax. The rule defined above modifies request headers, specifically removing a header named \texttt{h1}, changing the value of \texttt{h2}, and adding a new header, \texttt{h3}.
+
+At the time of the writing, Manifest V2 extensions are transitioning to Manifest V3. Although no official date is set\footnote{\url{https://developer.chrome.com/docs/extensions/migrating/mv2-sunset/}}, the Chrome Web Store will eventually stop accepting updates to old Manifest V2 extensions. For this reason and to avoid confusion, this thesis will only consider Manifest V3 in the following chapters.
+
+\subsubsection{Service workers}
+
+Extension service workers represent a significant update in how browser extensions handle background tasks, focusing on enhancing security, privacy, and performance. Replacing the previously used background scripts, service workers offer more efficient resource management, better offline capabilities, and improved security features for browser extensions. This shift aligns with the ongoing evolution of web technologies\footnote{{\url{https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/}}} and the need for a more secure and reliable foundation for extension development.
+
+Service workers are event-driven, meaning they only run when needed, unlike persistent background scripts \cite{ChromeWebExtensions}. This reduction in resource consumption improves the overall performance of the browser. Additionally, service workers can cache resources and intercept network requests, enabling them to work efficiently even when the user is offline. This feature can enhance the responsiveness and reliability of extensions, even under poor network conditions.
+
+Enhanced security is another significant benefit of service workers in Manifest V3 extensions. Running in a separate thread from the main browser process and having a limited scope, service workers help reduce the attack surface of extensions. With a more restrictive API surface compared to background pages, the risks associated with potential security vulnerabilities are minimized. Introducing service workers in Manifest V3 offers a more secure, efficient, and reliable foundation for developing browser extensions.
+
+Service workers cannot access the DOM API as they are running in a separate thread. Extensions that want to modify the DOM must do so in an alternative API, such as the Offscreen API\footnote{\url{https://developer.chrome.com/docs/extensions/reference/offscreen/}}.
+
+\subsubsection{Content scripts}
+
+Extension content scripts are an essential component of browser extensions that enable interaction with web pages displayed in the browser. They provide a means for the extension to read or modify the content of a web page, access the DOM, and manipulate CSS styles. Content scripts bridge the gap between the isolated extension environment and the web pages it aims to enhance, enabling a wide range of functionality, from modifying the appearance of a website to implementing custom features.
+
+Content scripts run in the context of the web pages they are injected into but maintain a separate JavaScript environment \cite{ChromeWebExtensions}. This separation ensures that content scripts do not directly interact with the JavaScript running on the web page, preventing potential conflicts or security issues. Despite the separation, content scripts can still communicate with the web page's JavaScript using custom events or other messaging mechanisms\footnote{\url{https://developer.chrome.com/docs/extensions/mv3/content_scripts/\#host-page-communication}}.
+
+To use content scripts in a browser extension, developers must declare them in the extension's manifest file, specifying which scripts to inject and the conditions under which they should be injected, such as the URL patterns of the target web pages. Once configured, the browser extension can seamlessly augment or modify web pages, providing users with customized experiences and extended functionality tailored to their needs.
+
+\subsubsection{Popups}
+
+Extension popups are standalone HTML documents associated with the extension's button in the browser toolbar \cite{ChromeWebExtensions}. When a user clicks the button, the browser will show a popup. Popups are closed when a user either outside the popup or again on the extension's toolbar button.
+
+Like standard web pages, the popup's HTML document can import external CSS and JavaScript files. Unlike standard web pages, however, the popup can access the WebExtensions API exposed by the browser. Of course, the extension can only access the APIs requested in the Manifest file.
+
+Browsers wrap popups in a wrapper element to match the visual styling across all extensions. This wrapper element resizes automatically to fit the content of the popup, and extensions cannot modify their shape or other styles.
 
 % TODO: Extend Manifest V3 section (https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/)
 
