@@ -403,16 +403,92 @@ Farbling first deterministically generates a per-session, per-eTLD+1\footnote{eT
 \chapter{Design proposal}
 \label{Chapter:Design}
 
+% TODO: Update the introduction
+
 This work aims to design and implement a new protective shield for the JShelter extension that can misrepresent information commonly used for passive fingerprinting. The first section of this chapter emphasizes the importance of avoiding alterations that could disrupt the user experience. Each of the following sections describes a selected HTTP header, proposes a modification to its value, the advantages and disadvantages of this modification, and necessary changes to the browser APIs to maintain consistency.
 
-\section{Minimizing the impact on users}
+\section{Minimizing undesired side effects}
 
-It is crucial to remember that every modification the new protective shield will make to the outgoing requests can impact the response received from the server. For example, changing the preferred language reported by the browser to English would help make the fingerprint look more homogenous, as English is the prevalent language on the Internet. However, if the server reacts and returns a website in English, the user may need help understanding its content.
+Whenever a user loads a webpage, the browser is responsible for constructing the outgoing HTTP request. Headers included in these requests provide valuable additional information servers use to decide on the response. By default, browsers set the headers according to their best knowledge to maximize speed and compatibility.
 
-\section{HTTP header: User-Agent}
-\label{SectionHTTPHeaderUserAgent}
+Protections that modify header values have to do so carefully. No matter how small the change is, it can affect the server's response. For example, English is the prevalent language used on the web. To make the fingerprint look more homogenous, the protection could modify the \texttt{Accept-Language} header to report English as the preferred language. However, the user may need help understanding the content if the server reacts and actually returns a website in English.
 
-The User-Agent request header is a characteristic string that lets servers and network peers identify the application, operating system, vendor, and/or version of the requesting user agent \cite{MDNHeaderUserAgent}. The value of this header varies depending on the operating system and browser type and version, making it an invaluable component of a fingerprint.
+On the other side, the change has to be significant enough to affect the device's fingerprint. In the end, it is all about balance. Each protection is designed to avoid such unintended errors while keeping the capability to confuse fingerprinters.
+
+\section{Fingerprinting protections}
+
+The browser extension comprises several independent modules, each implementing passive fingerprinting protection for a single HTTP header or a group of HTTP headers. This separation of concerns allows users to enable only some protections while keeping others disabled.
+
+\subsection{HTTP header: Accept}
+\label{SectionHTTPHeaderAccept}
+
+The \texttt{Accept} request HTTP header indicates which content types the client can understand, expressed as MIME types \cite{MDN}. It is possible to add or remove MIME types to affect the fingerprint. However, the server may react to this modification and respond with an unexpected and incompatible response body.
+
+\bigbreak
+
+\begin{lstlisting}[caption={An example of Accept header contents \cite{MDN}.}]
+Accept: text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8
+\end{lstlisting}
+
+\medbreak
+
+The protection algorithm removes certain MIME types, which do not result in incompatibility, but only a slight performance hit. For example, eliminating modern image formats such as \texttt{image/webp} and forcing the browser to use older image formats is possible. This transformation would affect the header value (and, transitively, the device's fingerprint) without potentially breaking the website.
+
+\subsubsection{Consistency}
+
+Browsers no longer offer a standard API for quickly checking supported MIME types. The \texttt{Navigator.mimeTypes} API that partially allows this check has been deprecated and removed from the relevant web standards \cite{MDNNavigatorInterface}. A fingerprinting application could maintain a list of browser versions and supported MIME types which it would use to compare with the MIME types in the \texttt{Accept} HTTP 
+
+Maintaining consistency but also checking the consistency is not trivial when it comes to the supported MIME types. Therefore, no browser API modifications are necessary.
+
+\subsection{Accept-Language}
+
+The \texttt{Accept-Language} request HTTP header indicates the natural language and locale that the client prefers \cite{MDN}. It is a list of language tags separated by commas (\uv{,}). A language tag consists of a 2-3 letter base tag that identifies the language, optionally followed by a dash (\uv{-}) and a subtag, usually specifying the country or the region where the language is used. Language tags can optionally have a quality value (weight) represented by a decimal number separated from the tag by a semicolon (\uv{;}).
+
+\bigbreak
+
+\begin{lstlisting}[caption={An example of Accept-Language header contents \cite{MDN}.}, label={AcceptLanguageExample}]
+Accept-Language: fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
+\end{lstlisting}
+
+\medbreak
+
+Modifying the \texttt{Accept-Language} header is not straightforward because the web server might respond with content in a different language than the user requested. The protection only makes minor changes and works in two modes:
+
+\begin{itemize}
+	\item \textbf{Generalization}: Language regions (subtags) are removed, and only the base language tags are kept unchanged. Listing \ref{AcceptLanguageGeneralization} shows the result of generalization for the \texttt{Accept-Language} header in listing \ref{AcceptLanguageExample}. The algorithm also deduplicates language tags and updates quality values after it removes the language regions.
+	\item \textbf{Randomization}: Language regions (subtags) are changed for multiregional languages like English or Spanish. Listing \ref{AcceptLanguageRandomization} shows the randomization result for the \texttt{Accept-Language} header in listing \ref{AcceptLanguageExample}.
+\end{itemize}
+
+The reasoning behind these transformations is that the difference between language forms is usually manageable for the users. For example, changing \uv{en-US} (United States English) to \uv{en-GB} (Great Britain English) might get noticed by users, but they would still understand the content.
+
+\bigbreak
+
+\begin{lstlisting}[caption={The result of the \uv{generalization} mode transformation of listing \ref{AcceptLanguageExample}.}, label={AcceptLanguageGeneralization}]
+Accept-Language: fr, en;q=0.9, de;q=0.8, *;q=0.5
+\end{lstlisting}
+
+\begin{lstlisting}[caption={The result of the \uv{randomization} mode transformation of listing \ref{AcceptLanguageExample}.}, label={AcceptLanguageRandomization}]
+Accept-Language: fr-BE, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
+\end{lstlisting}
+
+
+\subsubsection{Consistency}
+
+The client-preferred languages are also available through the \texttt{Navigator} interface under the \texttt{Navigator.languages} property. The languages are ordered the same way as in the \texttt{Accept-Language} header but without the quality value (weight). The first language in \texttt{Navigator.languages} is also extracted to the \texttt{Navigator.language} property. Any change to the \texttt{Accept-Language} HTTP header must be reflected in these two properties of the \texttt{Navigator} interface.
+
+\subsection{Device-Memory}
+
+The \texttt{Device-Memory} request header indicates the approximate amount of available RAM on the client device. The possible values this header can carry are \verb|0.25|, \verb|0|, \verb|5|, \verb|1|, \verb|2|, \verb|4|, and \verb|8| \cite{MDN}. Even though this header is still experimental, it is already implemented by the Chrome browser.
+
+The protection algorithm randomly picks one of the possible values and uses it as the value of the \texttt{Device-Memory} header.
+
+\subsubsection{Consistency}
+
+The value of the \texttt{Device-Memory} header is also accessible through the \texttt{Navigator.deviceMemory} property. Any transformation to the \texttt{Device-Memory} header must be copied to this property.
+
+\subsection{User-Agent}
+
+The \texttt{User-Agent} request HTTP header is a string that lets servers and network peers identify the application, operating system, vendor, and version of the requesting user agent \cite{MDN}. The value of this header varies depending on the operating system and browser type and version, making it a valuable fingerprint component.
 
 \bigbreak
 
@@ -426,67 +502,30 @@ Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (K
 
 \medbreak
 
-Figures \ref{Listing:UserAgentChrome} and \ref{Listing:UserAgentSafari} show examples of User-Agent strings of Chrome and Safari, which according to Statcounter GlobalStats \cite{StatcounterGlobalStats}, are the top two browsers with the highest market share of 64.62\% and 18.29\%, respectively. Statcounter GlobalStats is collecting statistics from more than 1.5 million sites with yearly views ranging from 5 to 6 billion. The examples above show that some browsers and operating systems have version numbers following the semantic versioning specification \cite{SemVerWebsite} or its variation. Semantic versioning in the most recent version 2 is composed of three segments separated by a dot (\uv{.}), where:
+Figures \ref{Listing:UserAgentChrome} and \ref{Listing:UserAgentSafari} show examples of \texttt{User-Agent} strings of Chrome and Safari, which according to Statcounter GlobalStats\footnote{Statcounter GlobalStats collects statistics from more than 1.5 million sites with yearly views ranging from 5 to 6 billion. These statistics are available at \url{https://gs.statcounter.com/}.}, are the top two browsers with the highest market share of 64.62\% and 18.29\%, respectively. These examples indicate that some browsers and operating systems have version numbers following the semantic versioning specification\cite{SemVerWebsite} or its variation. Semantic versioning in the most recent version 2 is composed of three segments separated by a dot (\uv{"."}), where:
 
 \begin{itemize}
 	\item The first segment (\textbf{MAJOR}) is incremented when an incompatibility, such as a breaking API change, is introduced.
-	\item The second segment (\textbf{MINOR}) is incremented when new functionality is added while still maintaining backward compatibility.
+	\item The second segment (\textbf{MINOR}) is incremented when new functionality is added while maintaining backward compatibility.
 	\item The last segment (\textbf{PATCH}) is incremented for all other changes, for example, a bug fix or code refactoring.
 \end{itemize}
 
-From this, it is possible to make an observation. Given two version numbers that differ only in the last segment (\textbf{PATCH}), we know these software builds should have the same functionalities, meaning they should be indistinguishable for the user.
+Based on the observation that some software versions in the \texttt{User-Agent} string follow the semantic versioning specification, we can assume that:
 
-With this hypothesis, a change (either incrementing or decrementing) of the \textbf{PATCH} segment value would likely affect the fingerprint. However, at the same time, it is unlikely that the user would notice any difference.
+\begin{enumerate}
+	\item Given two version numbers differ only in the last segment (\textbf{PATCH}), we know these software builds should have the same functionalities, meaning they should be indistinguishable for the user.
+	\item A change (either an increment or a decrement) of the (\textbf{PATCH}) segment value would likely affect the device's fingerprint. However, at the same time, it is unlikely that the change would cause any undesired side effects.
+\end{enumerate}
 
-The algorithm cannot change version numbers randomly, as this could create versions that were or never would be released. Instead, it would keep a list of previously released versions gathered from the changelog\footnote{Software products typically maintain a list of published versions. For example, the changelog of Chrome is available at \url{https://chromereleases.googleblog.com/search/label/Stable\%20updates}.} of the specific software product. The algorithm would then randomly select a suitable version from the list according to the requirements described above.
+The protection cannot apply changes at random, as this could introduce invalid version numbers that have yet to be released. Invalid version numbers could be used by the fingerprinting application to discover an attempt at fingerprint manipulation. Instead, the extension keeps a list of previously released versions gathered from the changelog\footnote{Software products typically maintain a list of published versions. For example, the changelog of Chrome is available at \url{https://chromereleases.googleblog.com/search/label/Stable\%20updates.]}} of the specific software product. The algorithm then randomly selects a suitable version that only differs in the \textbf{PATCH} segment and should have the same functionality as the original version.
 
-\subsection{Consistency}
+\subsubsection{Consistency}
 
-The User-Agent string is also available through the \texttt{Navigator} interface, with the value being identical to the value transferred in the \texttt{User-Agent} HTTP header. It is necessary to apply the same transformation to the \texttt{Navigator.userAgent} to avoid inconsistencies.
+The \texttt{User-Agent} string can also be accessed through the JavaScript \texttt{Navigator} interface. This value is identical to the one transmitted in the \texttt{User-Agent} HTTP header when a client makes a request to a web server. To maintain consistency between the two sources of the \texttt{User-Agent} string, applying the same transformation or parsing logic to the value obtained from \texttt{Navigator.userAgent} is crucial. This consistency ensures that the information is treated uniformly and helps to prevent a potential discovery by comparing the strings.
 
-\section{HTTP header: Accept}
-\label{SectionHTTPHeaderAccept}
+\subsection{Extra HTTP header}
 
-The Accept request HTTP header indicates which content types the client can understand, expressed as MIME types \cite{MDNHeaderAccept}. It is possible to add or remove MIME types to affect the fingerprint. However, the server may react to this modification and respond with an unexpected and incompatible response body.
-
-\bigbreak
-
-\begin{lstlisting}[caption={An example of Accept header contents \cite{MDNHeaderAccept}.}]
-Accept: text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8
-\end{lstlisting}
-
-\medbreak
-
-A viable solution is to remove certain MIME types, which would not result in incompatibility, but only a slight performance hit. For example, it is possible to remove modern image formats such as \texttt{image/webp} and force the browser to use older image formats. This modification would affect the header value (and, transitively, the fingerprint value) without potentially breaking the website.
-
-\subsection{Consistency}
-
-Browsers no longer offer a standard API for quickly checking supported MIME types. The \texttt{Navigator.mimeTypes} API that partially allows this check has been deprecated and removed from the relevant web standards \cite{MDNNavigatorInterface}. A fingerprinting application could maintain a list of browser versions and supported MIME types which it would use to compare with the MIME types in the \texttt{Accept} HTTP 
-
-Maintaining consistency but also checking the consistency is not trivial when it comes to the supported MIME types. Therefore, no browser API modifications are necessary.
-
-\section{HTTP header: Accept-Language}
-\label{SectionHTTPHeaderAcceptLanguage}
-
-The Accept-Language request HTTP header \cite{MDNHeaderAcceptLanguage} indicates the natural language and locale that the client prefers. It is a list of preferred language tags separated by commas (\uv{,}). A language tag consists of a 2-3 letter base language tag that indicates a language, optionally followed by additional subtags separated by a dash (\uv{-}). The country or region variant (\texttt{en-US} or \texttt{fr-CA}) is the most common extra information stored in subtags. Language tags can optionally have a quality value (weight) represented by a decimal number separated from the tag by a semicolon (\uv{;}).
-
-\bigbreak
-
-\begin{lstlisting}[caption={An example of Accept-Language header contents \cite{MDNHeaderAcceptLanguage}.}]
-Accept-Language: fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
-\end{lstlisting}
-
-\medbreak
-
-Modifying this header is not straightforward because the server might respond with content in a different language if done wrong. One option is to change or remove language regions, as this information is often not crucial as the difference between language forms is usually manageable. For example, changing \texttt{en-US} (United States English) to \texttt{en-GB} (Great Britain English) might get noticed by users, but presumably, they would still understand the content.
-
-\subsection{Consistency}
-
-The client-preferred languages are also available through the \texttt{Navigator} interface under the \texttt{Navigator.languages} property. The languages are ordered the same way as in the \texttt{Accept-Language} header but without the quality value (weight). The first language is also extracted to the \texttt{Navigator.language}. Any change made to the \texttt{Accept-Language} HTTP header has to be reflected in these two properties of the \texttt{Navigator} interface.
-
-\section{List of HTTP headers}
-
-Another valuable characteristic used to create a fingerprint is a list of all headers present in a request. Most requests share standard headers such as those mentioned in previous sections \ref{SectionHTTPHeaderUserAgent}, \ref{SectionHTTPHeaderAccept}, and \ref{SectionHTTPHeaderAcceptLanguage}. However, it is common for requests to include less standard, even custom\footnote{Until 2012, developers tended to prefix custom headers with \uv{X-} to differentiate them from standardized headers, but this naming convention has been officially discouraged in RFC6648 \cite{RFC6648}.} headers.
+One of the valuable characteristics used to construct a fingerprint is the list of all headers present in a request. Most requests share standard headers like those mentioned in previous sections X, Y, and Z. However, it is common for HTTP requests to include less standard, even custom\footnote{Until 2012, developers tended to prefix custom headers with \uv{X-} to differentiate them from standardized headers, but this naming convention has been officially discouraged in RFC6648 \cite{RFC6648}.} headers.
 
 \bigbreak
 
@@ -496,7 +535,17 @@ Accept, Accept-Encoding, Accept-Language, Connection, Cookie, Host, User-Agent
 
 \medbreak
 
-It is possible to add new headers to the HTTP request to alter the resulting fingerprint. If the newly added headers are custom, this change would likely not affect the response.
+The protection adds a new header to the HTTP request to alter the list and order of headers and transitively the device's fingerprint. Additionally, if the newly added header is custom and not standardized by the protocol, this change would likely not affect the response.
+
+\section{Graphical user interface}
+
+The popup is the only graphical user interface the extension exposes. This view contains preferences users can use to change the behavior of the fingerprinting protections.
+
+The preferences are split into three tabs (views). This division allows for more prominent controls and descriptive hints that help users understand what each option does. The first two tabs contain preferences for the most influential HTTP headers, \texttt{User-Agent} and \texttt{Accept-Language}. The last tab groups other, less significant protections, such as \texttt{Device-Memory}.
+
+Each protection can be enabled or disabled individually from others. When enabled, a preview field will appear under the protection's preferences. The preview field shows the header value as it will be sent in future outgoing requests and is updated automatically according to the selected preferences.
+
+Modern operating systems have to option to switch the user interface to a dark mode which complements the standard light color scheme. The extension's popup view and every component it renders are made in light and dark variants. The extension automatically switches between these variants based on the operating system's active color scheme.
 
 % For compilation piecewise (see projekt.tex), it is necessary to uncomment it
 % \end{document}
