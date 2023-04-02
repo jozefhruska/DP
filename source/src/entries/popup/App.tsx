@@ -10,6 +10,7 @@ import { isStoreInitialized, useStore } from '~/utilities/store';
 import { DeviceMemoryForm } from '~/components/form/DeviceMemoryForm';
 import { UserAgentForm } from '~/components/form/UserAgentForm';
 import '../../styles.css';
+import { ExtraHeaderForm } from '~/components/form/ExtraHeaderForm';
 
 export const App: React.FC = () => {
   const initializeStore = useStore((store) => store.initialize);
@@ -62,8 +63,17 @@ export const App: React.FC = () => {
             <AcceptLanguageForm />
           </Tabs.Content>
 
-          <Tabs.Content value={PopupTab.OTHER}>
-            <DeviceMemoryForm />
+          <Tabs.Content
+            value={PopupTab.OTHER}
+            className="flex flex-col divide-y divide-slate-200"
+          >
+            <div className="pb-4">
+              <DeviceMemoryForm />
+            </div>
+
+            <div className="pt-4">
+              <ExtraHeaderForm />
+            </div>
           </Tabs.Content>
         </Tabs.Root>
       </PopupContent>

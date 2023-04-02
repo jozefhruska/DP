@@ -8,6 +8,7 @@ export const HEADER_RULE_IDS: Record<Header, number> = {
   [Header.USER_AGENT]: 1,
   [Header.ACCEPT_LANGUAGE]: 2,
   [Header.DEVICE_MEMORY]: 3,
+  [Header.EXTRA]: 4,
 };
 
 export const ACCEPT_LANGUAGE_PROTECTION_OPTIONS: SelectOption<AcceptLanguageProtectionMode>[] =
