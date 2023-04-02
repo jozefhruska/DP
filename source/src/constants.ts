@@ -78,3 +78,5 @@ export const LANGUAGE_REGIONS = {
 
 export const VERSION_REGEX =
   /(\d+\.\d+\.\d+(?!\.\d)|\d+\.\d+\.\d+\.\d+|\d+_\d+_\d+)/g;
+
+export const ALLOWED_DEVICE_MEMORY_VALUES = [0.25, 0.5, 1, 2, 4, 8];

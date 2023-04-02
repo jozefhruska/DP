@@ -1,8 +1,10 @@
+import { ALLOWED_DEVICE_MEMORY_VALUES } from '~/constants';
+
 export const getDeviceMemoryValue = ([min, max]: [
   number,
   number
 ]): string => {
-  const power = Math.max(Math.floor(Math.random() * max), min);
+  const index = Math.max(Math.floor(Math.random() * max), min);
 
-  return (2 ** power).toString();
+  return ALLOWED_DEVICE_MEMORY_VALUES[index].toString();
 };

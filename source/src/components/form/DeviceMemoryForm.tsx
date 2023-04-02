@@ -11,6 +11,7 @@ import { Header } from '~/types';
 import { getDeviceMemoryValue } from '~/utilities/deviceMemory';
 import { Slider } from '~/components/common/Slider';
 import { Preview } from '~/components/common/Preview';
+import { ALLOWED_DEVICE_MEMORY_VALUES } from '~/constants';
 
 export const DeviceMemoryForm: React.FC = () => {
   const { value, setValue, enabled, setEnabled, minMax, setMinMax } =
@@ -44,8 +45,8 @@ export const DeviceMemoryForm: React.FC = () => {
     }
   };
 
-  const min = 2 ** minMax[0];
-  const max = 2 ** minMax[1];
+  const min = ALLOWED_DEVICE_MEMORY_VALUES[minMax[0]];
+  const max = ALLOWED_DEVICE_MEMORY_VALUES[minMax[1]];
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -69,7 +70,7 @@ export const DeviceMemoryForm: React.FC = () => {
 
         <Slider
           min={0}
-          max={8}
+          max={ALLOWED_DEVICE_MEMORY_VALUES.length - 1}
           step={1}
           value={minMax}
           onValueChange={handleSliderValueChange}
