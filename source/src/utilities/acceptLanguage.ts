@@ -40,8 +40,14 @@ export const getAcceptLanguageValue = (
     }
 
     case AcceptLanguageProtectionMode.REMOVE_REGIONS: {
-      languages = navigator.languages.filter((language) => {
-        return !language.includes('-');
+      languages = navigator.languages.map((language) => {
+        if (language.includes('-')) {
+          const [code] = language.split('-');
+
+          return code;
+        } else {
+          return language;
+        }
       });
 
       break;
@@ -53,6 +59,20 @@ export const getAcceptLanguageValue = (
     }
   }
 
-  // TODO: Figure out quality values
-  return languages.join(',') + ';q=0.9';
+  // De-duplicate languages
+  languages = languages.filter(
+    (value, index, array) => array.indexOf(value) === index
+  );
+
+  // Join the languages and generate quality values
+  return languages
+    .map((lang, index) => {
+      if (index === 0) {
+        return lang;
+      } else {
+        const qValue = 1.0 - index * 0.1;
+        return `${lang};q=${qValue.toFixed(1)}`;
+      }
+    })
+    .join(',');
 };

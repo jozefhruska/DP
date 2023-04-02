@@ -9,7 +9,8 @@
     "watch": "vite build --watch --mode development --minify false",
     "dev": "vite",
     "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
-    "serve:chrome": "web-ext run -t chromium --start-url \"https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending\" --source-dir ./dist/"
+    "serve:chrome": "web-ext run -t chromium --start-url \"https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending\" --source-dir ./dist/",
+    "test": "vitest"
   },
   "dependencies": {
     "@radix-ui/react-label": "~2.0.1",
@@ -33,6 +34,7 @@
     "@types/webextension-polyfill": "~0.10.0",
     "@vitejs/plugin-react": "~3.1.0",
     "autoprefixer": "~10.4.14",
+    "happy-dom": "~9.1.0",
     "postcss": "~8.4.21",
     "postcss-import": "~15.1.0",
     "prettier": "~2.8.4",
@@ -41,6 +43,7 @@
     "tailwindcss-animate": "~1.0.5",
     "typescript": "~4.9.5",
     "vite": "~4.2.0",
+    "vitest": "~0.29.8",
     "web-ext": "~7.5.0"
   }
 }

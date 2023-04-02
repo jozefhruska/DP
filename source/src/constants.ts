@@ -48,7 +48,13 @@ export const LANGUAGE_REGIONS = {
     'UY',
   ],
   de: ['DE', 'AT', 'CH', 'LI'],
+  it: ['IT', 'CH'],
+  pt: ['PT', 'BR'],
+  sv: ['SE', 'FI'],
+  no: ['NO', 'NO-NY'],
   nl: ['NL', 'BE'],
+  sr: ['SR', 'BA'],
+  bs: ['BS', 'BA'],
   ar: [
     'SA',
     'IQ',
