@@ -65,7 +65,7 @@ export const App: React.FC = () => {
 
           <Tabs.Content
             value={PopupTab.OTHER}
-            className="flex flex-col divide-y divide-slate-200"
+            className="flex flex-col divide-y divide-slate-200 dark:divide-slate-700"
           >
             <div className="pb-4">
               <DeviceMemoryForm />

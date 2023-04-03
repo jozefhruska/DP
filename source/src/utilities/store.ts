@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { AcceptLanguageProtectionMode, StoreValue } from '~/types';
+import { ALLOWED_DEVICE_MEMORY_VALUES } from '~/constants';
 
 export const useStore = create<StoreValue>((set) => ({
   initialize: (store) =>
@@ -56,7 +57,7 @@ export const useStore = create<StoreValue>((set) => ({
       set((store) => ({
         deviceMemory: { ...store.deviceMemory, enabled },
       })),
-    minMax: [1, 5],
+    minMax: [0, ALLOWED_DEVICE_MEMORY_VALUES.length - 1],
     setMinMax: (minMax) =>
       set((store) => ({
         deviceMemory: { ...store.deviceMemory, minMax },
