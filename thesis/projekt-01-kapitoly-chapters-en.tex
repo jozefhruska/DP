@@ -441,6 +441,7 @@ Browsers no longer offer a standard API for quickly checking supported MIME type
 Maintaining consistency but also checking the consistency is not trivial when it comes to the supported MIME types. Therefore, no browser API modifications are necessary.
 
 \subsection{Accept-Language}
+\label{SubSection:AcceptLanguage}
 
 The \texttt{Accept-Language} request HTTP header indicates the natural language and locale that the client prefers \cite{MDN}. It is a list of language tags separated by commas (\uv{,}). A language tag consists of a 2-3 letter base tag that identifies the language, optionally followed by a dash (\uv{-}) and a subtag, usually specifying the country or the region where the language is used. Language tags can optionally have a quality value (weight) represented by a decimal number separated from the tag by a semicolon (\uv{;}).
 
@@ -477,8 +478,19 @@ Accept-Language: fr-BE, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
 The client-preferred languages are also available through the \texttt{Navigator} interface under the \texttt{Navigator.languages} property. The languages are ordered the same way as in the \texttt{Accept-Language} header but without the quality value (weight). The first language in \texttt{Navigator.languages} is also extracted to the \texttt{Navigator.language} property. Any change to the \texttt{Accept-Language} HTTP header must be reflected in these two properties of the \texttt{Navigator} interface.
 
 \subsection{Device-Memory}
+\label{SubSection:DeviceMemory}
 
-The \texttt{Device-Memory} request header indicates the approximate amount of available RAM on the client device. The possible values this header can carry are \verb|0.25|, \verb|0|, \verb|5|, \verb|1|, \verb|2|, \verb|4|, and \verb|8| \cite{MDN}. Even though this header is still experimental, it is already implemented by the Chrome browser.
+The \texttt{Device-Memory} request header indicates the approximate amount of available RAM on the client device. The possible values this header can carry are \verb|0.25|, \verb|0|, \verb|5|, \verb|1|, \verb|2|, \verb|4|, and \verb|8| \cite{MDN}. A preview of this header is displayed in Figure \ref{Fig:DeviceMemoryExample}. Even though this header is still experimental, it is already implemented by the Chrome browser.
+
+\bigbreak
+
+\begin{lstlisting}[caption={An example of Device-Memory header contents \cite{MDN}.}, label={Fig:DeviceMemoryExample}]
+Device-Memory: 1
+\end{lstlisting}
+
+\medbreak
+
+% TODO: Explain that the server has to request these headers.
 
 The protection algorithm randomly picks one of the possible values and uses it as the value of the \texttt{Device-Memory} header.
 
@@ -524,6 +536,7 @@ The protection cannot apply changes at random, as this could introduce invalid v
 The \texttt{User-Agent} string can also be accessed through the JavaScript \texttt{Navigator} interface. This value is identical to the one transmitted in the \texttt{User-Agent} HTTP header when a client makes a request to a web server. To maintain consistency between the two sources of the \texttt{User-Agent} string, applying the same transformation or parsing logic to the value obtained from \texttt{Navigator.userAgent} is crucial. This consistency ensures that the information is treated uniformly and helps to prevent a potential discovery by comparing the strings.
 
 \subsection{Extra HTTP header}
+\label{SubSection:ExtraHTTPHeader}
 
 One of the valuable characteristics used to construct a fingerprint is the list of all headers present in a request. Most requests share standard headers like those mentioned in previous sections X, Y, and Z. However, it is common for HTTP requests to include less standard, even custom\footnote{Until 2012, developers tended to prefix custom headers with \uv{X-} to differentiate them from standardized headers, but this naming convention has been officially discouraged in RFC6648 \cite{RFC6648}.} headers.
 
@@ -538,14 +551,149 @@ Accept, Accept-Encoding, Accept-Language, Connection, Cookie, Host, User-Agent
 The protection adds a new header to the HTTP request to alter the list and order of headers and transitively the device's fingerprint. Additionally, if the newly added header is custom and not standardized by the protocol, this change would likely not affect the response.
 
 \section{Graphical user interface}
+\label{Section:GUI}
 
 The popup is the only graphical user interface the extension exposes. This view contains preferences users can use to change the behavior of the fingerprinting protections.
+
+\medbreak
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.95\linewidth]{obrazky-figures/wireframe}
+  \caption{Light mode wireframe.}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.95\linewidth]{obrazky-figures/wireframe-dark}
+  \caption{Dark mode wireframe}
+\end{subfigure}
+\caption{A comparison of light and dark mode wireframes of the browser extension.}
+\label{Fig:Wireframes}
+\end{figure}
+
+\medbreak
 
 The preferences are split into three tabs (views). This division allows for more prominent controls and descriptive hints that help users understand what each option does. The first two tabs contain preferences for the most influential HTTP headers, \texttt{User-Agent} and \texttt{Accept-Language}. The last tab groups other, less significant protections, such as \texttt{Device-Memory}.
 
 Each protection can be enabled or disabled individually from others. When enabled, a preview field will appear under the protection's preferences. The preview field shows the header value as it will be sent in future outgoing requests and is updated automatically according to the selected preferences.
 
-Modern operating systems have to option to switch the user interface to a dark mode which complements the standard light color scheme. The extension's popup view and every component it renders are made in light and dark variants. The extension automatically switches between these variants based on the operating system's active color scheme.
+Modern operating systems have to option to switch the user interface to a dark mode which complements the standard light color scheme. The extension's popup view and every component it renders are made in light and dark variants. The extension automatically switches between these variants based on the operating system's active color scheme. Figure \ref{Fig:Wireframes} displays browser extension wireframes in both light and dark modes.
+
+\chapter{Implementation}
+
+% TODO: Update the introduction
+
+\section{Development environment and tools}
+
+This section discusses the programming languages, libraries, frameworks, and other tools used to develop the browser extension. The rationale behind choosing these technologies and how they contribute to the effectiveness of the extension is also explained.
+
+\subsection{TypeScript}
+
+TypeScript\footnote{\url{https://www.typescriptlang.org/}}, a statically typed superset of JavaScript, was chosen as the primary programming language. TypeScript provides type safety, which helps catch errors during development and makes the codebase easier to maintain and refactor. Moreover, TypeScript's advanced type features improve code readability and provide better support for modern IDEs, enhancing the development experience.
+
+\subsection{React}
+
+React\footnote{\url{https://react.dev/}}, a popular JavaScript library for building user interfaces, was employed for creating the extension's UI components. React's component-based architecture promotes modularity and reusability, simplifying the development process and ensuring maintainable code. Furthermore, React's virtual DOM enhances the performance of the browser extension by reducing the need for frequent DOM manipulations, which can be resource-intensive.
+
+\subsection{Radix UI}
+
+Radix UI\footnote{\url{https://www.radix-ui.com/}}, a set of low-level, unstyled, accessible, and composable UI components for React, was integrated into the project to streamline the browser extension's UI development. Using Radix UI components ensures that the extension's UI adheres to accessibility best practices and provides a solid foundation for customization. Thanks to its focus on accessibility, Radix UI offers a consistent user experience across different platforms and devices.
+
+\subsection{Tailwind CSS}
+
+Tailwind CSS\footnote{\url{https://tailwindcss.com/}}, a utility-first CSS framework, was utilized to style the browser extension's user interface. Tailwind CSS enables rapid UI development by providing predefined CSS utility classes, which can be easily combined to create custom styles. This approach reduces the need for writing custom CSS, leading to a more streamlined development process and a consistent design language across the extension. Although Tailwind CSS offers a wide variety of utility functions, only the ones used by the extension make it to the final bundle, keeping the size low.
+
+\subsection{Vite}
+
+Vite\footnote{\url{https://vitejs.dev/}}, a modern build tool and development server, was selected to handle the project's build process and improve the development experience. Vite offers fast development server startup and on-demand compilation, resulting in a more efficient and productive development environment. Additionally, Vite supports various output formats, making integrating the browser extension into different browsers easier. 
+	
+The \texttt{vite-plugin-web-extension}\footnote{\url{https://github.com/samrum/vite-plugin-web-extension}} installed on top of Vite allows for easier creation of cross-browser extensions with support for ES Modules and HMR\footnote{\url{https://webpack.js.org/concepts/hot-module-replacement/}}.
+
+\section{Browser extension components}
+
+This section provides a detailed breakdown of the main components that make up the browser extension, explaining their functionality and how they interact with one another.
+
+\subsection{Storage and data management}
+
+The extension uses the \texttt{storage} API to store and persist user settings and extension state. This API bears similarities to the conventional Web Storage API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API}}, with an important distinction being that its scope is not bounded to a domain but is instead associated with the extension itself. In particular, the extension stores its data in the \texttt{storage.sync}\footnote{\url{https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync}} storage area, automatically synchronizing with all browser instances where the user is signed in.
+
+Each passive fingerprinting protection stores its preferences in a separate part of the storage space. In addition to the protection-specific settings, each protection shares two common fields:
+
+\begin{itemize}
+	\item \textbf{enabled}: A boolean flag determining if the protection is enabled, meaning the browser extension should enable the rule responsible for changing the value of a specific HTTP header.
+	\item \textbf{value}: A string representing the current value of the HTTP header, incorporating all protection-specific preferences. It is displayed in the popup interface to provide the user with a preview of the particular HTTP header.
+\end{itemize}
+
+The storage is the centerpiece of the browser extension. Other components, including the service worker and user interface, rely on the storage to synchronize their actions, given that they execute in separate contexts.
+
+\section{Service worker}
+
+% TODO: Content
+
+\section{User interface}
+
+As section \ref{Section:GUI} describes, the popup is the only graphical user interface used by the browser extension. The popup consists of one HTML file, which does not directly render UI elements. Instead, it initializes a React application which takes over the rendering. By delegating the rendering process to the React application, the popup benefits from React's dynamic and efficient nature, allowing for enhanced performance, maintainability, and ease of development when managing the extension's user interface.
+
+Immediately after the initialization, the React application connects to the extension's storage, copies the content to its internal data storage, and subscribes for future changes. Utilizing an internal storage layer between the application and the browser storage was essential due to the asynchronous nature of the browser storage. If every read or write operation was performed directly on the browser storage, the UI would only be allowed to update once the operation was completed, resulting in a sluggish user experience. The application can mitigate this issue by utilizing an internal storage layer, ensuring a more responsive and seamless interface. Every change to the internal storage is automatically synchronized with the browser storage.
+
+The popup interface is separated into multiple sections exclusive to specific protections. Each protection section has a header, a switch to enable or disable the protection, and a preview field with the current header value. If protection has custom preferences, these are also colocated with these primary elements. Whenever a user changes protection-specific preferences, the extension automatically updates the \texttt{value} field in storage, which propagates to the UI. However, the rule modifying the header value is only updated when the protection is enabled or disabled.
+
+\section{Fingerprinting protections}
+
+This section describes the browser extension's specific strategies to combat passive fingerprinting through HTTP headers. Each method is discussed in detail, accompanied by relevant implementation examples. Furthermore, any deviations from the initial design plan are highlighted and explained throughout this section.
+
+\subsection{User-Agent and client hints}
+
+% TODO: Content
+
+\subsection{Accept-Language}
+
+As section \ref{SubSection:AcceptLanguage} defines, the browser extension modifies the \texttt{Accept-language} header in two modes -- randomization and generalization. Both modes start by looking at the contents of \texttt{Navigator.languages} and selecting only the language codes with the ISO-639 subtag. These language codes are identified by checking if they include a dash (\uv{-}) separating the language tag from the subtag.
+
+The randomization algorithm then checks whether one or more languages have subtag alternatives. If yes, it randomly selects a subtag from all the possible alternatives and replaces the original subtag. The algorithm can also select the original subtag to prevent the fingerprinting application from guessing it by narrowing the options.
+
+On the other hand, the generalization algorithm removes subtags from all language codes leaving only the base language tags (i.e., \uv{en} or \uv{zh}).
+
+Upon completion of the transformation algorithms, the main program verifies the validity of the resulting list of languages. Initially, it eliminates any duplicate values that may have been introduced by the generalization or the randomization algorithm, which could select two or more identical subtags. The generalization algorithm always introduces duplicates if the original list of languages includes the same language tag more than once (i.e., \uv{en, en-US, en-GB}).
+
+In the final step, the algorithm takes the resulting list of languages, calculates the quality values for each language, and joins them into a single string, using a comma (\uv{,}) as the delimiter. The quality value is determined by the position of the language in the list of languages. The first language does not have a quality value as it is the primary language and has an implicit value of \texttt{1.0}. Each following language has a quality value equal to \texttt{1.0 - index * 0.1}. After this step, the resulting string is ready to be used as the value of the \texttt{Accept-Language} header.
+
+\subsection{Device-Memory}
+
+In its nature, the protection modifying the \texttt{Device-Memory} is very straightforward, and the rationale behind it is explained in section \ref{SubSection:DeviceMemory} of the previous chapter.
+
+Initially, the algorithm retrieves the user-configured min and max values from the popup interface. These values represent the minimum and maximum indices within the array of permissible \texttt{Device-Memory} values, which include \texttt{0.25}, \texttt{0.5}, \texttt{1}, \texttt{2}, \texttt{4}, and \texttt{8}.
+
+Subsequently, the algorithm randomly chooses a value between the specified min and max indices. The randomized selection introduces an element of unpredictability, making it more challenging for fingerprinters to identify the actual user's device memory accurately. Once the value is selected, the algorithm returns it as the modified \texttt{Device-Memory} header, ensuring that the user's actual device memory remains concealed.
+
+\subsection{Extra HTTP header}
+
+According to the design discussed in section \ref{SubSection:ExtraHTTPHeader}, this protection adds a new, non-standard header \texttt{Extra} to each outgoing request. The value of this request is determined by the native function \texttt{Crypto.randomUUID()}. This function returns a UUID, a 128-bit long value represented as a 36-character string, which is guaranteed to be unique across space and time \cite{RFC4122}.
+
+\section{Challenges and limitations}
+
+This section discusses the challenges encountered throughout the implementation process and the corresponding strategies to address them, where applicable.
+
+\subsection{Manifest V3}
+
+During the time of writing, the new Manifest V3 has begun replacing the outgoing Manifest V2. Although the official end-of-life support deadline for Manifest V2 has been postponed, the browser extension discussed in this thesis has been developed utilizing the latest Manifest V3 framework. This design decision led to a series of challenges described in the following paragraphs.
+
+The biggest obstacle was the deprecation of the blocking web request listeners previously available through the \texttt{chrome.webRequest} API. Rather than intercepting requests and modifying them in real-time using the \texttt{chrome.webRequest} API, extensions must define request-altering rules through the \texttt{chome.declarativeNetRequest} API before the browser sends the request. Since the rules are defined beforehand, it is impossible to base the new HTTP headers on the original values sent by the browser. Instead, the extension has to use the available Web APIs to approximate the header values.
+
+% TODO: Modification of JS APIs
+
+Finally, Manifest V3 is a relatively recent development in browser extension frameworks. As a result, the available resources and documentation detailing its inner workings, best practices, and nuances could be more extensive.
+
+\subsection{Chrome's User-Agent reduction}
+
+Beginning with Chrome version 101, the browser replaced parts of the User-Agent string with static values to protect the user's privacy. Version 101\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/dcTStiBZVoQ/m/KyomPLOnAwAJ}} replaced the \textbf{MINOR}, \textbf{BUILD}, and \textbf{PATCH} version segments with zeros, only leaving the \textbf{MAJOR} segment displaying the actual version (i.e., \texttt{101.0.0.0}). Next, in version 107\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/kC-AeZ1fSdY/m/a_ICuXZRBQAJ}}, the browser replaced the desktop OS version and CPU information with a fixed value for the platform. The latest reduction happened in version 110\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/zVOEHwgyyu4/m/8KljdSN9AQAJ}}, where the browser started using a fixed OS version and device model value for Android devices.
+
+While these changes are certainly welcomed from a privacy standpoint, these reductions prevented the implementation of the \texttt{User-Agent} modifying protection, as any change made to this header would be instantly detectable by fingerprinting applications, potentially compromising the effectiveness of the privacy protection.
+
+% TODO: Client hints
+
 
 % For compilation piecewise (see projekt.tex), it is necessary to uncomment it
 % \end{document}
