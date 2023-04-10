@@ -247,7 +247,7 @@ Browser fingerprinting is a subcategory where the application tries to create a 
 
 The characteristics to construct a fingerprint may be collected either actively, typically by running a JavaScript code inside a browser, or passively by monitoring the network communication. Most characteristics commonly used for fingerprinting are obtainable only through the browser Web APIs \cite{VondracekDP}. For this reason, the majority of available anti-fingerprinting solutions focus primarily on mitigating the active fingerprinting.
 
-The first section, \ref{Section:FingerprintingHistory}, briefly tells the history of browser fingerprinting, from the time it was explored for the first time to its current form. Section \ref{Section:FingerprintingCounter} describes the most common fingerprinting countermeasures, and the third section, \ref{Section:FingerprintingApproaches}, compares the active and passive fingerprinting approaches fingerprinting applications use to collect data. The last section, \ref{FingerprintingThreatsOpportunities}, summarizes the threats and opportunities fingerprinting brings to the table.
+The first section, \ref{Section:FingerprintingHistory}, briefly tells the history of browser fingerprinting, from the time it was explored for the first time to its current form. Section \ref{Section:FingerprintingCounter} describes the most common fingerprinting countermeasures, and the third section, \ref{Section:FingerprintingApproaches}, compares the active and passive fingerprinting approaches fingerprinting applications use to collect data. The last section, \ref{UnderstandingFingerprinting}, summarizes the threats and opportunities fingerprinting brings to the table.
 
 \section{History of browser fingerprinting}
 \label{Section:FingerprintingHistory}
@@ -259,7 +259,7 @@ A year later, in 2010, Peter Eckersley pushed the research of fingerprinting fur
 Since these two works were published, fingerprinting became a standard in the industry thanks to easy-to-use solutions like FingerprintJS\footnote{\url{https://fingerprint.com}}, which has an open-source core. This broad and rapid adoption of fingerprinting practices brought severe security and privacy implications \cite{WP224Fingerprinting}, resulting in the growing popularity of solutions focusing on mitigating fingerprinting.
 
 \section{Understanding the impacts of fingerprinting}
-\label{FingerprintingThreatsOpportunities}
+\label{UnderstandingFingerprinting}
 
 The practice of fingerprinting is widely recognized for its potential invasion of privacy. However, its impacts are not simply positive or negative like many things in life. This chapter explores the various effects of fingerprinting, including both its benefits and drawbacks. Additionally, real-world examples are provided to illustrate these impacts in practice.
 
@@ -375,14 +375,42 @@ Among the examples shown in tables \ref{Table:ActiveDataExamples} and \ref{Table
 
 Suppose a countermeasure algorithm misapplies the transformation to a data source, or the data source is left unchanged entirely. In that case, the fingerprinting application can detect and act on this attempt at fingerprint manipulation.
 
-% -------------------------------------------------------------------- %
+\section{Existing anti-fingerprinting software}
 
-\chapter{JShelter}
-\label{Section:JShelter}
+In response to the growing concerns discussed in section \ref{UnderstandingFingerprinting}, numerous anti-fingerprinting software solutions have been developed to mitigate this threat. With a focus on web-based applications, these solutions can be integrated directly into browsers or installed as browser extensions.
+
+This section outlines selected existing anti-fingerprinting software solutions, examining their strengths and weaknesses. The primary focus has been given to the JShelter extension, which initially, this theses extended.
+
+\subsection{Tor browser}
+
+Tor\footnote{\url{https://www.torproject.org/}}, built on top of Mozilla Firefox, is specially designed for privacy and anonymity. Among other protections, it incorporates a variety of anti-fingerprinting measures, including:
+
+\begin{itemize}
+	\item First-party isolation to prevent cross-site tracking.
+	\item Disabling or restricting access to browser features commonly used in fingerprinting, such as WebGL and WebRTC.
+	\item Spoofing the user agent string to make all Tor Browser users appear identical.
+	\item Enforcing a standard window size to prevent screen size-based fingerprinting.
+\end{itemize}
+
+These countermeasures are sometimes extraordinarily strict and limiting, which is precisely why they are very effective.
+
+\subsection{Brave browser}
+
+Brave\footnote{\url{https://brave.com/}} is another privacy-focused browser, this time based on the Chromium project. It includes several built-in fingerprinting protection mechanisms:
+
+\begin{itemize}
+	\item Blocking third-party cookies and tracking scripts.
+	\item Limiting access to browser features often used for fingerprinting, such as battery status and device sensors.
+	\item Randomizing specific browser characteristics, like the Canvas API or available fonts, to make fingerprinting more challenging.
+\end{itemize}
+
+Brave protections are less severe than Tor's, making Brave users less restricted but, at the same time, more prone to fingerprinting or other privacy-invading techniques.
+
+\subsection{JShelter}
 
 In 2019, Martin Timko designed and implemented a proof of concept browser extension called \uv{Javascript Restricter} as a part of his master's thesis \cite{MatejTimkoDP}. Inspired by his work, Libor Polčák et al. \cite{JShelterPaper} created JShelter, a browser extension focused on fingerprinting prevention, limitations of rich web APIs, prevention of attacks connected to timing, and learning information about the device, the browser, the user, and surrounding physical environment and location. JShelter offers versions for three major browsers - Firefox, Chrome, and Opera.
 
-\subsection{JavaScript Shield}
+\subsubsection{JavaScript Shield}
 
 The pivotal protection feature of JShelter is the JavaScript Shield \cite{JShelterJavaScriptShield}, which modifies the behavior of the JavaScript environment of the browser. JShelter provides fake information to confuse fingerprinters and make webpage-triggered attacks harder or impossible.
 
@@ -413,7 +441,7 @@ Whenever a user loads a webpage, the browser is responsible for constructing the
 
 Protections that modify header values have to do so carefully. No matter how small the change is, it can affect the server's response. For example, English is the prevalent language used on the web. To make the fingerprint look more homogenous, the protection could modify the \texttt{Accept-Language} header to report English as the preferred language. However, the user may need help understanding the content if the server reacts and actually returns a website in English.
 
-On the other side, the change has to be significant enough to affect the device's fingerprint. In the end, it is all about balance. Each protection is designed to avoid such unintended errors while keeping the capability to confuse fingerprinters.
+On the other hand, the alterations made to header values should be substantial enough to obfuscate the device's fingerprint effectively. Striking the right balance is essential in ensuring the implemented protections can prevent fingerprinters from tracking the device while avoiding unintended consequences or errors. Each protection is designed to prevent such unintentional errors while keeping the capability to confuse fingerprinters.
 
 \section{Fingerprinting protections}
 
@@ -666,21 +694,94 @@ Each passive fingerprinting protection stores its preferences in a separate part
 
 The storage is the centerpiece of the browser extension. Other components, including the service worker and user interface, rely on the storage to synchronize their actions, given that they execute in separate contexts.
 
-\section{Service worker}
+\subsection{Service worker}
 
 % TODO: Content
 
-\section{User interface}
+\subsection{User interface}
 
 As section \ref{Section:GUI} describes, the popup is the only graphical user interface used by the browser extension. The popup consists of one HTML file, which does not directly render UI elements. Instead, it initializes a React application which takes over the rendering. By delegating the rendering process to the React application, the popup benefits from React's dynamic and efficient nature, allowing for enhanced performance, maintainability, and ease of development when managing the extension's user interface.
 
+\bigbreak
+
+\begin{lstlisting}[caption={A code snippet in which the React application initializes its storage and creates a subscription for future changes.}]
+useEffect(() => {
+  if (typeof unsubscribe.current === 'function') {
+    unsubscribe.current();
+  }
+
+  void browser.storage.sync.get().then((store: StoreValue | {}) => {
+    if (isStoreInitialized(store)) {
+      initializeStore(store);
+    }
+
+    unsubscribe.current = useStore.subscribe((store) => {
+      void browser.storage.sync.set(store);
+    });
+  });
+}, []);
+\end{lstlisting}
+
+\medbreak
+
 Immediately after the initialization, the React application connects to the extension's storage, copies the content to its internal data storage, and subscribes for future changes. Utilizing an internal storage layer between the application and the browser storage was essential due to the asynchronous nature of the browser storage. If every read or write operation was performed directly on the browser storage, the UI would only be allowed to update once the operation was completed, resulting in a sluggish user experience. The application can mitigate this issue by utilizing an internal storage layer, ensuring a more responsive and seamless interface. Every change to the internal storage is automatically synchronized with the browser storage.
+
+\bigbreak
+
+\begin{lstlisting}[caption={A part of the code that updates the HTTP header-modifying rule when a protection is enabled or disabled.}]
+useEffect(() => {
+  if (enabled && value !== null) {
+    updateHeaderRule(Header.ACCEPT_LANGUAGE, value);
+  } else {
+    removeHeaderRule(Header.ACCEPT_LANGUAGE);
+  }
+}, [value, enabled]);
+\end{lstlisting}
+
+\medbreak
 
 The popup interface is separated into multiple sections exclusive to specific protections. Each protection section has a header, a switch to enable or disable the protection, and a preview field with the current header value. If protection has custom preferences, these are also colocated with these primary elements. Whenever a user changes protection-specific preferences, the extension automatically updates the \texttt{value} field in storage, which propagates to the UI. However, the rule modifying the header value is only updated when the protection is enabled or disabled.
 
 \section{Fingerprinting protections}
 
 This section describes the browser extension's specific strategies to combat passive fingerprinting through HTTP headers. Each method is discussed in detail, accompanied by relevant implementation examples. Furthermore, any deviations from the initial design plan are highlighted and explained throughout this section.
+
+\bigbreak
+
+\begin{lstlisting}[caption={A utility function that removes the old header-modification rule and defines a new one with a new value.}, label={Listing:UpdateRuleFunction}]
+export const updateHeaderRule = (header: Header, value: string) => {
+  const id = HEADER_RULE_IDS[header];
+
+  void browser.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [id],
+    addRules: [
+      {
+        id,
+        priority: 1,
+        action: {
+          type: 'modifyHeaders',
+          requestHeaders: [
+            {
+              header: header,
+              operation: 'set',
+              value,
+            },
+          ],
+        },
+        condition: {
+          urlFilter: '*://*/*',
+          resourceTypes: ['main_frame'],
+        },
+      },
+    ],
+  });
+};
+
+\end{lstlisting}
+
+\medbreak
+
+In order to effectively manage the header-modification rules, a unique identifier is assigned to each HTTP header, serving as the rule's ID that does not change for the complete run of the extension. Whenever a rule needs to be updated, protections call a utility function (shown in listing \ref{Listing:UpdateRuleFunction}) with two arguments - the header's name and its new value.
 
 \subsection{User-Agent and client hints}
 
