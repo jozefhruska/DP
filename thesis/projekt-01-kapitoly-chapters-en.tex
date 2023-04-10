@@ -498,7 +498,7 @@ The protection algorithm randomly picks one of the possible values and uses it a
 
 The value of the \texttt{Device-Memory} header is also accessible through the \texttt{Navigator.deviceMemory} property. Any transformation to the \texttt{Device-Memory} header must be copied to this property.
 
-\subsection{User-Agent}
+\subsection{User-Agent and client hints}
 
 The \texttt{User-Agent} request HTTP header is a string that lets servers and network peers identify the application, operating system, vendor, and version of the requesting user agent \cite{MDN}. The value of this header varies depending on the operating system and browser type and version, making it a valuable fingerprint component.
 
@@ -531,9 +531,47 @@ Based on the observation that some software versions in the \texttt{User-Agent} 
 
 The protection cannot apply changes at random, as this could introduce invalid version numbers that have yet to be released. Invalid version numbers could be used by the fingerprinting application to discover an attempt at fingerprint manipulation. Instead, the extension keeps a list of previously released versions gathered from the changelog\footnote{Software products typically maintain a list of published versions. For example, the changelog of Chrome is available at \url{https://chromereleases.googleblog.com/search/label/Stable\%20updates.]}} of the specific software product. The algorithm then randomly selects a suitable version that only differs in the \textbf{PATCH} segment and should have the same functionality as the original version.
 
+\bigbreak
+
+\begin{lstlisting}[caption={An example of HTTP Client hints \cite{MDN}.}, label={Listing:HTTPClientHintsExample}]
+Sec-CH-UA: " Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"
+Sec-CH-UA-Mobile: ?0
+Sec-CH-UA-Full-Version: "96.0.4664.110"
+Sec-CH-UA-Platform: "Windows"
+\end{lstlisting}
+
+\medbreak
+
+The \texttt{User-Agent} is not the only HTTP header from which the fingerprinter can gain detailed information about the device's browser and platform. The same information can also be extracted from HTTP Client hints. Client Hints are a set of HTTP headers that enable websites to request and receive specific information about a user's device and preferences directly from the browser \cite{MDN}. Client Hints can be broadly classified into two categories based on their entropy levels:
+
+\begin{itemize}
+	\item \textbf{Low entropy client hints}: These headers provide limited variability and do not significantly contribute to unique browser fingerprints. Examples of low entropy headers include \texttt{Save-Data}, \texttt{Viewport-Width}, and \texttt{DPR} (Device Pixel Ratio). These headers usually pose a low risk to user privacy.
+	\item \textbf{High entropy client hints}: These headers provide a higher level of variability and may be used to create more accurate browser fingerprints, posing a higher risk to user privacy. Examples of high entropy headers include \texttt{Sec-CH-UA} (\texttt{User-Agent}), \texttt{Sec-CH-UA-Platform-Version}, and \texttt{Sec-CH-UA-Full-Version} (full browser version).
+\end{itemize}
+
+From the fingerprinting point of view, the high entropy values are more important because they tend to change less often, if ever. The extension modifies selected client hints carrying the characteristics which can also be found in the \texttt{User-Agent} header. This additional layer ensures consistency across all HTTP headers and better protection against fingerprinting.
+
 \subsubsection{Consistency}
 
 The \texttt{User-Agent} string can also be accessed through the JavaScript \texttt{Navigator} interface. This value is identical to the one transmitted in the \texttt{User-Agent} HTTP header when a client makes a request to a web server. To maintain consistency between the two sources of the \texttt{User-Agent} string, applying the same transformation or parsing logic to the value obtained from \texttt{Navigator.userAgent} is crucial. This consistency ensures that the information is treated uniformly and helps to prevent a potential discovery by comparing the strings.
+
+\bigbreak
+
+\begin{lstlisting}[caption={An example the User-Agent Client Hints API usage \cite{MDN}. This API call returns the same values as the HTTP client hints in example \ref{Listing:HTTPClientHintsExample}.}]
+navigator.userAgentData
+  .getHighEntropyValues([
+  	"mobile"
+    "platform",
+    "uaFullVersion",
+  ])
+  .then((ua) => {
+    console.log(ua);
+  });	
+\end{lstlisting}
+
+\medbreak
+
+To also ensure the HTTP client hints are consistent with the browser environment, the extension must modify the return values of the \texttt{navigator.userAgentData}\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/User-Agent_Client_Hints_API}} API. Although this API is still marked as experimental, it is already supported by Chromium-based browsers. In fact, the only major browser which doesn't support this API is Firefox.
 
 \subsection{Extra HTTP header}
 \label{SubSection:ExtraHTTPHeader}
