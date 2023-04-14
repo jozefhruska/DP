@@ -16,12 +16,12 @@ const manifest: Omit<
   background: {
     service_worker: 'src/entries/background/main.ts',
   },
-  content_scripts: [
-    {
-      js: ['src/entries/contentScript/primary/main.tsx'],
-      matches: ['*://*/*'],
-    },
-  ],
+  // content_scripts: [
+  //   {
+  //     js: ['src/entries/contentScript/primary/main.tsx'],
+  //     matches: ['*://*/*'],
+  //   },
+  // ],
   permissions: [
     'declarativeNetRequest',
     'declarativeNetRequestFeedback',
@@ -40,10 +40,10 @@ const manifest: Omit<
     256: 'icons/256.png',
     512: 'icons/512.png',
   },
-  options_ui: {
-    page: 'src/entries/options/index.html',
-    open_in_tab: true,
-  },
+  // options_ui: {
+  //   page: 'src/entries/options/index.html',
+  //   open_in_tab: true,
+  // },
 };
 
 export function getManifest(): chrome.runtime.ManifestV3 {
