@@ -62,6 +62,11 @@ export const AcceptLanguageForm: React.FC = () => {
         </div>
       </div>
 
+      <p>
+        Randomly changes or entirely removes language regions from the
+        Accept-Language HTTP header.
+      </p>
+
       <div className="flex flex-col gap-y-2">
         <Label htmlFor={selectId}>Mode</Label>
         <Select.Root value={mode} onValueChange={handleModeChange}>
@@ -81,7 +86,11 @@ export const AcceptLanguageForm: React.FC = () => {
       {value !== null && (
         <div className="flex flex-col gap-y-2">
           <Label>Preview</Label>
-          <Preview header={Header.ACCEPT_LANGUAGE} value={value} />
+          <Preview
+            values={{
+              [Header.ACCEPT_LANGUAGE]: value,
+            }}
+          />
         </div>
       )}
     </div>

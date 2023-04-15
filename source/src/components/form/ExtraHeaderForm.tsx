@@ -40,7 +40,7 @@ export const ExtraHeaderForm: React.FC = () => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Extra</h2>
+        <h2 className="text-sm font-semibold">Extra header</h2>
         <div className="flex items-center gap-x-2">
           <Switch
             checked={enabled}
@@ -51,10 +51,19 @@ export const ExtraHeaderForm: React.FC = () => {
         </div>
       </div>
 
+      <p>
+        Adds a custom, non-standard HTTP header "Extra" with a randomly
+        generated value.
+      </p>
+
       {value !== null && (
         <div className="flex flex-col gap-y-2">
           <Label>Preview</Label>
-          <Preview header={Header.EXTRA} value={value} />
+          <Preview
+            values={{
+              [Header.EXTRA]: value,
+            }}
+          />
         </div>
       )}
     </div>

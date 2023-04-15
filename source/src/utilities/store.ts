@@ -25,8 +25,14 @@ export const useStore = create<StoreValue>((set) => ({
       },
       userAgent: {
         ...prevStore.userAgent,
-        value: store.userAgent.value,
+        values: {
+          ...prevStore.userAgent.values,
+          fullVersion: store.userAgent.values.fullVersion,
+          mobile: store.userAgent.values.mobile,
+          platformVersion: store.userAgent.values.platformVersion,
+        },
         enabled: store.userAgent.enabled,
+        syncUserAgent: store.userAgent.syncUserAgent,
       },
     })),
   acceptLanguage: {
@@ -76,15 +82,50 @@ export const useStore = create<StoreValue>((set) => ({
       })),
   },
   userAgent: {
-    value: null,
-    setValue: (value) =>
-      set((store) => ({
-        userAgent: { ...store.userAgent, value },
-      })),
+    values: {
+      fullVersion: null,
+      setFullVersion: (fullVersion) =>
+        set((store) => ({
+          userAgent: {
+            ...store.userAgent,
+            values: {
+              ...store.userAgent.values,
+              fullVersion,
+            },
+          },
+        })),
+      mobile: null,
+      setMobile: (mobile) =>
+        set((store) => ({
+          userAgent: {
+            ...store.userAgent,
+            values: {
+              ...store.userAgent.values,
+              mobile,
+            },
+          },
+        })),
+      platformVersion: null,
+      setPlatformVersion: (platformVersion) =>
+        set((store) => ({
+          userAgent: {
+            ...store.userAgent,
+            values: {
+              ...store.userAgent.values,
+              platformVersion,
+            },
+          },
+        })),
+    },
     enabled: false,
     setEnabled: (enabled) =>
       set((store) => ({
         userAgent: { ...store.userAgent, enabled },
+      })),
+    syncUserAgent: false,
+    setSyncUserAgent: (syncUserAgent) =>
+      set((store) => ({
+        userAgent: { ...store.userAgent, syncUserAgent },
       })),
   },
 }));

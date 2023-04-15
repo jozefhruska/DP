@@ -1,3 +1,5 @@
+const fs = require('node:fs');
+const path = require('node:path');
 const axios = require('axios');
 
 const url = 'https://chromium.googlesource.com/chromium/src/+refs';
@@ -11,7 +13,7 @@ axios
     matches = matches.filter((version) => {
       const [major] = version.split('.');
 
-      return major > 90;
+      return major > 101;
     });
 
     matches = matches.filter(
@@ -20,7 +22,21 @@ axios
 
     matches = matches.filter((_, index) => index % 5 === 0);
 
-    console.log(matches);
+    const record = matches.reduce((acc, version) => {
+      const key = version.split('.')[0];
+
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+
+      acc[key].push(version);
+      return acc;
+    }, {});
+
+    fs.writeFileSync(
+      path.resolve(__dirname, '../src/assets/chromium-versions.json'),
+      JSON.stringify(record)
+    );
   })
   .catch((error) => {
     console.error(`Error fetching ${url}: ${error.message}`);

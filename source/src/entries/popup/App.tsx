@@ -9,8 +9,8 @@ import { PopupTab, StoreValue } from '~/types';
 import { isStoreInitialized, useStore } from '~/utilities/store';
 import { DeviceMemoryForm } from '~/components/form/DeviceMemoryForm';
 import { UserAgentForm } from '~/components/form/UserAgentForm';
-import '../../styles.css';
 import { ExtraHeaderForm } from '~/components/form/ExtraHeaderForm';
+import '../../styles.css';
 
 export const App: React.FC = () => {
   const initializeStore = useStore((store) => store.initialize);
@@ -39,7 +39,7 @@ export const App: React.FC = () => {
       <PopupHeader />
 
       <PopupContent>
-        <Tabs.Root defaultValue={PopupTab.OTHER}>
+        <Tabs.Root defaultValue={PopupTab.USER_AGENT}>
           <Tabs.List>
             <Tabs.Trigger value={PopupTab.USER_AGENT}>
               <Globe className="mr-2 h-3.5 w-3.5 text-gray-500" />
@@ -63,16 +63,15 @@ export const App: React.FC = () => {
             <AcceptLanguageForm />
           </Tabs.Content>
 
-          <Tabs.Content
-            value={PopupTab.OTHER}
-            className="flex flex-col divide-y divide-slate-200 dark:divide-slate-700"
-          >
-            <div className="pb-4">
-              <DeviceMemoryForm />
-            </div>
+          <Tabs.Content value={PopupTab.OTHER}>
+            <div className="flex flex-col divide-y divide-slate-200 dark:divide-slate-700">
+              <div className="pb-4">
+                <DeviceMemoryForm />
+              </div>
 
-            <div className="pt-4">
-              <ExtraHeaderForm />
+              <div className="pt-4">
+                <ExtraHeaderForm />
+              </div>
             </div>
           </Tabs.Content>
         </Tabs.Root>

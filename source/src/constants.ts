@@ -8,14 +8,17 @@ export const HEADER_RULE_IDS: Record<Header, number> = {
   [Header.USER_AGENT]: 1,
   [Header.ACCEPT_LANGUAGE]: 2,
   [Header.DEVICE_MEMORY]: 3,
-  [Header.EXTRA]: 4,
+  [Header.CH_FULL_VERSION]: 4,
+  [Header.CH_MOBILE]: 5,
+  [Header.CH_PLATFORM_VERSION]: 6,
+  [Header.EXTRA]: 7,
 };
 
 export const ACCEPT_LANGUAGE_PROTECTION_OPTIONS: SelectOption<AcceptLanguageProtectionMode>[] =
   [
     {
       value: AcceptLanguageProtectionMode.RANDOM_REGIONS,
-      label: 'Change regions randomly',
+      label: 'Change regions (randomize)',
     },
     {
       value: AcceptLanguageProtectionMode.REMOVE_REGIONS,
@@ -76,6 +79,10 @@ export const LANGUAGE_REGIONS = {
   ],
   zh: ['CN', 'TW', 'HK', 'SG'],
 };
+
+export const MAC_OS_VERSION_REGEX = /(\d+_\d+_\d+)/;
+
+export const CHROME_VERSION_REGEX = /Chrome\/(\d+(\.\d+){0,3})/;
 
 export const VERSION_REGEX =
   /(\d+\.\d+\.\d+(?!\.\d)|\d+\.\d+\.\d+\.\d+|\d+_\d+_\d+)/g;

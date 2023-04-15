@@ -2,6 +2,9 @@ export enum Header {
   ACCEPT_LANGUAGE = 'Accept-Language',
   DEVICE_MEMORY = 'Device-Memory',
   USER_AGENT = 'User-Agent',
+  CH_FULL_VERSION = 'SEC-CH-UA-Full-Version',
+  CH_MOBILE = 'SEC-CH-UA-Mobile',
+  CH_PLATFORM_VERSION = 'SEC-CH-UA-Platform-Version',
   EXTRA = 'Extra',
 }
 
@@ -30,10 +33,18 @@ export type StoreValue = {
     setEnabled: (enabled: boolean) => void;
   };
   userAgent: {
-    value: string | null;
-    setValue: (value: string | null) => void;
+    values: {
+      fullVersion: string | null;
+      setFullVersion: (fullVersion: string | null) => void;
+      mobile: string | null;
+      setMobile: (mobile: string | null) => void;
+      platformVersion: string | null;
+      setPlatformVersion: (platformVersion: string | null) => void;
+    };
     enabled: boolean;
     setEnabled: (enabled: boolean) => void;
+    syncUserAgent: boolean;
+    setSyncUserAgent: (syncUserAgent: boolean) => void;
   };
 };
 

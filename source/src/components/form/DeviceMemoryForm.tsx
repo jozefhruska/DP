@@ -62,6 +62,11 @@ export const DeviceMemoryForm: React.FC = () => {
         </div>
       </div>
 
+      <p>
+        Randomly changes the amount of available memory sent in the
+        Device-Memory HTTP header.
+      </p>
+
       <div className="flex flex-col gap-y-3.5">
         <div className="flex items-center justify-between">
           <span>{min} GB</span>
@@ -81,7 +86,11 @@ export const DeviceMemoryForm: React.FC = () => {
       {value !== null && (
         <div className="flex flex-col gap-y-2">
           <Label>Preview</Label>
-          <Preview header={Header.DEVICE_MEMORY} value={value} />
+          <Preview
+            values={{
+              [Header.DEVICE_MEMORY]: value,
+            }}
+          />
         </div>
       )}
     </div>
