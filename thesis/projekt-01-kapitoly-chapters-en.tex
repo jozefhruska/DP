@@ -80,19 +80,45 @@ Web applications can use JavaScript Web APIs to interact with various web browse
 
 All the APIs listed above are commonly used in fingerprinting to identify devices and their users uniquely \cite{FingerprintingSurvey}. Fingerprinting, the main focus of this thesis, is described more in-depth in the following chapter.
 
-\section{HTTP}
+\section{Hypertext Transfer Protocol (HTTP)}
 
-HTTP (Hypertext Transfer Protocol) is a request-response protocol that allows web browsers to request resources from web servers and to receive responses that include the requested resources \cite{MasteringNodeJS}.
+HTTP is a request-response protocol that allows web browsers to request resources from web servers and receive responses, including the requested resources \cite{MasteringNodeJS}. HTTP is an essential application-layer protocol for transmitting web pages, images, videos, and other resources across the World Wide Web.
 
 When a user types a URL into a web browser's address bar, the browser sends an HTTP request to the server hosting the resource. This request typically contains information such as the request's method, the URL of the requested resource, and any HTTP headers or other metadata associated with the request. The server then resolves the request and sends a response containing the response status code and body, among other things.
 
-Web applications can also ask the browser to send HTTP requests on their behalf with the help of XMLHttpRequest (XHR)\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest}} or Fetch API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}} APIs. Web applications commonly transfer only minimal HTML and JavaScript with the first request to improve performance. Once loaded, this skeleton can load additional resources if needed.
+Web applications can request browsers to send HTTP requests on their behalf with the help of `XMLHttpRequest` (XHR)\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest}} or `Fetch` API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}} APIs. These APIs enable web applications to communicate with servers asynchronously, allowing for dynamic content updates without needing a full page refresh. To optimize performance, web applications often initially transfer only a minimal amount of HTML and JavaScript with the first request. Once the basic structure, or "skeleton," is loaded, the application can request and load additional resources, such as images, stylesheets, and more complex scripts.
 
-\subsection{Headers}
+\subsection{HTTP methods}
 
-The client and the server use HTTP headers\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers}} to transfer additional information with the HTTP request or response. Headers consist of a case-insensitive name and a value separated by a colon (\uv{:}). HTTP defines standardized headers for content negotiation, authentication, or passing additional context \cite{RFC9110}. The protocol also allows the use of entirely custom headers.
+The HTTP specification \cite{RFC9110} defines various methods applications use to specify the desired action to be performed on a resource. Among the most common HTTP methods are \cite{MDN}:
 
-When an application sends a request, the browser automatically includes default headers. Web applications can add additional headers or overwrite the default ones.
+\begin{itemize}
+	\item \textbf{GET}: Requests a representation of the specified resource.
+	\item \textbf{POST}: Submits data to be processed by the specified resource.
+	\item \textbf{PUT}: Updates the specified resource with new data.
+	\item \textbf{DELETE}: Deletes the specified resource.
+	\item \textbf{HEAD}: Requests the headers of the specified resource without the actual data.
+	\item \textbf{OPTIONS}: Requests the supported communication methods for the specified resource.
+\end{itemize}
+
+From the above listed, all but the POST method are idempotent, meaning the server's state will be identical no matter how many identical requests the server receives.
+
+\subsection{HTTP headers}
+
+HTTP headers\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers}} are key-value pairs sent by the client and server in an HTTP request or response. They are used to transfer additional metadata about the request or response, such as the type of content, encoding, caching policies, and authentication or authorization information. An HTTP header consists of a case-insensitive name and a value separated by a colon (\uv{:}). \cite{RFC9110}
+
+Among the most common HTTP headers are \cite{MDN}:
+
+\begin{itemize}
+	\item \textbf{User-Agent}: Provides information about the client's user agent (typically a browser), operating system, and device.
+	\item \textbf{Accept}: Indicates the content types the client is willing or able to receive.
+	\item \textbf{Accept-Language}: Indicates the natural language and locale that the client prefers.
+	\item \textbf{Authorization: Contains credentials for authentication and authorization.}
+\end{itemize}
+
+As previously mentioned, web applications can send custom HTTP requests. During this process, the browser automatically appends default headers to the request. However, web applications can add their own headers or modify the default headers to suit their needs.
+
+HTTP headers play an integral role in browser fingerprinting, as they can be used to passively identify and track users based on their browser settings and preferences. 
 
 \section{Browser extensions}
 
@@ -447,7 +473,7 @@ On the other hand, the alterations made to header values should be substantial e
 
 The browser extension comprises several independent modules, each implementing passive fingerprinting protection for a single HTTP header or a group of HTTP headers. This separation of concerns allows users to enable only some protections while keeping others disabled.
 
-\subsection{HTTP header: Accept}
+\subsection{Accept}
 \label{SectionHTTPHeaderAccept}
 
 The \texttt{Accept} request HTTP header indicates which content types the client can understand, expressed as MIME types \cite{MDN}. It is possible to add or remove MIME types to affect the fingerprint. However, the server may react to this modification and respond with an unexpected and incompatible response body.
@@ -527,6 +553,7 @@ The protection algorithm randomly picks one of the possible values and uses it a
 The value of the \texttt{Device-Memory} header is also accessible through the \texttt{Navigator.deviceMemory} property. Any transformation to the \texttt{Device-Memory} header must be copied to this property.
 
 \subsection{User-Agent and client hints}
+\label{SubSection:UserAgentDesign}
 
 The \texttt{User-Agent} request HTTP header is a string that lets servers and network peers identify the application, operating system, vendor, and version of the requesting user agent \cite{MDN}. The value of this header varies depending on the operating system and browser type and version, making it a valuable fingerprint component.
 
@@ -789,6 +816,19 @@ In order to effectively manage the header-modification rules, a unique identifie
 
 \subsection{User-Agent and client hints}
 
+The primary purpose of this protection is to modify selected HTTP headers carrying user agent information as defined in section \ref{SubSection:UserAgentDesign}. In contrast with the original design described in the section mentioned earlier, the protection relies primarily on the HTTP client hint headers and not the \texttt{User-Agent} HTTP header. This change was introduced during the implementation phase due to the browsers reducing the \texttt{User-Agent} header, described in detail in section \ref{SubSection:UserAgentReduction}.
+
+When users enable this protection, it modifies the values of three HTTP client hint headers followingly:
+
+\begin{itemize}
+	\item \textbf{SEC-CH-UA-Full-Version}\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-CH-UA-Full-Version}}: A high-entropy client hint which carries a full (unreduced) browser version. The extension contains a record of released browser versions scraped automatically from changelogs or repositories of said browsers. This list ensures that the protection does not have to generate the version numbers, ensuring the browser always reports a valid version. When a new header value is needed, the protection looks up an alternative version number within the same MAJOR version range as the actual browser version obtained through the \texttt{navigator.userAgentData} API. The selected version is then wrapped in quotes and ready to be used as the new header value.
+	\item \textbf{SEC-CH-UA-Mobile}\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-CH-UA-Mobile}}: A low-entropy client hint indicating whether the request was made from a mobile device or a desktop that prefers the mobile version of the web page. It is represented as a boolean with a value of \texttt{?0} (\texttt{false}) or \texttt{?1} (\texttt{true}). The protection randomly selects one value with a uniform probability.
+	\item \textbf{SEC-CH-UA-Platform-Version}\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-CH-UA-Platform-Version}}: A high-entropy client hint which carries a full (unreduced) operating system version. When the protection needs a new value for this header, it looks up the actual OS version through the \texttt{Navigator.userAgentData} API, copies it, and randomly increases or decreases the last PATCH version segment. The resulting version string is then wrapped in quotes and ready to be used as the new header value.
+\end{itemize}
+
+While not recommended, users are provided with the option to synchronize versions found in HTTP client hints with those in the \texttt{User-Agent} header, effectively bypassing the browser reductions. If this option is enabled, the protection looks up the browser and the platform versions in the \texttt{User-Agent} header and replaces them with values previously generated for HTTP client hints.
+
+
 % TODO: Content
 
 \subsection{Accept-Language}
@@ -830,6 +870,7 @@ The biggest obstacle was the deprecation of the blocking web request listeners p
 Finally, Manifest V3 is a relatively recent development in browser extension frameworks. As a result, the available resources and documentation detailing its inner workings, best practices, and nuances could be more extensive.
 
 \subsection{Chrome's User-Agent reduction}
+\label{SubSection:UserAgentReduction}
 
 Beginning with Chrome version 101, the browser replaced parts of the User-Agent string with static values to protect the user's privacy. Version 101\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/dcTStiBZVoQ/m/KyomPLOnAwAJ}} replaced the \textbf{MINOR}, \textbf{BUILD}, and \textbf{PATCH} version segments with zeros, only leaving the \textbf{MAJOR} segment displaying the actual version (i.e., \texttt{101.0.0.0}). Next, in version 107\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/kC-AeZ1fSdY/m/a_ICuXZRBQAJ}}, the browser replaced the desktop OS version and CPU information with a fixed value for the platform. The latest reduction happened in version 110\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/zVOEHwgyyu4/m/8KljdSN9AQAJ}}, where the browser started using a fixed OS version and device model value for Android devices.
 
