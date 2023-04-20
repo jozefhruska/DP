@@ -113,7 +113,7 @@ Among the most common HTTP headers are \cite{MDN}:
 	\item \textbf{User-Agent}: Provides information about the client's user agent (typically a browser), operating system, and device.
 	\item \textbf{Accept}: Indicates the content types the client is willing or able to receive.
 	\item \textbf{Accept-Language}: Indicates the natural language and locale that the client prefers.
-	\item \textbf{Authorization: Contains credentials for authentication and authorization.}
+	\item \textbf{Authorization}: Contains credentials for authentication and authorization.
 \end{itemize}
 
 As previously mentioned, web applications can send custom HTTP requests. During this process, the browser automatically appends default headers to the request. However, web applications can add their own headers or modify the default headers to suit their needs.
@@ -818,6 +818,12 @@ In order to effectively manage the header-modification rules, a unique identifie
 
 The primary purpose of this protection is to modify selected HTTP headers carrying user agent information as defined in section \ref{SubSection:UserAgentDesign}. In contrast with the original design described in the section mentioned earlier, the protection relies primarily on the HTTP client hint headers and not the \texttt{User-Agent} HTTP header. This change was introduced during the implementation phase due to the browsers reducing the \texttt{User-Agent} header, described in detail in section \ref{SubSection:UserAgentReduction}.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{obrazky-figures/screenshot-user-agent}
+    \caption{A screenshot of the User-Agent protection configuration interface.}
+\end{figure}
+
 When users enable this protection, it modifies the values of three HTTP client hint headers followingly:
 
 \begin{itemize}
@@ -841,6 +847,12 @@ On the other hand, the generalization algorithm removes subtags from all languag
 
 Upon completion of the transformation algorithms, the main program verifies the validity of the resulting list of languages. Initially, it eliminates any duplicate values that may have been introduced by the generalization or the randomization algorithm, which could select two or more identical subtags. The generalization algorithm always introduces duplicates if the original list of languages includes the same language tag more than once (i.e., \uv{en, en-US, en-GB}).
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{obrazky-figures/screenshot-accept-language}
+    \caption{A screenshot of the Accept-Language protection configuration interface.}
+\end{figure}
+
 In the final step, the algorithm takes the resulting list of languages, calculates the quality values for each language, and joins them into a single string, using a comma (\uv{,}) as the delimiter. The quality value is determined by the position of the language in the list of languages. The first language does not have a quality value as it is the primary language and has an implicit value of \texttt{1.0}. Each following language has a quality value equal to \texttt{1.0 - index * 0.1}. After this step, the resulting string is ready to be used as the value of the \texttt{Accept-Language} header.
 
 \subsection{Device-Memory}
@@ -851,9 +863,16 @@ Initially, the algorithm retrieves the user-configured min and max values from t
 
 Subsequently, the algorithm randomly chooses a value between the specified min and max indices. The randomized selection introduces an element of unpredictability, making it more challenging for fingerprinters to identify the actual user's device memory accurately. Once the value is selected, the algorithm returns it as the modified \texttt{Device-Memory} header, ensuring that the user's actual device memory remains concealed.
 
+
 \subsection{Extra HTTP header}
 
 According to the design discussed in section \ref{SubSection:ExtraHTTPHeader}, this protection adds a new, non-standard header \texttt{Extra} to each outgoing request. The value of this request is determined by the native function \texttt{Crypto.randomUUID()}. This function returns a UUID, a 128-bit long value represented as a 36-character string, which is guaranteed to be unique across space and time \cite{RFC4122}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{obrazky-figures/screenshot-other}
+    \caption{A screenshot of the Device-Memory and Extra protections configuration interfaces.}
+\end{figure}
 
 \section{Challenges and limitations}
 
