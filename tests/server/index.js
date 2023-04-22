@@ -7,10 +7,8 @@ const server = http.createServer((req, res) => {
   res.write('<body>');
   res.write('<h1>Request Headers</h1>');
   res.write('<table>');
-  res.write('<tr><th>Name</th><th>Value</th></tr>');
-
   for (const [name, value] of Object.entries(req.headers)) {
-    res.write(`<tr><td>${name}</td><td>${value}</td></tr>`);
+    res.write(`<tr><th>${name}</th><td>${value}</td></tr>`);
   }
 
   res.write('</table>');
