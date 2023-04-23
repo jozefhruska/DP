@@ -37,11 +37,17 @@ Finally, the last chapter \ref{Chapter:Design} proposes a design of passive fing
 % -------------------------------------------------------------------- %
 
 \chapter{Web browsers}
-% TODO: Chapter description. The part below is copied from the old chapter "web extensions".
 
-In this chapter, the first section, \ref{Section:WebExtensionsAPI}, describes the WebExtensions API exposed by a browser to give extensions more capabilities. Recently, significant changes to the ecosystem of extensions were announced with the introduction of Manifest V3, described in section \ref{Section:ManifestV3}. The last section, \ref{Section:JShelter}, is dedicated to the JShelter extension on which this work builds.
+Web browsers are a significant part of the everyday life of people worldwide. We use browsers for work, learning, or entertainment across various operating systems and device form factors.
+
+This chapter describes the parts of the browser ecosystem relevant to the topic of this work. The first section \ref{Section:BrowsersHistory} briefly explains web browsers' history, highlighting a few important milestones for browsers as we know them today. It is essential to be aware of the historical development as the constant rush to add new features and possibilities to browsers has played a significant role in giving rise to the threat of fingerprinting.
+
+The following sections, \ref{Section:JS} and \ref{Section:HTTP}, examine JavaScript and Hypertext Transfer Protocol (HTTP) as both are cornerstones of this work. Both sections provide an outlook on the role of JS and HTTP in the World Wide Web.
+
+The last section \ref{Section:Extensions} discusses browser extensions, a significant innovation that allows users to tailor their browsing experience to their unique needs and preferences. As this thesis aims to build a browser extension, the section goes more in-depth, providing a comprehensive understanding of browser extensions, their components, and technological advancements that contributed to their present state.
 
 \section{History of web browsers}
+\label{Section:BrowsersHistory}
 
 Web browsers have come a long way since the early days of the World Wide Web. From their humble beginnings as basic applications for viewing text-only web pages, modern browsers have evolved into the powerful tools we know today. Following paragraphs outline the evolution of browsers, highlighting a few of the most significant features added over the years.
 
@@ -54,6 +60,7 @@ As the web gained popularity, developers needed a way to make web pages more int
 Nowadays, web browsers expose a variety of JavaScript APIs that allow web developers to interact with the browser and its underlying components, such as the operating system or even the hardware. While it is true that these APIs gave the developers much-needed possibilities, they come at the cost of compromised privacy, described in detail in the following chapters.
 
 \section{JavaScript}
+\label{Section:JS}
 
 In its original form, JavaScript is a client-side language executed in the user's web browser rather than on a web server \cite{JSDefinitiveGuide}. It allows applications to respond to user actions in real time without making a round trip to the server. However, the rise of popularity and the fact that JavaScript is a relatively developer-friendly language meant that, eventually, runtimes that allowed running JavaScript outside the browser emerged. The most popular JavaScript runtimes include Node.js\footnote{\url{https://nodejs.org/}}, Deno\footnote{\url{https://deno.land/}}, or Bun\footnote{\url{https://bun.sh/}}.
 
@@ -81,6 +88,7 @@ Web applications can use JavaScript Web APIs to interact with various web browse
 All the APIs listed above are commonly used in fingerprinting to identify devices and their users uniquely \cite{FingerprintingSurvey}. Fingerprinting, the main focus of this thesis, is described more in-depth in the following chapter.
 
 \section{Hypertext Transfer Protocol (HTTP)}
+\label{Section:HTTP}
 
 HTTP is a request-response protocol that allows web browsers to request resources from web servers and receive responses, including the requested resources \cite{MasteringNodeJS}. HTTP is an essential application-layer protocol for transmitting web pages, images, videos, and other resources across the World Wide Web.
 
@@ -121,15 +129,13 @@ As previously mentioned, web applications can send custom HTTP requests. During 
 HTTP headers play an integral role in browser fingerprinting, as they can be used to passively identify and track users based on their browser settings and preferences. 
 
 \section{Browser extensions}
+\label{Section:Extensions}
 
 Browser extensions, or add-ons, can modify and enhance the capability of a browser \cite{MDNWebExtensions}. Users install extensions for various reasons, such as to increase security or productivity, remove ads, or modify the browser UI to their liking. Each browser implements extensions slightly differently, but to a large extent, most browsers follow the WebExtensions API standard.
 
 This section describes the WebExtensions API standard mentioned before and the recently introduced Manifest V3, which significantly affects the ecosystem of browser extensions.
 
-\label{Chapter:Extensions}
-
 \subsection{WebExtensions API}
-\label{Section:WebExtensionsAPI}
 
 WebExtensions API, first introduced by Google in chromium-based browsers, is a set of special-purpose APIs the browser provides to installed extensions. Firefox\footnote{\url{https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions}}, Safari\footnote{\url{https://developer.apple.com/documentation/safariservices/safari_web_extensions}}, and Opera\footnote{\url{https://dev.opera.com/extensions/apis}} have become widely compatible with the WebExtensions API, making it the standard across all major web browsers. This broad adoption allowed developers to create cross-browser extensions with minor changes to the original codebase.
 
