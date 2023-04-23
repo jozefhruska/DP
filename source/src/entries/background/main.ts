@@ -3,7 +3,7 @@ import {
   removeHeaderRule,
   updateHeaderRule,
 } from '~/utilities/declarativeNetRequest';
-import { AcceptLanguageProtectionMode, Header, StoreValue } from '~/types';
+import { Header, StoreValue } from '~/types';
 import { isStoreInitialized } from '~/utilities/store';
 import {
   getFullVersionClientHintValue,
@@ -14,49 +14,12 @@ import {
 import { getAcceptLanguageValue } from '~/utilities/acceptLanguage';
 import { getDeviceMemoryValue } from '~/utilities/deviceMemory';
 import { getExtraValue } from '~/utilities/extra';
-import { ALLOWED_DEVICE_MEMORY_VALUES } from '~/constants';
 
 if (process.env.NODE_ENV === 'development' && chrome) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
     console.log(info);
   });
 }
-
-browser.runtime.onInstalled.addListener(async () => {
-  const [fullVersion, platformVersion] = await Promise.all([
-    getFullVersionClientHintValue(),
-    getPlatformVersionClientHintValue(),
-  ]);
-
-  if (fullVersion !== null) {
-    updateHeaderRule(Header.CH_FULL_VERSION, fullVersion);
-  }
-
-  updateHeaderRule(Header.CH_MOBILE, getMobileClientHintValue());
-
-  if (platformVersion !== null) {
-    updateHeaderRule(Header.CH_PLATFORM_VERSION, platformVersion);
-  }
-
-  if (fullVersion != null && platformVersion !== null) {
-    updateHeaderRule(
-      Header.USER_AGENT,
-      getUserAgentValue(fullVersion, platformVersion)
-    );
-  }
-
-  updateHeaderRule(
-    Header.ACCEPT_LANGUAGE,
-    getAcceptLanguageValue(AcceptLanguageProtectionMode.RANDOM_REGIONS)
-  );
-
-  updateHeaderRule(
-    Header.DEVICE_MEMORY,
-    getDeviceMemoryValue([0, ALLOWED_DEVICE_MEMORY_VALUES.length - 1])
-  );
-
-  updateHeaderRule(Header.EXTRA, getExtraValue());
-});
 
 browser.runtime.onStartup.addListener(() => {
   browser.storage.sync.get().then(async (store: StoreValue | {}) => {
