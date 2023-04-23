@@ -20,7 +20,7 @@ axios
       (match, index, array) => array.indexOf(match) === index
     );
 
-    matches = matches.filter((_, index) => index % 5 === 0);
+    matches = matches.filter((_, index) => index % 2 === 0);
 
     const record = matches.reduce((acc, version) => {
       const key = version.split('.')[0];

@@ -674,6 +674,8 @@ Each protection can be enabled or disabled individually from others. When enable
 
 Modern operating systems have to option to switch the user interface to a dark mode which complements the standard light color scheme. The extension's popup view and every component it renders are made in light and dark variants. The extension automatically switches between these variants based on the operating system's active color scheme. Figure \ref{Fig:Wireframes} displays browser extension wireframes in both light and dark modes.
 
+% -------------------------------------------------------------------- %
+
 \chapter{Implementation}
 
 % TODO: Update the introduction
@@ -897,6 +899,113 @@ While these changes are certainly welcomed from a privacy standpoint, these redu
 
 % TODO: Client hints
 
+% -------------------------------------------------------------------- %
+
+\chapter{Testing}
+
+The primary goal of this work is to build a browser extension that protects users against passive fingerprinting through HTTP headers. However, as passive fingerprinting is not transparent to the fingerprinted device, it is not trivial to assess the effectiveness of the browser extension. Any changes to HTTP headers may or may not affect the resulting fingerprint. Moreover, the absence of standardized passive fingerprinting tools further complicates the assessment of the extension's usefulness.
+
+For the abovementioned reasons, testing solely focuses on the experimental observation of changes made to HTTP headers without assessing the effectiveness of the browser extension. While this strategy does not directly measure the extension's overall effectiveness in preventing passive fingerprinting, it provides valuable insights into the extension's potential to modify HTTP headers in a manner that could mitigate passive fingerprinting.
+
+The subsequent sections of this chapter provide an in-depth description of the testing process with the evaluation of results and insights into potential improvements.
+
+\section{Testing methodology and environment}
+\label{Section:TestingMethodologyEnv}
+
+The testing objective outlined in this section is to showcase the impact of the browser extension on the browser environment. Two separate experiments have been conducted to achieve this, each focusing on a different metric.
+
+The testing environment was identical for both experiments. In order to simulate a user opening a browser and visiting a web page, the experiments utilized the Puppeteer\footnote{https://pptr.dev/} package. This package is suitable for testing the extension's behavior as it provides a high-level API to control a Chromium browser. The Chromium browser was selected for these experiments as the family of Chromium-based browsers currently has the highest usage share. The host system on the platform where the experiments were executed was MacOS in version 12.6.3. Default header values (unchanged by the extension) are displayed in Table \ref{Table:DefaultHeaderValues}. Please note that the \texttt{User-Agent} header value is absent due to its length. The \texttt{Extra} header is also absent, as only the browser extension sends it.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		Header name                         & Value \\
+		\midrule
+		\texttt{Accept-Language}            & \verb|en-US,en;q=0.9| \\
+		\texttt{Device-Memory}              & \verb|8| \\
+		\texttt{SEC-CH-UA-Full-Version}     & \verb|112.0.5614.0| \\
+		\texttt{SEC-CH-UA-Mobile}           & \verb|?0| \\
+		\texttt{SEC-CH-UA-Platform-Version} & \verb|12.6.3| \\
+		\bottomrule                               
+	\end{tabular}
+	
+	\caption{A list of default HTTP header values (unchanged by the extension).}
+	\label{Table:DefaultHeaderValues}
+\end{table}
+
+Next, a simple Node.js application was deployed to a remote server. This application listens on the HTTP port (80) for all incoming requests. When it receives a request, it immediately returns an HTML response containing a table with all headers and header values present in the request. Both experiments use this app to gather the test data.
+
+\subsection{Experiment 1: HTTP header values}
+
+The objective of the first experiment is to observe how the extension changes the values of HTTP headers. As the extension's primary function is to counter cross-session passive fingerprinting, this experiment collects and compares values between multiple browsing sessions. The experiment's algorithm can be described as follows:
+
+\begin{enumerate}
+	\item The algorithm opens a new instance of a Chromium browser. The browser is pre-installed with the browser extension, specially modified to enable all protections when installed.
+	\item Next, it waits for a static timeframe of 500 milliseconds. This delay gives the extension time to initialize the header-modifying rules as the service worker runs in parallel to the primary browser process. There is no API exposed by Puppeteer, which could be used to check if the rules are already in place. However, the static delay proved to be sufficient.
+	\item Once the delay ends, the algorithm opens a new page (tab) and loads the remote Node.js server application. A delay of 2000 milliseconds is set, after which the page load throws an exception. This exception is caught, and the data from this experiment are not written, meaning it effectively filters out network-related anomalies.
+	\item As the last step, the algorithm collects the values of HTTP request headers, which are returned by the Node.js application, and stores the data in a CSV file.
+\end{enumerate}
+
+The steps of the algorithm above are repeated over 200 times, collecting HTTP header values in each iteration.
+
+\subsection{Experiment 2: Response times}
+
+As the extension defines declarative header-modifying rules to modify the outgoing request, the browser has to block the request until all matching rules are applied. Depending on the number of rules, this process could increase the time user has to wait for a response.
+
+The goal of the second experiment is to get an understanding of the performance implications of using the browser extension. The experiment measures request-response times in two runs, one with the extension enabled and the other with the extension disabled. The algorithm of both runs is similar to the first experiment, with a few modifications:
+
+\begin{itemize}
+	\item In the run where the extension is disabled, the first and second steps are omitted, implying the extension is not only deactivated but absent from the browser installation. The static delay is, therefore, also not necessary.
+	\item Instead of collecting header values, the algorithm measures the time from the navigation start (\texttt{navigationStart} event) until the navigation end (\texttt{navigationEnd} event). The measured time is then also stored in a CSV file.
+\end{itemize}
+
+In both experiment runs, the algorithm is repeated 100 times, collecting request-response times with and without the extension.
+
+\section{Evaluation of results}
+
+This section presents the data collected in the previously conducted experiments and evaluates their results. Examination of the gathered data provides insights into the browser extension's effectiveness and impact on the browser environment and performance.
+
+\subsection{Experiment 1: HTTP header values}
+
+In the second experiment, the algorithm collected header values from 208 HTTP requests. As the previous section \ref{Section:TestingMethodologyEnv} describes, this experiment examines the variation among all the requests.
+
+\medbreak
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{obrazky-figures/bar_chart_Accept-Language}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{obrazky-figures/bar_chart_SEC-CH-UA-Platform-Version}
+\end{subfigure}
+\caption{Values of \texttt{Accept-Language} and \texttt{SEC-CH-UA-Platform-Version} headers gathered in the experiment.}
+\label{Fig:Exp1Frequencies}
+\end{figure}
+
+\medbreak
+
+Figure \ref{Fig:Exp1Frequencies} above displays frequency charts of the values found in the \texttt{Accept-Language} and \texttt{SEC-CH-UA-Platform-Version} headers. Since the values are generated randomly, they should follow a uniform distribution with a frequency of \verb|N/M|, where \verb|N| (208) represents the number of requests and \verb|M| represents the number of unique values. The horizontal red line visualizes the ideal normal distribution in both charts.
+
+Values of both headers do not significantly deviate from the normal distribution. The extension changes header values randomly enough, making detecting its presence difficult for a fingerprinting application.
+
+\subsection{Experiment 2: Response times}
+
+In both runs of the second experiment (with the extension enabled and disabled), the algorithm sent precisely 100 requests to the server while measuring the response-request time. The results of both runs are presented in a scatter chart visible in Figure \ref{Fig:Exp2Chart}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{obrazky-figures/response_times_comparison}
+    \caption{A screenshot of the Accept-Language protection configuration interface.}
+    \label{Fig:Exp2Chart}
+\end{figure}
+
+As anticipated, the response times of requests made with the extension disabled (represented in blue) are consistently lower than those with the extension enabled (represented in red). The outcome aligns with the expectations, given that the extension works by defining request-blocking rules.
+
+However, the average difference of 37.03 milliseconds between runs is quite substantial, given that the browser used in experiments had only a single extension installed. With all protections enabled, the extension defines up to 7 rules, one for each HTTP header it modifies. Considering the extension user could have other request-modifying extensions installed, the total time the request is held could be significant.
 
 % For compilation piecewise (see projekt.tex), it is necessary to uncomment it
 % \end{document}
