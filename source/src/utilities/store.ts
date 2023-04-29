@@ -2,6 +2,12 @@ import { create } from 'zustand';
 import { AcceptLanguageProtectionMode, StoreValue } from '~/types';
 import { ALLOWED_DEVICE_MEMORY_VALUES } from '~/constants';
 
+/**
+ * Creates a zustand store for managing application state.
+ *
+ * @typedef {import('zustand').SetState<StoreValue>} SetState
+ * @type {import('zustand').CreateState<StoreValue>}
+ */
 export const useStore = create<StoreValue>((set) => ({
   initialize: (store) =>
     set((prevStore) => ({
@@ -130,6 +136,12 @@ export const useStore = create<StoreValue>((set) => ({
   },
 }));
 
+/**
+ * Determines if the provided store object is initialized already.
+ *
+ * @param {StoreValue | {}} store The store object to check for initialization.
+ * @returns {store is StoreValue} A boolean indicating whether the store is initialized.
+ */
 export const isStoreInitialized = (
   store: StoreValue | {}
 ): store is StoreValue => {

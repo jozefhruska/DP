@@ -1,6 +1,12 @@
 import { LANGUAGE_REGIONS } from '~/constants';
 import { AcceptLanguageProtectionMode } from '~/types';
 
+/**
+ * Determines if the provided language code is a multi-region language.
+ *
+ * @param {string} code The language code to check for multi-region support.
+ * @returns {code is keyof typeof LANGUAGE_REGIONS} A boolean indicating whether the language code is a multi-region language.
+ */
 const isMultiRegionLanguage = (
   code: string
 ): code is keyof typeof LANGUAGE_REGIONS => {
@@ -9,6 +15,12 @@ const isMultiRegionLanguage = (
   );
 };
 
+/**
+ * Generates an Accept-Language header value based on the provided protection mode.
+ *
+ * @param {AcceptLanguageProtectionMode} mode The protection mode to be used when generating the Accept-Language header value.
+ * @returns {string} A string representing the Accept-Language header value.
+ */
 export const getAcceptLanguageValue = (
   mode: AcceptLanguageProtectionMode
 ): string => {

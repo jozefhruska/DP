@@ -30,8 +30,8 @@ const addRandomDelta = (version: string) => {
  * Modifies the given User-Agent string by replacing the platform and browser version
  * values with the provided fullVersion and platformVersion.
  *
- * @param {string} fullVersion - The full version string to replace the browser version.
- * @param {string} platformVersion - The platform version string to replace the platform version.
+ * @param {string} fullVersion The full version string to replace the browser version.
+ * @param {string} platformVersion The platform version string to replace the platform version.
  * @returns {string} The modified User-Agent string with updated platform and browser versions.
  */
 export const getUserAgentValue = (
