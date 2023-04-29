@@ -5,11 +5,12 @@
   "displayName": "Passive fingerprinting protection",
   "author": "Jozef Hruska <me@jozefhruska.com>",
   "scripts": {
-    "build": "NODE_ENV=production vite build",
+    "build:chrome": "NODE_ENV=production BUILD_TARGET=chrome vite build",
+    "build:firefox": "NODE_ENV=production BUILD_TARGET=firefox vite build",
     "watch": "vite build --watch --mode development --minify false",
     "dev": "vite",
-    "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
-    "serve:chrome": "web-ext run -t chromium --start-url \"https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending\" --source-dir ./dist/",
+    "serve:firefox": "web-ext run --config=./webext.config.js --start-url \"https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending\"  --source-dir ./dist/",
+    "serve:chrome": "web-ext run --config=./webext.config.js -t chromium --start-url \"https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending\" --source-dir ./dist/",
     "test": "vitest"
   },
   "dependencies": {
@@ -23,29 +24,29 @@
     "react": "~18.2.0",
     "react-dom": "~18.2.0",
     "webextension-polyfill": "~0.10.0",
-    "zustand": "~4.3.6"
+    "zustand": "~4.3.7"
   },
   "devDependencies": {
-    "@samrum/vite-plugin-web-extension": "~3.1.1",
+    "@samrum/vite-plugin-web-extension": "~4.1.0",
     "@tailwindcss/forms": "~0.5.3",
-    "@types/chrome": "~0.0.224",
-    "@types/react": "~18.0.28",
-    "@types/react-dom": "~18.0.11",
+    "@types/chrome": "~0.0.234",
+    "@types/react": "~18.2.0",
+    "@types/react-dom": "~18.2.1",
     "@types/webextension-polyfill": "~0.10.0",
     "@vitejs/plugin-react": "~3.1.0",
     "autoprefixer": "~10.4.14",
-    "axios": "~1.3.4",
-    "happy-dom": "~9.1.0",
-    "postcss": "~8.4.21",
+    "axios": "~1.4.0",
+    "happy-dom": "~9.10.0",
+    "postcss": "~8.4.23",
     "postcss-import": "~15.1.0",
-    "prettier": "~2.8.4",
-    "prettier-plugin-tailwindcss": "~0.2.5",
-    "tailwindcss": "~3.2.7",
+    "prettier": "~2.8.8",
+    "prettier-plugin-tailwindcss": "~0.2.8",
+    "tailwindcss": "~3.3.2",
     "tailwindcss-animate": "~1.0.5",
     "typescript": "~4.9.5",
     "user-agent-data-types": "~0.3.1",
-    "vite": "~4.2.0",
-    "vitest": "~0.29.8",
-    "web-ext": "~7.5.0"
+    "vite": "~4.3.3",
+    "vitest": "~0.30.1",
+    "web-ext": "~7.6.2"
   }
 }
