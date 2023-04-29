@@ -80,11 +80,14 @@ export const LANGUAGE_REGIONS = {
   zh: ['CN', 'TW', 'HK', 'SG'],
 };
 
-export const MAC_OS_VERSION_REGEX = /(\d+_\d+_\d+)/;
+export const MAC_OS_VERSION_REGEX = /Mac OS X (\d+(_\d+)+)/;
 
-export const CHROME_VERSION_REGEX = /Chrome\/(\d+(\.\d+){0,3})/;
+export const WINDOWS_VERSION_REGEX = /Windows NT (\d+\.\d+)/;
 
-export const VERSION_REGEX =
-  /(\d+\.\d+\.\d+(?!\.\d)|\d+\.\d+\.\d+\.\d+|\d+_\d+_\d+)/g;
+export const CHROME_VERSION_REGEX = /Chrome\/([\d.]+)/;
+
+export const FIREFOX_VERSION_REGEX = /Firefox\/([\d.]+)/;
+
+export const SAFARI_VERSION_REGEX = /Version\/([\d.]+) Safari\//;
 
 export const ALLOWED_DEVICE_MEMORY_VALUES = [0.25, 0.5, 1, 2, 4, 8];

@@ -30,9 +30,10 @@ const manifest: Omit<
   //     matches: ['*://*/*'],
   //   },
   // ],
-  content_security_policy: {
-    extension_pages: "default-src 'self'",
-  },
+  // content_security_policy: {
+  //   extension_pages:
+  //     "default-src 'self'; style-src-elem 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;",
+  // },
   permissions: [
     'declarativeNetRequest',
     'declarativeNetRequestFeedback',

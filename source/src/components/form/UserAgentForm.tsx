@@ -60,12 +60,20 @@ export const UserAgentForm: React.FC = () => {
       if (platformVersion !== null) {
         updateHeaderRule(Header.CH_PLATFORM_VERSION, platformVersion);
       }
+
+      if (fullVersion !== null && platformVersion !== null) {
+        updateHeaderRule(
+          Header.USER_AGENT,
+          getUserAgentValue(fullVersion, platformVersion)
+        );
+      }
     } else {
       removeHeaderRule(Header.CH_FULL_VERSION);
       removeHeaderRule(Header.CH_MOBILE);
       removeHeaderRule(Header.CH_PLATFORM_VERSION);
+      removeHeaderRule(Header.USER_AGENT);
     }
-  }, [mobile, enabled]);
+  }, [enabled, fullVersion, mobile, platformVersion]);
 
   const handleEnabledChange = async (checked: boolean) => {
     setEnabled(checked);
@@ -115,7 +123,7 @@ export const UserAgentForm: React.FC = () => {
         the browser and platform versions.
       </p>
 
-      <div className="relative flex flex-col gap-y-2 rounded-md bg-slate-100 py-3 px-3 dark:bg-slate-800">
+      <div className="relative flex flex-col gap-y-2 rounded-md bg-slate-100 px-3 py-3 dark:bg-slate-800">
         <div className="flex items-center justify-between">
           <Label htmlFor={userAgentSwitchId}>
             <span className="absolute inset-0" aria-hidden="true" />
