@@ -21,9 +21,126 @@ if (process.env.NODE_ENV === 'development' && chrome) {
   });
 }
 
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+  if (changeInfo.status === 'loading') {
+    try {
+      await browser.storage.sync
+        .get()
+        .then(async (store: StoreValue | {}) => {
+          if (!isStoreInitialized(store)) {
+            return;
+          }
+
+          await chrome.scripting.executeScript({
+            target: { tabId },
+            func: (
+              userAgent: string | null,
+              acceptLanguage: string | null,
+              deviceMemory: string | null
+            ) => {
+              (function () {
+                /**
+                 * Extracts languages from the Accept-Language HTTP header.
+                 *
+                 * @param {string} acceptLanguage The Accept-Language HTTP header string.
+                 * @returns {string[]} An array of extracted languages.
+                 */
+                const extractLanguages = (
+                  acceptLanguage: string
+                ): string[] => {
+                  const languageList = acceptLanguage.split(',');
+
+                  return languageList.map((lang) => {
+                    const langWithoutQuality = lang.split(';')[0];
+                    return langWithoutQuality.trim();
+                  });
+                };
+
+                // @ts-expect-error
+                const originalNavigator = navigator.__proto__;
+                const modifiedNavigator = Object.create(originalNavigator);
+
+                // Replace the Navigator.userAgent property
+                if (userAgent !== null) {
+                  Object.defineProperty(modifiedNavigator, 'userAgent', {
+                    value: userAgent,
+                    writable: false,
+                    enumerable: true,
+                    configurable: true,
+                  });
+                }
+
+                // Replace the Navigator.language and Navigator.languages properties
+                if (acceptLanguage !== null) {
+                  const languages = extractLanguages(acceptLanguage);
+
+                  Object.defineProperty(modifiedNavigator, 'language', {
+                    value: languages[0],
+                    writable: false,
+                    enumerable: true,
+                    configurable: true,
+                  });
+
+                  Object.defineProperty(modifiedNavigator, 'languages', {
+                    value: languages,
+                    writable: false,
+                    enumerable: true,
+                    configurable: true,
+                  });
+                }
+
+                // Replace the Navigator.deviceMemory property if supported
+                if (deviceMemory !== null && 'deviceMemory' in navigator) {
+                  Object.defineProperty(
+                    modifiedNavigator,
+                    'deviceMemory',
+                    {
+                      value: deviceMemory,
+                      writable: false,
+                      enumerable: true,
+                      configurable: true,
+                    }
+                  );
+                }
+
+                // @ts-expect-error
+                navigator.__proto__ = modifiedNavigator;
+              })();
+            },
+            args: [
+              store.userAgent.enabled &&
+              store.userAgent.syncUserAgent &&
+              store.userAgent.values.fullVersion &&
+              store.userAgent.values.platformVersion
+                ? getUserAgentValue(
+                    store.userAgent.values.fullVersion,
+                    store.userAgent.values.platformVersion
+                  )
+                : null,
+              store.acceptLanguage.enabled && store.acceptLanguage.value
+                ? store.acceptLanguage.value
+                : null,
+              store.deviceMemory.enabled && store.deviceMemory.value
+                ? store.deviceMemory.value
+                : null,
+            ],
+            injectImmediately: true,
+            world: 'MAIN',
+          });
+        });
+    } catch (error) {
+      console.error('Error executing script:', error);
+    }
+  }
+});
+
 browser.runtime.onStartup.addListener(() => {
   browser.storage.sync.get().then(async (store: StoreValue | {}) => {
-    if (isStoreInitialized(store)) {
+    if (!isStoreInitialized(store)) {
+      return;
+    }
+
+    try {
       const updatedStore = { ...store };
 
       if (updatedStore.userAgent.enabled) {
@@ -132,6 +249,8 @@ browser.runtime.onStartup.addListener(() => {
       }
 
       await browser.storage.sync.set(updatedStore);
+    } catch (error) {
+      console.error('Error initializing rules:', error);
     }
   });
 });
