@@ -731,11 +731,23 @@ The storage is the centerpiece of the browser extension. Other components, inclu
 
 \subsection{Service worker}
 
-The primary function of the single service worker script defined by the browser extension is to initialize the extension and the associated protections when the browser starts. The service worker defines a callback function for the \texttt{onStartup} event emitted by the browser on startup. The callback function first checks if the browser storage is initialized, and if it is, the function regenerates header values for every enabled protection. This regeneration is necessary to ensure the device is protected against cross-session tracking. For the same reason, the extension only defines session header-modifying rules, which are removed after each session is closed. As the last step of its execution, the callback saves the updated header values to the browser storage.
+The browser extension defines only a single service worker script, which serves two primary functions described in the following sections, \ref{SubSubSection:StartupInitialization} and \ref{SubSubSection:APIModifications}.
 
-When started in the development mode, the service worker also subscribes to the \texttt{onRuleMatchedDebug} event, which the browser emits every time a rule defined by the extension is matched and applied. However, this event is only available on Chromium-based browsers. 
+Additionally, as a secondary function, when started in the development mode, the service worker also subscribes to the \texttt{onRuleMatchedDebug} event, which the browser emits every time a rule defined by the extension is matched and applied. However, this event is only available on Chromium-based browsers.
 
 The service worker does not subscribe to the \texttt{onInstalled} event as, by default, every protection is disabled when the extension initializes for the first time. This design decision allows users to choose only the protections they need after installing the extension.
+
+\subsubsection{Browser startup initialization}
+\label{SubSubSection:StartupInitialization}
+
+The service worker defines a callback function for the \texttt{onStartup}\footnote{\url{https://developer.chrome.com/docs/extensions/reference/runtime/\#event-onStartup}} event emitted by the browser on startup to initialize the extension and the associated protections. The callback function first checks if the browser storage is initialized, and if it is, the function regenerates header values for every enabled protection. This regeneration is necessary to ensure the device is protected against cross-session tracking. For the same reason, the extension only defines session header-modifying rules, which are removed after each session is closed, ensuring the same header values are not used in multiple browsing sessions. As the last step of its execution, the callback saves the updated header values to the browser storage.
+
+\subsubsection{Modification of Web APIs}
+\label{SubSubSection:APIModifications}
+
+The other primary function of the service worker is to ensure the consistency between HTTP headers and the browser environment (Web APIs). To do this, the service worker subscribes to the \texttt{onUpdated}\footnote{\url{https://developer.chrome.com/docs/extensions/reference/tabs/\#event-onUpdated}} event emitted by the browser when a browser tab is updated. Then, it executes a script via the \texttt{chrome.scripting}\footnote{\url{https://developer.chrome.com/docs/extensions/reference/scripting/}} API with the \texttt{world} option set to \texttt{MAIN}, which ensures the script is run in the primary execution environment instead of the default isolated environment.
+
+The executed script then updates the prototype of the \texttt{Navigator} object, modifying the values of \texttt{UserAgent}, \texttt{language}, \texttt{languages}, and \texttt{deviceMemory} properties if the user enabled the relevant protections.
 
 \subsection{User interface}
 
