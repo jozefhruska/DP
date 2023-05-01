@@ -480,7 +480,7 @@ On the other hand, the alterations made to header values should be substantial e
 The browser extension comprises several independent modules, each implementing passive fingerprinting protection for a single HTTP header or a group of HTTP headers. This separation of concerns allows users to enable only some protections while keeping others disabled.
 
 \subsection{Accept}
-\label{SectionHTTPHeaderAccept}
+\label{Section:HTTPHeaderAccept}
 
 The \texttt{Accept} request HTTP header indicates which content types the client can understand, expressed as MIME types \cite{MDN}. It is possible to add or remove MIME types to affect the fingerprint. However, the server may react to this modification and respond with an unexpected and incompatible response body.
 
@@ -869,7 +869,7 @@ In its nature, the protection modifying the \texttt{Device-Memory} is very strai
 
 Initially, the algorithm retrieves the user-configured min and max values from the popup interface. These values represent the minimum and maximum indices within the array of permissible \texttt{Device-Memory} values, which include \texttt{0.25}, \texttt{0.5}, \texttt{1}, \texttt{2}, \texttt{4}, and \texttt{8}.
 
-Subsequently, the algorithm randomly chooses a value between the specified min and max indices. The randomized selection introduces an element of unpredictability, making it more challenging for fingerprinters to identify the actual user's device memory accurately. Once the value is selected, the algorithm returns it as the modified \texttt{Device-Memory} header, ensuring that the user's actual device memory remains concealed.
+Subsequently, the algorithm randomly chooses a value between the specified min and max indices. The randomized selection introduces an element of unpredictability, making it more challenging for fingerprinters to accurately identify the actual user's device memory. Once the value is selected, the algorithm returns it as the modified \texttt{Device-Memory} header, ensuring that the user's actual device memory remains concealed.
 
 
 \subsection{Extra HTTP header}
@@ -890,20 +890,30 @@ This section discusses the challenges encountered throughout the implementation 
 
 During the time of writing, the new Manifest V3 has begun replacing the outgoing Manifest V2. Although the official end-of-life support deadline for Manifest V2 has been postponed, the browser extension discussed in this thesis has been developed utilizing the latest Manifest V3 framework. This design decision led to a series of challenges described in the following paragraphs.
 
-The biggest obstacle was the deprecation of the blocking web request listeners previously available through the \texttt{chrome.webRequest} API. Rather than intercepting requests and modifying them in real-time using the \texttt{chrome.webRequest} API, extensions must define request-altering rules through the \texttt{chome.declarativeNetRequest} API before the browser sends the request. Since the rules are defined beforehand, it is impossible to base the new HTTP headers on the original values sent by the browser. Instead, the extension has to use the available Web APIs to approximate the header values. This obstacle was why the `Accept` header protection described in section X was not implemented. Browsers do not expose either a single Web API or a combination of multiple APIs, which would provide a reliable way of detecting supported content types. Combined with the relatively high chance of introducing unintended side effects caused by incorrect value change, the protection was deemed low-gain and high-risk and excluded from the implementation.
+\subsubsection{Changes in network request modification}
 
-% TODO: Modification of JS APIs
+The biggest obstacle was the deprecation of the blocking web request listeners previously available through the \texttt{chrome.webRequest} API. Rather than intercepting requests and modifying them in real-time using the \texttt{chrome.webRequest} API, extensions must define request-altering rules through the \texttt{chome.declarativeNetRequest} API before the browser sends the request. Since the rules are defined beforehand, it is impossible to base the new HTTP headers on the original values sent by the browser. Instead, the extension has to use the available Web APIs to approximate the header values.
 
-Finally, Manifest V3 is a relatively recent development in browser extension frameworks. As a result, the available resources and documentation detailing its inner workings, best practices, and nuances could be more extensive.
+The \texttt{Accept} header protection designed in section \ref{Section:HTTPHeaderAccept} was not utilized precisely for this reason. Web browsers do not offer a dependable method for recognizing supported content types using a single or a combination of multiple Web APIs. Additionally, there is a high likelihood of unintended consequences resulting from incorrect header value changes, making the protection not worth the risk and, therefore, not included in the implementation.
+
+\subsubsection{Stricter content security policy}
+
+The extension modifies the \texttt{Navigator} interface to ensure consistency between HTTP headers and the browser environment. Traditionally, browser extensions inject a \texttt{<script />} element directly into the DOM\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model}} of the web page. This element contains a JavaScript code that wraps selected APIs and modifies the value of specific properties.
+
+Manifest V3 disallowed specific content security policy (CSP) values\footnote{\url{https://developer.chrome.com/docs/extensions/migrating/improve-security/\#remove-unsupported-csv}}, making injecting an inline JavaScript code complicated or outright impossible. Instead, the extension's service worker utilizes the new \texttt{chrome.scripting} API to execute a script whenever the browser loads a new web page. The script is set to execute with the \texttt{injectImmediately} option, meaning the browser will attempt to inject it as soon as possible. However, it is not guaranteed to execute before other scripts, which might be used for fingerprinting.
+
+\subsubsection{Limited amount of resources}
+
+Manifest V3 represents a relatively recent advancement in browser extension frameworks. Consequently, the resources and documentation detailing its inner workings, best practices, and nuances may not be as comprehensive as desired. This lack of resources led to somewhat more challenging development.
+
+Despite this limitation, the adoption of Manifest V3 in this project demonstrates the possibilities for future development of Manifest V3 browser extensions.
 
 \subsection{Chrome's User-Agent reduction}
 \label{SubSection:UserAgentReduction}
 
-Beginning with Chrome version 101, the browser replaced parts of the User-Agent string with static values to protect the user's privacy. Version 101\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/dcTStiBZVoQ/m/KyomPLOnAwAJ}} replaced the \textbf{MINOR}, \textbf{BUILD}, and \textbf{PATCH} version segments with zeros, only leaving the \textbf{MAJOR} segment displaying the actual version (i.e., \texttt{101.0.0.0}). Next, in version 107\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/kC-AeZ1fSdY/m/a_ICuXZRBQAJ}}, the browser replaced the desktop OS version and CPU information with a fixed value for the platform. The latest reduction happened in version 110\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/zVOEHwgyyu4/m/8KljdSN9AQAJ}}, where the browser started using a fixed OS version and device model value for Android devices.
+Beginning with Chrome version 101, the browser replaced parts of the User-Agent string with static values to protect the user's privacy. Version 101\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/dcTStiBZVoQ/m/KyomPLOnAwAJ}} replaced the MINOR, BUILD, and PATCH version segments with zeros, only leaving the MAJOR segment displaying the actual version (i.e., \texttt{101.0.0.0}). Next, in version 107\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/kC-AeZ1fSdY/m/a_ICuXZRBQAJ}}, the browser replaced the desktop OS version and CPU information with a fixed value for the platform. The latest reduction happened in version 110\footnote{\url{https://groups.google.com/a/chromium.org/g/blink-dev/c/zVOEHwgyyu4/m/8KljdSN9AQAJ}}, where the browser started using a fixed OS version and device model value for Android devices.
 
-While these changes are certainly welcomed from a privacy standpoint, these reductions prevented the implementation of the \texttt{User-Agent} modifying protection, as any change made to this header would be instantly detectable by fingerprinting applications, potentially compromising the effectiveness of the privacy protection.
-
-% TODO: Client hints
+While these changes are certainly welcomed from a privacy standpoint, these reductions complicated the implementation of the \texttt{User-Agent} modifying protection, as any change made to this header would be instantly detectable by fingerprinting applications, potentially compromising the effectiveness of the privacy protection. For this reason, the \texttt{User-Agent} protection primarily focuses on modifying HTTP client hints headers instead of the \texttt{User-Agent} string directly. Despite this, the extension permits users to bypass the browser's \texttt{User-Agent} reduction but discourages them from doing so.
 
 % -------------------------------------------------------------------- %
 
