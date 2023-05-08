@@ -36,20 +36,20 @@ Finally, the last chapter \ref{Chapter:Design} proposes a design of passive fing
 
 % -------------------------------------------------------------------- %
 
-\chapter{Web browsers}
+\chapter{Web browsers and related technology}
 
 Web browsers are a significant part of the everyday life of people worldwide. We use browsers for work, learning, or entertainment across various operating systems and device form factors.
 
-This chapter describes the parts of the browser ecosystem relevant to the topic of this work. The first section \ref{Section:BrowsersHistory} briefly explains web browsers' history, highlighting a few important milestones for browsers as we know them today. It is essential to be aware of the historical development as the constant rush to add new features and possibilities to browsers has played a significant role in giving rise to the threat of fingerprinting.
+This chapter describes the parts of the browser ecosystem relevant to the topic of this work. The first section \ref{Section:BrowsersHistory} briefly explains web browsers' history, highlighting a few important milestones for browsers as they are known today. It is essential to be aware of the historical development as the constant rush to add new features and possibilities to browsers has played a significant role in giving rise to the threat of fingerprinting.
 
-The following sections, \ref{Section:JS} and \ref{Section:HTTP}, examine JavaScript and Hypertext Transfer Protocol (HTTP) as both are cornerstones of this work. Both sections provide an outlook on the role of JS and HTTP in the World Wide Web.
+The following sections, \ref{Section:JS} and \ref{Section:HTTP}, examine JavaScript and Hypertext Transfer Protocol (HTTP) as both are cornerstones of this work. Both sections provide an outlook on the role of JavaScript and HTTP in the World Wide Web.
 
-The last section \ref{Section:Extensions} discusses browser extensions, a significant innovation that allows users to tailor their browsing experience to their unique needs and preferences. As this thesis aims to build a browser extension, the section goes more in-depth, providing a comprehensive understanding of browser extensions, their components, and technological advancements that contributed to their present state.
+The last section \ref{Section:Extensions} discusses browser extensions, versatile tools that enable users to tailor their browsing experience to their unique needs and preferences. As this thesis aims to build a browser extension, the section goes more in-depth, providing a comprehensive understanding of browser extensions, their components, and technological advancements that contributed to their present state.
 
 \section{History of web browsers}
 \label{Section:BrowsersHistory}
 
-Web browsers have come a long way since the early days of the World Wide Web. From their humble beginnings as basic applications for viewing text-only web pages, modern browsers have evolved into the powerful tools we know today. Following paragraphs outline the evolution of browsers, highlighting a few of the most significant features added over the years.
+Web browsers have come a long way since the early days of the World Wide Web. Web browsers have come a long way since the early days of the World Wide Web. From their humble beginnings as basic applications for viewing text-only web pages, modern browsers have evolved into sophisticated and versatile platforms, bridging the gap between operating systems and the web. Following paragraphs outline the evolution of browsers, highlighting a few of the most significant features added over the years.
 
 The first browser, named WorldWideWeb\footnote{\url{https://worldwideweb.cern.ch}}, was created at CERN by Tim Berners-Lee only a year after he published the first World Wide Web proposal \cite{WWWProposal}. The very early browser aimed to demonstrate how the user-facing layer of the WWW (browsers) could work in the future. The browser was only available on the NeXTSTEP\footnote{\url{https://en.wikipedia.org/wiki/NeXTSTEP}} operating system and had limited features.
 
@@ -57,7 +57,7 @@ One of the earliest features added to browsers was support for images. The Mosai
 
 As the web gained popularity, developers needed a way to make web pages more interactive and dynamic. The birth of JavaScript programming language addressed this need. JavaScript was first introduced in 1995\footnote{\url{https://en.wikipedia.org/wiki/Netscape_Navigator_2}} by Netscape Communications Corporation to add interactivity to static HTML pages. Since then, it has become one of the world's most widely used programming languages, with a vast ecosystem of libraries and frameworks\footnote{\url{https://www.npmjs.com/}}.
 
-Nowadays, web browsers expose a variety of JavaScript APIs that allow web developers to interact with the browser and its underlying components, such as the operating system or even the hardware. While it is true that these APIs gave the developers much-needed possibilities, they come at the cost of compromised privacy, described in detail in the following chapters.
+Nowadays, web browsers expose a variety of JavaScript APIs that allow web developers to interact with the browser and its underlying components, such as the operating system or even the hardware. As highlighted by Shauer in 2021, modern browsers now provide access to over 100 JavaScript APIs \cite{SchauerDP}. While it is true that these APIs gave the developers much-needed possibilities, they come at the cost of compromised privacy, described in detail in the following chapters.
 
 \section{JavaScript}
 \label{Section:JS}
@@ -76,7 +76,7 @@ Although ECMAScript is technically the correct name for the language, JavaScript
 
 \subsection{Web APIs}
 
-Web applications can use JavaScript Web APIs to interact with various web browser features and functionality. The number of available APIs depends on the browser. For example, at the time of the writing, Firefox had more than 100 APIs\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API}}, with more APIs still being added. Here is a short selection of Web APIs important to the topic of this thesis \cite{SecurityWebDevs, SchauerDP}:
+Web applications can use JavaScript Web APIs to interact with various web browser features and functionality. The number of available APIs depends on the browser. For instance, at the time of the writing, Firefox featured more than 100 Web APIs\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API}}, some of which were experimental, and more are likely to be added. Here is a short selection of Web APIs important to the topic of this thesis \cite{SecurityWebDevs, SchauerDP}:
 
 \begin{itemize}
 	\item \textbf{Canvas API}: Provides a way to dynamically create and manipulate graphics and animations in a web page using JavaScript.
@@ -90,9 +90,9 @@ All the APIs listed above are commonly used in fingerprinting to identify device
 \section{Hypertext Transfer Protocol (HTTP)}
 \label{Section:HTTP}
 
-HTTP is a request-response protocol that allows web browsers to request resources from web servers and receive responses, including the requested resources \cite{MasteringNodeJS}. HTTP is an essential application-layer protocol for transmitting web pages, images, videos, and other resources across the World Wide Web.
+HTTP is a request-response protocol that allows web browsers to request resources from web servers and receive responses containing the requested resources \cite{MasteringNodeJS}. HTTP is an essential application-layer protocol for transmitting web pages, images, videos, and other resources across the World Wide Web.
 
-When a user types a URL into a web browser's address bar, the browser sends an HTTP request to the server hosting the resource. This request typically contains information such as the request's method, the URL of the requested resource, and any HTTP headers or other metadata associated with the request. The server then resolves the request and sends a response containing the response status code and body, among other things.
+After a user types a URL into a web browser's address bar, the browser sends an HTTP request to the server hosting the resource. This request typically contains information such as the request's method, the URL of the requested resource, and any HTTP headers or other metadata associated with the request. The server then resolves the request and sends a response containing the response status code and body.
 
 Web applications can request browsers to send HTTP requests on their behalf with the help of `XMLHttpRequest` (XHR)\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest}} or `Fetch` API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}} APIs. These APIs enable web applications to communicate with servers asynchronously, allowing for dynamic content updates without needing a full page refresh. To optimize performance, web applications often initially transfer only a minimal amount of HTML and JavaScript with the first request. Once the basic structure, or "skeleton," is loaded, the application can request and load additional resources, such as images, stylesheets, and more complex scripts.
 
@@ -109,11 +109,11 @@ The HTTP specification \cite{RFC9110} defines various methods applications use t
 	\item \textbf{OPTIONS}: Requests the supported communication methods for the specified resource.
 \end{itemize}
 
-From the above listed, all but the POST method are idempotent, meaning the server's state will be identical no matter how many identical requests the server receives.
+From the above listed, all but the POST method are idempotent, meaning the server's state will remain unchanged no matter how many identical requests the server receives.
 
 \subsection{HTTP headers}
 
-HTTP headers\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers}} are key-value pairs sent by the client and server in an HTTP request or response. They are used to transfer additional metadata about the request or response, such as the type of content, encoding, caching policies, and authentication or authorization information. An HTTP header consists of a case-insensitive name and a value separated by a colon (\uv{:}). \cite{RFC9110}
+HTTP headers\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers}} are key-value pairs sent by the client and server in an HTTP request or response. They are used to transfer additional metadata about the request or response, such as the type of content, encoding, caching policies, and authentication or authorization information. An HTTP header consists of a case-insensitive name and a value separated by a colon (\uv{:}) \cite{RFC9110}.
 
 Among the most common HTTP headers are \cite{MDN}:
 
@@ -124,24 +124,22 @@ Among the most common HTTP headers are \cite{MDN}:
 	\item \textbf{Authorization}: Contains credentials for authentication and authorization.
 \end{itemize}
 
-As previously mentioned, web applications can send custom HTTP requests. During this process, the browser automatically appends default headers to the request. However, web applications can add their own headers or modify the default headers to suit their needs.
+As previously mentioned, web applications can utilize specific Web APIs (e.g., the Fetch API) to task the browser to send HTTP requests on their behalf. During this process, the browser automatically appends default headers to the request. However, web applications can add their own headers or modify the default headers to suit their needs.
 
-HTTP headers play an integral role in browser fingerprinting, as they can be used to passively identify and track users based on their browser settings and preferences. 
+HTTP headers play an integral role in browser fingerprinting, as they can be used to passively identify and track users based on their browser settings and preferences \cite{FingerprintingSurvey}. By examining a specific set of HTTP headers, including browser type, version, and user's operating system, trackers can create a unique fingerprint for each device and its user. This fingerprint can then be used to monitor user behavior and browsing habits. More on the role of HTTP headers in passive fingerprinting can be found in section \ref{Section:FingerprintingApproaches}.
 
 \section{Browser extensions}
 \label{Section:Extensions}
 
 Browser extensions, or add-ons, can modify and enhance the capability of a browser \cite{MDNWebExtensions}. Users install extensions for various reasons, such as to increase security or productivity, remove ads, or modify the browser UI to their liking. Each browser implements extensions slightly differently, but to a large extent, most browsers follow the WebExtensions API standard.
 
-This section describes the WebExtensions API standard mentioned before and the recently introduced Manifest V3, which significantly affects the ecosystem of browser extensions.
+This section describes the WebExtensions API standard and the recently introduced Manifest V3, which significantly affects the ecosystem of browser extensions by introducing new restrictions and altering certain extension capabilities.
 
 \subsection{WebExtensions API}
 
 WebExtensions API, first introduced by Google in chromium-based browsers, is a set of special-purpose APIs the browser provides to installed extensions. Firefox\footnote{\url{https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions}}, Safari\footnote{\url{https://developer.apple.com/documentation/safariservices/safari_web_extensions}}, and Opera\footnote{\url{https://dev.opera.com/extensions/apis}} have become widely compatible with the WebExtensions API, making it the standard across all major web browsers. This broad adoption allowed developers to create cross-browser extensions with minor changes to the original codebase.
 
-WebExtensions API provides a wide range of functionality for building browser extensions, including access to browser tabs and windows, manipulating web pages and user settings, and interacting with other extensions and websites \cite{ChromeWebExtensions}.
-
-WebExtension API differs from the standard JavaScript Web APIs described in the previous section. Applications use the standard Web APIs to interact with the content and functionality of a web page. In contrast, extensions use the WebExtensions APIs to interact with the browser itself. Some of the interfaces provided by the WebExtensions API are \cite{ChromeWebExtensions}:
+WebExtensions API provides a wide range of functionality for building browser extensions, including access to browser tabs and windows, manipulating web pages and user settings, and interacting with other extensions and websites \cite{ChromeWebExtensions}. This API differs from the traditional Web APIs described in the previous section. Web applications use Web APIs to interact with the content and functionality of a web page. In contrast, extensions use the WebExtensions APIs to interact with the browser itself. Some of the interfaces provided by the WebExtensions API are \cite{ChromeWebExtensions}:
 
 \begin{itemize}
 	\item \textbf{Cookies API}: Allows to query and modify cookies. Extensions can also configure a callback function browser calls whenever a particular cookie changes.
@@ -159,7 +157,7 @@ Extensions, in their essence, are lightweight software modules that are running 
 A typical architecture of a browser extension consists of several components that work together to achieve the desired functionality. These components include \cite{ChromeWebExtensions}:
 
 \begin{itemize}
-	\item \textbf{Manifest file}: A required JSON file in the root of the extension source directory that contains metadata about the extension, such as its name, version, description, and permissions. It also defines the various components of the extension and their roles.
+	\item \textbf{Manifest file}: A mandatory JSON file in the root of the extension source directory that contains metadata about the extension, such as its name, version, description, and permissions. It also defines the various components of the extension and their roles.
 	\item \textbf{Service workers (background scripts)}: JavaScript files that run in the background and handle the core logic of the extension. They manage persistent states, listen for browser events, and interact with Web APIs.
 	\item \textbf{Content scripts}: JavaScript files that run in the context of a web page and have access to the DOM of that page. They enable the extension to read or modify the content of web pages and interact with user actions. Content scripts run in an isolated environment, limiting their access to the same-origin policy of the web page.
 	\item \textbf{Popups}: An optional user interface that provides a quick and easy way for users to interact with the extension. It usually appears when a user clicks on the extension's icon in the browser toolbar. Popups are transient and close when they lose focus.
@@ -170,9 +168,7 @@ In summary, the typical architecture of a browser extension involves a Manifest 
 
 \subsubsection{Manifest file}
 
-The Manifest file is the only file that must be present in every extension. The file must have the name `manifest.json` and be in the extension's root directory.
-
-Out of all the configuration fields the Manifest file supports, only three of these fields are mandatory, according to the Manifest file format documentation\footnote{\url{https://developer.chrome.com/docs/extensions/mv3/manifest/}}:
+The Manifest file is the only file that must be present in every extension. The file must have the name \texttt{manifest.json} and be in the extension's root directory. Out of the wide range of configuration options, only three are mandatory, according to the Manifest file format documentation \footnote{\url{https://developer.chrome.com/docs/extensions/mv3/manifest/}}:
 
 \begin{itemize}
 	\item \textbf{manifest\_version}: An integer value specifying the version of the Manifest file. Since June 2022, the only allowed value by the Chrome Web Store\footnote{{\url{https://chrome.google.com/webstore/category/extensions}}} has been \uv{3} for all newly added extensions. The January 2024 deadline, when the Chrome Web Store stops accepting updates to existing Manifest V2 extensions, has been postponed, meaning there is no official date for the end of life of Manifest V2.
@@ -188,7 +184,7 @@ Apart from the three mandatory fields, the Manifest file supports a wide range o
 	\item \textbf{permissions}: An array of string keys specifying the granular permissions the extension requires. The browser informs the user what permissions the extension requires during installation.
 \end{itemize}
 
-In January 2022, the Chrome Web Store began the long-awaited transition to the new version of the Manifest file, Manifest V3. The Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeWebExtensions}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeWebExtensions}:
+In January 2022, the Chrome Web Store began transitioning to the new version of the Manifest file, Manifest V3. The Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeWebExtensions}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeWebExtensions}:
 
 \begin{itemize}
 	\item \textbf{Service workers}: Manifest V3 replaces background pages\footnote{Manifest V2 extensions used background pages to run a single persistent script to manage tasks, or a state of the extension \cite{ChromeManifestV2}.} with extension service workers, similar to traditional web service workers.
@@ -234,17 +230,17 @@ Although welcomed from a privacy-concerned standpoint, these changes made it mor
 
 \medbreak
 
-Listing \ref{Listing:ManifestV3RuleExample} shows an example of the new declarative rule syntax. The rule defined above modifies request headers, specifically removing a header named \texttt{h1}, changing the value of \texttt{h2}, and adding a new header, \texttt{h3}.
+Listing \ref{Listing:ManifestV3RuleExample} shows an example of the new declarative rule syntax. The rule modifies request headers, specifically removing a header named \texttt{h1}, changing the value of \texttt{h2}, and adding a new header, \texttt{h3}.
 
 At the time of the writing, Manifest V2 extensions are transitioning to Manifest V3. Although no official date is set\footnote{\url{https://developer.chrome.com/docs/extensions/migrating/mv2-sunset/}}, the Chrome Web Store will eventually stop accepting updates to old Manifest V2 extensions. For this reason and to avoid confusion, this thesis will only consider Manifest V3 in the following chapters.
 
 \subsubsection{Service workers}
 
-Extension service workers represent a significant update in how browser extensions handle background tasks, focusing on enhancing security, privacy, and performance. Replacing the previously used background scripts, service workers offer more efficient resource management, better offline capabilities, and improved security features for browser extensions. This shift aligns with the ongoing evolution of web technologies\footnote{{\url{https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/}}} and the need for a more secure and reliable foundation for extension development.
+Extension service workers represent a significant update in how browser extensions handle background tasks, focusing on enhancing security, privacy, and performance. Replacing the previously used background scripts, service workers provide more efficient resource management by reducing memory consumption and CPU usage, better offline capabilities through caching, and enhanced security features for browser extensions, contributing to a more optimized user experience. This shift aligns with the ongoing evolution of web technologies\footnote{{\url{https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/}}} and the need for a more secure and reliable foundation for extension development.
 
-Service workers are event-driven, meaning they only run when needed, unlike persistent background scripts \cite{ChromeWebExtensions}. This reduction in resource consumption improves the overall performance of the browser. Additionally, service workers can cache resources and intercept network requests, enabling them to work efficiently even when the user is offline. This feature can enhance the responsiveness and reliability of extensions, even under poor network conditions.
+Unlike persistent background scripts, service workers are event-driven, meaning they only run when needed. This reduction in resource consumption improves the overall performance of the browser \cite{ChromeWebExtensions}. Additionally, service workers utilize the new CacheStorage API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage}} to cache resources and intercept network requests, enabling them to work efficiently even when the user is offline. This feature can enhance the responsiveness and reliability of extensions, even under poor network conditions.
 
-Enhanced security is another significant benefit of service workers in Manifest V3 extensions. Running in a separate thread from the main browser process and having a limited scope, service workers help reduce the attack surface of extensions. With a more restrictive API surface compared to background pages, the risks associated with potential security vulnerabilities are minimized. Introducing service workers in Manifest V3 offers a more secure, efficient, and reliable foundation for developing browser extensions.
+Enhanced security is another significant benefit of service workers in Manifest V3 extensions. Running in a separate thread from the main browser process and having a limited scope, service workers help reduce the attack surface of extensions. With a more restrictive API surface compared to background pages, the risks associated with potential security vulnerabilities are lowered.
 
 Service workers cannot access the DOM API as they are running in a separate thread. Extensions that want to modify the DOM must do so in an alternative API, such as the Offscreen API\footnote{\url{https://developer.chrome.com/docs/extensions/reference/offscreen/}}.
 
@@ -258,7 +254,7 @@ To use content scripts in a browser extension, developers must declare them in t
 
 \subsubsection{Popups}
 
-Extension popups are standalone HTML documents associated with the extension's button in the browser toolbar \cite{ChromeWebExtensions}. When a user clicks the button, the browser will show a popup. Popups are closed when a user either outside the popup or again on the extension's toolbar button.
+Extension popups are standalone HTML documents associated with the extension's action button in the browser toolbar \cite{ChromeWebExtensions}. When a user clicks the action button, the browser shows a popup. Popups are closed when a user clicks either outside the popup or clicks again on the extension's action button.
 
 Like standard web pages, the popup's HTML document can import external CSS and JavaScript files. Unlike standard web pages, however, the popup can access the WebExtensions API exposed by the browser. Of course, the extension can only access the APIs requested in the Manifest file.
 
@@ -273,55 +269,39 @@ Browsers wrap popups in a wrapper element to match the visual styling across all
 \chapter{Browser fingerprinting}
 \label{Chapter:BrowserFingerprinting}
 
-Fingerprinting is a process of obtaining information about a user's device to construct a digital marker called a fingerprint. Applications can construct a fingerprint from various characteristics, such as information about the device hardware, operating system, and browser, or seemingly unimportant information, such as installed fonts or a language preference. Given that the selected characteristics are uncommon, either individually or in combination with others, applications can track devices until the characteristics change enough to affect the fingerprint.
+Fingerprinting is a process of obtaining information about a user's device to construct a digital identifier called a fingerprint. Applications can construct a fingerprint from various characteristics, such as information about the device hardware, operating system, and browser, or seemingly unimportant information, such as installed fonts or a language preference. Given that the selected characteristics are uncommon, individually or in combination with others, applications can track devices until the characteristics change enough to affect the fingerprint.
 
-Browser fingerprinting is a subcategory where the application tries to create a fingerprint from the information available in a browser \cite{FingerprintingSurvey}. As the main focuses of this theses are browsers and browser extensions, the term fingerprinting will be used predominantly over browser fingerprinting for ease of reading. Contrary to other identification techniques like cookies that rely on a unique identifier (ID) directly stored inside the browser, browser fingerprinting is qualified as entirely stateless. It does not leave any trace as it does not require storing information inside the browser \cite{FingerprintingSurvey}.
+Browser fingerprinting is a subcategory where the application tries to create a fingerprint from the information available in a browser \cite{FingerprintingSurvey}.  As the main focus of this thesis is browsers and browser extensions, the term fingerprinting will be used predominantly over browser fingerprinting for ease of reading. Contrary to other identification techniques like cookies that rely on a unique identifier (ID) directly stored inside the browser, browser fingerprinting is qualified as entirely stateless. It does not leave any trace as it does not require storing information inside the browser \cite{FingerprintingSurvey}.
 
 The characteristics to construct a fingerprint may be collected either actively, typically by running a JavaScript code inside a browser, or passively by monitoring the network communication. Most characteristics commonly used for fingerprinting are obtainable only through the browser Web APIs \cite{VondracekDP}. For this reason, the majority of available anti-fingerprinting solutions focus primarily on mitigating the active fingerprinting.
 
-The first section, \ref{Section:FingerprintingHistory}, briefly tells the history of browser fingerprinting, from the time it was explored for the first time to its current form. Section \ref{Section:FingerprintingCounter} describes the most common fingerprinting countermeasures, and the third section, \ref{Section:FingerprintingApproaches}, compares the active and passive fingerprinting approaches fingerprinting applications use to collect data. The last section, \ref{UnderstandingFingerprinting}, summarizes the threats and opportunities fingerprinting brings to the table.
+The first section, \ref{Section:FingerprintingHistory}, briefly tells the history of browser fingerprinting, offering insight into its development over time. The following section, \ref{UnderstandingFingerprinting}, examines the impacts of fingerprinting, emphasizing the importance of recognizing its dual nature. Then, section \ref{Section:FingerprintingApproaches} describes the difference between active and passive fingerprinting, while section \ref{Section:FingerprintingCounter} describes the most common fingerprinting countermeasures. Finally, section \ref{Section:FingerprintingSoftware} covers the existing software solutions used to combat fingerprinting.
 
 \section{History of browser fingerprinting}
 \label{Section:FingerprintingHistory}
 
-Laperdrix et al. \cite{FingerprintingSurvey} provide excellent insight into the history of browser fingerprinting. In 2009, Johnathan R. Mayer investigated \cite{MayerAnyPerson} if remote servers could exploit the differences presented by browsers to deanonymize or uniquely identify their users. He conducted an experiment where he collected the contents of the \texttt{Navigator}, \texttt{Screen}, \texttt{Navigator.plugins}, and \texttt{Navigator.mimeTypes} objects of browsers that connected to the website of his experiment. Once collected, the contents were concatenated, hashed using the MD5 algorithm, and sent to a remote server for storage. Of 1328 clients, he uniquely identified 1278 (96.23\%). However, he added that the scale of his experiment was too small to draw any meaningful conclusions and that the hashing-based algorithm masks which properties contributed to the uniqueness.
+Laperdrix et al. \cite{FingerprintingSurvey} provide an insight into the history of browser fingerprinting. In 2009, Johnathan R. Mayer investigated \cite{MayerAnyPerson} if remote servers could exploit the differences presented by browsers to deanonymize or uniquely identify their users. He conducted an experiment where he collected the contents of the \texttt{Navigator}, \texttt{Screen}, \texttt{Navigator.plugins}, and \texttt{Navigator.mimeTypes} objects of browsers that connected to the website of his experiment. Once collected, the contents were concatenated, hashed using the MD5 algorithm, and sent to a remote server for storage. He managed to uniquely identify 1278 out of 1328 clients (96.23\%) in this experiment. However, he added that the scale of his experiment was too small to draw any meaningful conclusions and that the hashing-based algorithm masks which properties contributed to the uniqueness.
 
 A year later, in 2010, Peter Eckersley pushed the research of fingerprinting further when he conducted a Panopticlick experiment \cite{EckersleyHowUnique}. He obtained over 470 thousand fingerprints in this experiment, uniquely identifying 83.6\%. The number of identified browsers was even higher if browsers supported Flash or Java. Out of these browsers, he was able to identify 94.2\% uniquely.
 
-Since these two works were published, fingerprinting became a standard in the industry thanks to easy-to-use solutions like FingerprintJS\footnote{\url{https://fingerprint.com}}, which has an open-source core. This broad and rapid adoption of fingerprinting practices brought severe security and privacy implications \cite{WP224Fingerprinting}, resulting in the growing popularity of solutions focusing on mitigating fingerprinting.
+Since these two works were published, fingerprinting became a standard in the industry mainly because of easy-to-use solutions like FingerprintJS\footnote{\url{https://fingerprint.com}}, which has an open-source core. This broad and rapid adoption of fingerprinting practices brought severe security and privacy implications \cite{WP224Fingerprinting}, resulting in the growing popularity of solutions focusing on mitigating fingerprinting.
 
 \section{Understanding the impacts of fingerprinting}
 \label{UnderstandingFingerprinting}
 
-The practice of fingerprinting is widely recognized for its potential invasion of privacy. However, its impacts are not simply positive or negative like many things in life. This chapter explores the various effects of fingerprinting, including both its benefits and drawbacks. Additionally, real-world examples are provided to illustrate these impacts in practice.
+The practice of fingerprinting is widely recognized for its potential invasion of privacy. However, its impacts are not simply positive or negative. This chapter explores the various effects of fingerprinting, including both its benefits and drawbacks. Additionally, real-world examples are provided to illustrate these impacts in practice.
 
 \subsection{Benefits of fingerprinting}
 
 The ability to uniquely identify a device and, by extension, its owner allows third parties to modify the behavior of their services and applications. One essential application of browser fingerprinting is to enhance security and user experiences.
 
-Specifically, applications can utilize fingerprinting for payment fraud prevention and detection \cite{FingerprintJSUseCases}. By doing so, they can block users who attempt to use stolen credit, debit, or checking information to make illicit transactions. In this context, fingerprinting serves as an additional layer of protection for both businesses and consumers, ensuring that financial transactions remain secure and trustworthy.
+Specifically, applications can utilize fingerprinting for payment fraud prevention and detection \cite{FingerprintJSUseCases}.  By doing so, they can identify and block users who attempt to use stolen credit, debit, or checking information to make illicit transactions. In this context, fingerprinting serves as an additional layer of protection for both businesses and consumers, ensuring that financial transactions remain secure and trustworthy.
 
 \subsection{Drawbacks of fingerprinting}
 
 Fingerprinting, despite its numerous benefits, has gained popularity primarily due to its potential to violate users' privacy \cite{WP224Fingerprinting}. Tracking individuals over extended periods is possible until the device's characteristics change sufficiently to alter the fingerprint. This pervasive surveillance capability has raised concerns about balancing utility and personal privacy.
 
 When a person is being tracked, applications can display advertisements or products tailored to the user based on their browsing history and online activity. This targeted marketing approach is designed to boost business sales, but it further highlights the potential intrusion of privacy associated with fingerprinting.
-
-\section{Fingerprinting countermeasures}
-\label{Section:FingerprintingCounter}
-
-Although not straightforward, to a certain degree, it is possible to fight against fingerprinting. Fingerprinting countermeasures are typically categorized followingly \cite{JShelterPaper, PriVaricator}:
-
-\begin{itemize}
-	\item \textbf{Creating a homogenous fingerprint}: Fingerprinting tries to find differences between devices to identify them. Hypothetically, if every device in the world had the same characteristics (and thus the same fingerprint), identification would not be possible because each device would be indistinguishable from others. However, every valuable device characteristic exposed to the fingerprinting application must be the same to create absolute homogeneity. If one or more characteristics differ, the anonymity set breaks into smaller ones, making the identification possible again. As Mayer discovered in his work \cite{MayerAnyPerson}, systems with fewer customization options create larger anonymity sets due to the need for more differentiating characteristics.
-	\item \textbf{Altering the fingerprint for each domain to prevent cross-domain tracking}: Values of characteristics commonly used to construct a fingerprint are adjusted for each domain, making tracking the device across multiple domains challenging. Algorithms performing these adjustments are doing so in a seemingly random way to avoid being detected by the fingerprinting application.
-	\item \textbf{Altering the fingerprint for each session to prevent cross-session tracking}: Similar to the previous cross-domain countermeasure, but values of characteristics are changed for each browsing session. In other words, the fingerprint is different whenever the browser is closed and reopened again. Compared to the previous cross-domain countermeasure, the fingerprint typically changes less frequently.
-	\item \textbf{Detecting and blocking fingerprinting}: Protection tools implementing this countermeasure attempt to detect fingerprinting in real-time, block access to the Web APIs commonly misused for fingerprinting, or limit the page's ability to upload the fingerprint. This approach is strict and potentially intrusive as it can limit the functionality of the visited application, or, in the worst scenario, it could break the page completely.
-\end{itemize}
-
-A common practice for applications implementing these countermeasures is combining two or more categories for better overall protection \cite{JShelterPaper}. The type of application is also significant. Usually, the closer the algorithm is to the operating system's core, the more capabilities it has to fight fingerprinting. Browser extensions are more restricted than browsers, which are more restricted than the operating system.
-
-It is also important to note that it is very complicated to counter fingerprinting fully. The process of collecting the fingerprint can be detected, but it is impossible to verify if changes made to the data affected the fingerprint. Current protection tools are only mitigating the threat rather than eradicating it completely.
 
 \section{Approaches to fingerprinting}
 \label{Section:FingerprintingApproaches}
@@ -341,6 +321,8 @@ Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, lik
 \medbreak
 
 Running a JavaScript code in a browser is a potent tool to collect data about the software and hardware on the device. Modern browsers provide Web APIs to give websites native-like capabilities, often allowing developers to access detailed data about the system's underlying components \cite{VondracekDP}. A commonly misused Web API is the Navigator\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Navigator}} interface which represents the state and the identity of the user agent running the script. Another example is the Screen\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Screen}} interface which represents a screen, usually the one on which the current window is being rendered. Scripts often collect binary data to complement the textual data collected from other Web APIs. For example, it is typical for a fingerprinting application to use the Canvas API\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API}} to draw an image to test how the system renders text, emojis, or shapes. Even slight differences in the rendered image can help the fingerprinting application identify the device \cite{VondracekDP}.
+
+Table \ref{Table:ActiveDataExamples} shows a few examples of information obtainable through browser APIs. The fingerprinting applications prefer characteristics that change less frequently or are entirely static. For example, the battery percentage will likely change often, which can affect the resulting fingerprint. On the other hand, the number of logical processors will remain the same for the device unless it is virtualized or the user replaces its CPU.
 
 \begin{table}[H]
 	\centering
@@ -364,13 +346,13 @@ Running a JavaScript code in a browser is a potent tool to collect data about th
 	\label{Table:ActiveDataExamples}
 \end{table}
 
-Table \ref{Table:ActiveDataExamples} shows a few examples of information obtainable through browser APIs. The fingerprinting applications prefer characteristics that change less frequently or are entirely static. For example, the battery percentage will likely change often, which can affect the resulting fingerprint. On the other hand, the number of logical processors will remain the same for the device unless it is virtualized or the user replaces its CPU.
+Network requests include fewer suitable characteristics than active fingerprinting with access to browser Web APIs. However, passive fingerprinting is not observable from the device as there is no need to execute a script in the browser. This lack of observability makes detecting fingerprinting very complicated, which is why this fingerprinting approach might be preferred over active fingerprinting.
 
 \subsection{Passive fingerprinting}
 
 Passive fingerprinting collects information needed to create a browser fingerprint from data observable in network traffic. As the name suggests, this approach does not require running a script directly in the browser, but instead, it only consumes incoming network traffic and picks the information it needs.
 
-Passive fingerprinting typically collects data from HTTP request headers or other parts of incoming network traffic \cite{JShelterPaper}. Network requests include fewer suitable characteristics than active fingerprinting with access to browser Web APIs. However, fingerprinting is not observable from the device as there is no need to execute a script in the browser. This lack of observability makes it very complicated to detect passive fingerprinting.
+Passive fingerprinting typically collects data from HTTP request headers or other parts of incoming network traffic \cite{JShelterPaper}. Table \ref{Table:PassiveDataExamples} shows examples of data directly available in request headers commonly used in passive fingerprinting.
 
 \begin{table}[H]
 	\centering
@@ -390,7 +372,7 @@ Passive fingerprinting typically collects data from HTTP request headers or othe
 	\label{Table:PassiveDataExamples}
 \end{table}
 
-Table \ref{Table:PassiveDataExamples} shows examples of data directly available in request headers typically used in passive fingerprinting.
+Network requests include fewer suitable characteristics than active fingerprinting with access to browser Web APIs. However, fingerprinting is not observable from the device as there is no need to execute a script in the browser. This lack of observability makes detecting fingerprinting very complicated, which is why this fingerprinting approach might be preferred over active fingerprinting.
 
 \subsection{Inconsistencies}
 
@@ -407,21 +389,39 @@ Among the examples shown in tables \ref{Table:ActiveDataExamples} and \ref{Table
 
 Suppose a countermeasure algorithm misapplies the transformation to a data source, or the data source is left unchanged entirely. In that case, the fingerprinting application can detect and act on this attempt at fingerprint manipulation.
 
+Additionally, some information can be indirectly derived from other available data. Even if the primary data sources have been modified, specific characteristics can still be inferred from secondary sources or through indirect analysis. For example, by enumerating the installed fonts, one can derive the operating system and, in some cases, also its version \cite{JSTemplateAttacks}.
+
+\section{Fingerprinting countermeasures}
+\label{Section:FingerprintingCounter}
+
+Countering fingerprinting may be challenging, but it is feasible to a certain extent. Fingerprinting countermeasures are typically categorized followingly \cite{JShelterPaper, PriVaricator}:
+
+\begin{itemize}
+	\item \textbf{Creating a homogenous fingerprint}: Fingerprinting attempts to find differences between devices big enough to identify them uniquely. Hypothetically, if every device in the world had the same characteristics (and thus the same fingerprint), identification would not have been possible because each device would be indistinguishable from others. However, every valuable device characteristic exposed to the fingerprinting application must be the same to create absolute homogeneity. If one or more characteristics differ, the anonymity set breaks into smaller ones, making the identification possible again. As Mayer discovered in his work \cite{MayerAnyPerson}, systems with fewer customization options create larger anonymity sets due to the need for more differentiating characteristics.
+	\item \textbf{Altering the fingerprint for \underline{each domain} to prevent cross-domain tracking}: Values of characteristics commonly used to construct a fingerprint are adjusted for each domain, making tracking the device across multiple domains challenging. Algorithms performing these alterations are doing so in a seemingly random way to avoid being detected by the fingerprinting application. Crucially, alterations must be subtle enough not to impact website user experience or functionality significantly. Because of their subtle nature, these alterations are also referred to as \uv{little lies}.
+	\item \textbf{Altering the fingerprint for \underline{each session} to prevent cross-session tracking}: Similar to the previous cross-domain countermeasure, but values of characteristics are changed for each browsing session. In other words, the fingerprint is different whenever the browser is closed and reopened again. Compared to the previous cross-domain countermeasure, the fingerprint typically changes less frequently.
+	\item \textbf{Detecting and blocking fingerprinting}: Protection tools implementing this countermeasure attempt to detect fingerprinting in real-time, block access to the Web APIs commonly misused for fingerprinting, or limit the page's ability to upload the fingerprint. This approach is strict and potentially intrusive as it can limit the functionality of the visited application, or, in the worst scenario, it could break the page completely. Some tools, most notably the uBlock Origin extension\footnote{\url{https://ublockorigin.com/}}, come with a predefined set of URLs to block.
+\end{itemize}
+
+Sometimes, applications implementing these countermeasures combine two or more categories for overall protection (e.g., cross-domain and cross-session tracking). The type of application is also significant. Usually, the closer the algorithm is to the operating system's core, the more capabilities it has to fight fingerprinting. Browser extensions are more restricted than browsers, which are more restricted than the operating systems. Generally, operating systems do not directly combat fingerprinting. However, specific fingerprinting techniques, like port scanning, cannot be addressed by applications like browsers and may require operating system-level solutions.
+
+It is also important to note that it is very complicated to counter fingerprinting fully. The process of collecting the fingerprint can be detected, but it is impossible to verify if changes made to the data affected the fingerprint. Current protection tools are only mitigating the threat rather than eradicating it completely.
+
 \section{Existing anti-fingerprinting software}
+\label{Section:FingerprintingSoftware}
 
-In response to the growing concerns discussed in section \ref{UnderstandingFingerprinting}, numerous anti-fingerprinting software solutions have been developed to mitigate this threat. With a focus on web-based applications, these solutions can be integrated directly into browsers or installed as browser extensions.
+In response to the growing concerns discussed in section \ref{UnderstandingFingerprinting}, numerous anti-fingerprinting software solutions have been developed to mitigate this threat \cite{PrivacyTechEvaluation}. With a focus on web-based applications, these solutions can be integrated directly into browsers or installed as browser extensions.
 
-This section outlines selected existing anti-fingerprinting software solutions, examining their strengths and weaknesses. The primary focus has been given to the JShelter extension, which initially, this theses extended.
+This section outlines selected existing anti-fingerprinting software solutions, examining their strengths and weaknesses.
 
 \subsection{Tor browser}
 
 Tor\footnote{\url{https://www.torproject.org/}}, built on top of Mozilla Firefox, is specially designed for privacy and anonymity. Among other protections, it incorporates a variety of anti-fingerprinting measures, including:
 
 \begin{itemize}
-	\item First-party isolation to prevent cross-site tracking.
-	\item Disabling or restricting access to browser features commonly used in fingerprinting, such as WebGL and WebRTC.
-	\item Spoofing the user agent string to make all Tor Browser users appear identical.
-	\item Enforcing a standard window size to prevent screen size-based fingerprinting.
+	\item \textbf{First-party isolation}: To prevent cross-site tracking, Tor segregates cookies, caches, and other browsing data on a per-domain basis by implementing first-party isolation.
+	\item \textbf{API removal (restriction)}: By disabling or restricting access to browser features commonly used in fingerprinting, such as WebGL and WebRTC, Tor effectively reduces the identifiable surface area.
+	\item \textbf{Homogeneity}: Tor promotes user homogeneity by actively spoofing the User-Agent string to make all Tor Browser users appear identical and enforcing a standard window size across all instances, preventing screen size-based fingerprinting. These measures restrict trackers' ability to distinguish individual users and protect user privacy during browsing sessions.
 \end{itemize}
 
 These countermeasures are sometimes extraordinarily strict and limiting, which is precisely why they are very effective.
@@ -431,16 +431,16 @@ These countermeasures are sometimes extraordinarily strict and limiting, which i
 Brave\footnote{\url{https://brave.com/}} is another privacy-focused browser, this time based on the Chromium project. It includes several built-in fingerprinting protection mechanisms:
 
 \begin{itemize}
-	\item Blocking third-party cookies and tracking scripts.
-	\item Limiting access to browser features often used for fingerprinting, such as battery status and device sensors.
-	\item Randomizing specific browser characteristics, like the Canvas API or available fonts, to make fingerprinting more challenging.
+	\item \textbf{Tracking protection}: Brave enhances user privacy by blocking third-party cookies and tracking scripts, effectively reducing the ability of trackers to monitor user activity across websites.
+	\item \textbf{API removal (restriction)}: Brave limits access to browser features often used for fingerprinting, such as battery status and device sensors, to minimize the identifiable information exposed.
+	\item \textbf{Little lies (farbling)}: By randomizing specific browser characteristics, like the Canvas API or available fonts, Brave makes fingerprinting more challenging and helps users blend in with a larger pool of browser configurations.
 \end{itemize}
 
-Brave protections are less severe than Tor's, making Brave users less restricted but, at the same time, more prone to fingerprinting or other privacy-invading techniques.
+Brave protections are less severe than Tor's, offering users more flexibility and customization options. However, this approach makes achieving complete homogeneity among users harder, possibly increasing susceptibility to fingerprinting or other privacy-invading techniques.
 
 \subsection{JShelter}
 
-In 2019, Martin Timko designed and implemented a proof of concept browser extension called \uv{Javascript Restricter} as a part of his master's thesis \cite{MatejTimkoDP}. Inspired by his work, Libor Polčák et al. \cite{JShelterPaper} created JShelter, a browser extension focused on fingerprinting prevention, limitations of rich web APIs, prevention of attacks connected to timing, and learning information about the device, the browser, the user, and surrounding physical environment and location. JShelter offers versions for three major browsers - Firefox, Chrome, and Opera.
+JShelter, evolved from the work of Timko \cite{MatejTimkoDP} and Červinka, is a browser extension focused on fingerprinting prevention, limitations of rich web APIs, prevention of attacks connected to timing, and learning information about the device, the browser, the user, and surrounding physical environment and location. JShelter is available on three of the most popular browser extension stores -- Google Chrome Web Store, Mozilla Add-ons and Opera Add-ons Store.
 
 \subsubsection{JavaScript Shield}
 
@@ -463,24 +463,28 @@ Farbling first deterministically generates a per-session, per-eTLD+1\footnote{eT
 \chapter{Design proposal}
 \label{Chapter:Design}
 
-% TODO: Update the introduction
+This work aims to design and implement a browser extension on the latest Manifest V3 framework capable of misinterpreting HTTP request headers, information commonly used for passive fingerprinting. Initially, this thesis aimed to implement an additional protective shield of the JShelter extension, which would protect against passive fingerprinting. However, due to JShelter's ongoing migration from Manifest V2 to V3, it was decided to create a standalone extension instead. This new extension aims to demonstrate the feasibility of combating passive fingerprinting within the more restrictive constraints of the Manifest V3 framework.
 
-This work aims to design and implement a new protective shield for the JShelter extension that can misrepresent information commonly used for passive fingerprinting. The first section of this chapter emphasizes the importance of avoiding alterations that could disrupt the user experience. Each of the following sections describes a selected HTTP header, proposes a modification to its value, the advantages and disadvantages of this modification, and necessary changes to the browser APIs to maintain consistency.
+In this chapter, the first section \ref{Section:SideEffects} emphasizes the importance of avoiding alterations that could disrupt the user experience. Section \ref{Section:ProtectionsDesign} describes the design of individual protections that modify HTTP headers, discussing the reasoning, presenting examples, and detailing the steps needed to ensure consistency.
 
 \section{Minimizing undesired side effects}
+\label{Section:SideEffects}
 
 Whenever a user loads a webpage, the browser is responsible for constructing the outgoing HTTP request. Headers included in these requests provide valuable additional information servers use to decide on the response. By default, browsers set the headers according to their best knowledge to maximize speed and compatibility.
 
-Protections that modify header values have to do so carefully. No matter how small the change is, it can affect the server's response. For example, English is the prevalent language used on the web. To make the fingerprint look more homogenous, the protection could modify the \texttt{Accept-Language} header to report English as the preferred language. However, the user may need help understanding the content if the server reacts and actually returns a website in English.
+Protections that modify header values have to do so carefully. No matter how small the change is, it can affect the server's response. For example, English is the prevalent language used on the web. To make the fingerprint look more homogenous, the protection could modify the \texttt{Accept-Language} header to report English as the preferred language instead of Czech, the user's original language. However, the user may need help understanding the content if the server reacts and actually returns a website in English.
 
 On the other hand, the alterations made to header values should be substantial enough to obfuscate the device's fingerprint effectively. Striking the right balance is essential in ensuring the implemented protections can prevent fingerprinters from tracking the device while avoiding unintended consequences or errors. Each protection is designed to prevent such unintentional errors while keeping the capability to confuse fingerprinters.
 
 \section{Fingerprinting protections}
+\label{Section:ProtectionsDesign}
 
 The browser extension comprises several independent modules, each implementing passive fingerprinting protection for a single HTTP header or a group of HTTP headers. This separation of concerns allows users to enable only some protections while keeping others disabled.
 
+Each protection modifies the values of the headers it manages every time the browser starts, safeguarding users from cross-session tracking. However, the extension doesn't update header values when switching between different domains during a single browsing session, which may expose users to tracking within that session (cross-domain).
+
 \subsection{Accept}
-\label{Section:HTTPHeaderAccept}
+\label{SubSection:HTTPHeaderAccept}
 
 The \texttt{Accept} request HTTP header indicates which content types the client can understand, expressed as MIME types \cite{MDN}. It is possible to add or remove MIME types to affect the fingerprint. However, the server may react to this modification and respond with an unexpected and incompatible response body.
 
@@ -496,9 +500,9 @@ The protection algorithm removes certain MIME types, which do not result in inco
 
 \subsubsection{Consistency}
 
-Browsers no longer offer a standard API for quickly checking supported MIME types. The \texttt{Navigator.mimeTypes} API that partially allows this check has been deprecated and removed from the relevant web standards \cite{MDNNavigatorInterface}. A fingerprinting application could maintain a list of browser versions and supported MIME types which it would use to compare with the MIME types in the \texttt{Accept} HTTP 
+Browsers no longer offer a standard API for quickly checking supported MIME types. The \texttt{Navigator.mimeTypes} API that partially allowed this check in the past has been deprecated and removed from the relevant web standards \cite{MDNNavigatorInterface}. Due to the absence of a standardized API, determining supported MIME types is a complex task for both the protection and fingerprinting applications. As a result, it is not necessary to make any modifications to Web APIs.
 
-Maintaining consistency but also checking the consistency is not trivial when it comes to the supported MIME types. Therefore, no browser API modifications are necessary.
+Additionally, it's important to mention that a fingerprinting application might keep a record of browser versions and their corresponding supported MIME types. Then, the application could then use this list and the user's browser version to compare the MIME types reported in the `Accept` HTTP header, potentially uncovering an inconsistency.
 
 \subsection{Accept-Language}
 \label{SubSection:AcceptLanguage}
@@ -550,8 +554,6 @@ Device-Memory: 1
 
 \medbreak
 
-% TODO: Explain that the server has to request these headers.
-
 The protection algorithm randomly picks one of the possible values and uses it as the value of the \texttt{Device-Memory} header.
 
 \subsubsection{Consistency}
@@ -562,6 +564,8 @@ The value of the \texttt{Device-Memory} header is also accessible through the \t
 \label{SubSection:UserAgentDesign}
 
 The \texttt{User-Agent} request HTTP header is a string that lets servers and network peers identify the application, operating system, vendor, and version of the requesting user agent \cite{MDN}. The value of this header varies depending on the operating system and browser type and version, making it a valuable fingerprint component.
+
+Figures \ref{Listing:UserAgentChrome} and \ref{Listing:UserAgentSafari} show examples of \texttt{User-Agent} strings of Chrome and Safari, which according to Statcounter GlobalStats\footnote{Statcounter GlobalStats collects statistics from more than 1.5 million sites with yearly views ranging from 5 to 6 billion. These statistics are available at \url{https://gs.statcounter.com/}.}, are the top two browsers with the highest market share of 64.62\% and 18.29\%, respectively.
 
 \bigbreak
 
@@ -575,19 +579,19 @@ Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (K
 
 \medbreak
 
-Figures \ref{Listing:UserAgentChrome} and \ref{Listing:UserAgentSafari} show examples of \texttt{User-Agent} strings of Chrome and Safari, which according to Statcounter GlobalStats\footnote{Statcounter GlobalStats collects statistics from more than 1.5 million sites with yearly views ranging from 5 to 6 billion. These statistics are available at \url{https://gs.statcounter.com/}.}, are the top two browsers with the highest market share of 64.62\% and 18.29\%, respectively. These examples indicate that some browsers and operating systems have version numbers following the semantic versioning specification\cite{SemVerWebsite} or its variation. Semantic versioning in the most recent version 2 is composed of three segments separated by a dot (\uv{"."}), where:
+These examples indicate that some browsers and operating systems have version numbers following the semantic versioning specification \cite{SemVerWebsite} or its variation. Semantic versioning in the most recent version 2 is composed of three segments separated by a dot (\uv{"."}), where:
 
 \begin{itemize}
-	\item The first segment (\textbf{MAJOR}) is incremented when an incompatibility, such as a breaking API change, is introduced.
-	\item The second segment (\textbf{MINOR}) is incremented when new functionality is added while maintaining backward compatibility.
-	\item The last segment (\textbf{PATCH}) is incremented for all other changes, for example, a bug fix or code refactoring.
+	\item The first segment (MAJOR) is incremented when an incompatibility, such as a breaking API change, is introduced.
+	\item The second segment (MINOR) is incremented when new functionality is added while maintaining backward compatibility.
+	\item The last segment (PATCH) is incremented for all other changes, for example, a bug fix or code refactoring.
 \end{itemize}
 
 Based on the observation that some software versions in the \texttt{User-Agent} string follow the semantic versioning specification, we can assume that:
 
 \begin{enumerate}
-	\item Given two version numbers differ only in the last segment (\textbf{PATCH}), we know these software builds should have the same functionalities, meaning they should be indistinguishable for the user.
-	\item A change (either an increment or a decrement) of the (\textbf{PATCH}) segment value would likely affect the device's fingerprint. However, at the same time, it is unlikely that the change would cause any undesired side effects.
+	\item Software builds with version numbers that differ only in the last segment (PATCH) are expected to have the same functionalities. In other words, the user should not be able to distinguish any difference between them in terms of features and capabilities.
+	\item A change (either an increment or a decrement) of the (PATCH) segment value would likely affect the device's fingerprint. However, at the same time, it is unlikely that the change would cause any undesired side effects.
 \end{enumerate}
 
 The protection cannot apply changes at random, as this could introduce invalid version numbers that have yet to be released. Invalid version numbers could be used by the fingerprinting application to discover an attempt at fingerprint manipulation. Instead, the extension keeps a list of previously released versions gathered from the changelog\footnote{Software products typically maintain a list of published versions. For example, the changelog of Chrome is available at \url{https://chromereleases.googleblog.com/search/label/Stable\%20updates.]}} of the specific software product. The algorithm then randomly selects a suitable version that only differs in the \textbf{PATCH} segment and should have the same functionality as the original version.
@@ -637,7 +641,7 @@ To also ensure the HTTP client hints are consistent with the browser environment
 \subsection{Extra HTTP header}
 \label{SubSection:ExtraHTTPHeader}
 
-One of the valuable characteristics used to construct a fingerprint is the list of all headers present in a request. Most requests share standard headers like those mentioned in previous sections X, Y, and Z. However, it is common for HTTP requests to include less standard, even custom\footnote{Until 2012, developers tended to prefix custom headers with \uv{X-} to differentiate them from standardized headers, but this naming convention has been officially discouraged in RFC6648 \cite{RFC6648}.} headers.
+One of the valuable characteristics used to construct a fingerprint is the list of all headers present in a request. Most requests share standard headers like those mentioned in previous sections. However, it is common for HTTP requests to include less standard, even custom\footnote{Until 2012, developers tended to prefix custom headers with \uv{X-} to differentiate them from standardized headers, but this naming convention has been officially discouraged in RFC6648 \cite{RFC6648}.} headers.
 
 \bigbreak
 
@@ -678,7 +682,7 @@ The preferences are split into three tabs (views). This division allows for more
 
 Each protection can be enabled or disabled individually from others. When enabled, a preview field will appear under the protection's preferences. The preview field shows the header value as it will be sent in future outgoing requests and is updated automatically according to the selected preferences.
 
-Modern operating systems have to option to switch the user interface to a dark mode which complements the standard light color scheme. The extension's popup view and every component it renders are made in light and dark variants. The extension automatically switches between these variants based on the operating system's active color scheme. Figure \ref{Fig:Wireframes} displays browser extension wireframes in both light and dark modes.
+Modern operating systems have the option to switch the user interface to a dark mode which complements the standard light color scheme. The extension's popup view and every component it renders are made in light and dark variants. The extension automatically switches between these variants based on the operating system's active color scheme. Figure~\ref{Fig:Wireframes} displays browser extension wireframes in both light and dark modes.
 
 % -------------------------------------------------------------------- %
 
@@ -865,7 +869,7 @@ The randomization algorithm then checks whether one or more languages have subta
 
 On the other hand, the generalization algorithm removes subtags from all language codes leaving only the base language tags (i.e., \uv{en} or \uv{zh}).
 
-Upon completion of the transformation algorithms, the main program verifies the validity of the resulting list of languages. Initially, it eliminates any duplicate values that may have been introduced by the generalization or the randomization algorithm, which could select two or more identical subtags. The generalization algorithm always introduces duplicates if the original list of languages includes the same language tag more than once (i.e., \uv{en, en-US, en-GB}).
+Upon completion of the transformation algorithms, the main program verifies the validity of the resulting list of languages. Initially, it eliminates any duplicate values that may have been introduced by the generalization or the randomization algorithm, which could select two or more identical subtags. The generalization algorithm always introduces duplicates if the original list of languages includes the same language tag more than once (e.g., \uv{en, en-US, en-GB} becomes \uv{en, en, en} and gets reduced to \uv{en} after deduplication).
 
 \begin{figure}[H]
     \centering
@@ -906,7 +910,7 @@ During the time of writing, the new Manifest V3 has begun replacing the outgoing
 
 The biggest obstacle was the deprecation of the blocking web request listeners previously available through the \texttt{chrome.webRequest} API. Rather than intercepting requests and modifying them in real-time using the \texttt{chrome.webRequest} API, extensions must define request-altering rules through the \texttt{chome.declarativeNetRequest} API before the browser sends the request. Since the rules are defined beforehand, it is impossible to base the new HTTP headers on the original values sent by the browser. Instead, the extension has to use the available Web APIs to approximate the header values.
 
-The \texttt{Accept} header protection designed in section \ref{Section:HTTPHeaderAccept} was not utilized precisely for this reason. Web browsers do not offer a dependable method for recognizing supported content types using a single or a combination of multiple Web APIs. Additionally, there is a high likelihood of unintended consequences resulting from incorrect header value changes, making the protection not worth the risk and, therefore, not included in the implementation.
+The \texttt{Accept} header protection designed in section \ref{SubSection:HTTPHeaderAccept} was not utilized precisely for this reason. Web browsers do not offer a dependable method for recognizing supported content types using a single or a combination of multiple Web APIs. Additionally, there is a high likelihood of unintended consequences resulting from incorrect header value changes, making the protection not worth the risk and, therefore, not included in the implementation.
 
 \subsubsection{Stricter content security policy}
 
@@ -970,7 +974,7 @@ The objective of the first experiment is to observe how the extension changes th
 
 \begin{enumerate}
 	\item The algorithm opens a new instance of a Chromium browser. The browser is pre-installed with the browser extension, specially modified to enable all protections when installed.
-	\item Next, it waits for a static timeframe of 500 milliseconds. This delay gives the extension time to initialize the header-modifying rules as the service worker runs in parallel to the primary browser process. There is no API exposed by Puppeteer, which could be used to check if the rules are already in place. However, the static delay proved to be sufficient.
+	\item Next, it waits for a static timeframe of 500 milliseconds. This delay gives the extension time to initialize the header-modifying rules as the service worker runs in parallel to the primary browser process. There is no API exposed by Puppeteer which could be used to check if the rules are already in place. However, the static delay proved to be sufficient.
 	\item Once the delay ends, the algorithm opens a new page (tab) and loads the remote Node.js server application. A delay of 2000 milliseconds is set, after which the page load throws an exception. This exception is caught, and the data from this experiment are not written, meaning it effectively filters out network-related anomalies.
 	\item As the last step, the algorithm collects the values of HTTP request headers, which are returned by the Node.js application, and stores the data in a CSV file.
 \end{enumerate}
@@ -984,11 +988,11 @@ As the extension defines declarative header-modifying rules to modify the outgoi
 The goal of the second experiment is to get an understanding of the performance implications of using the browser extension. The experiment measures request-response times in two runs, one with the extension enabled and the other with the extension disabled. The algorithm of both runs is similar to the first experiment, with a few modifications:
 
 \begin{itemize}
-	\item In the run where the extension is disabled, the first and second steps are omitted, implying the extension is not only deactivated but absent from the browser installation. The static delay is, therefore, also not necessary.
-	\item Instead of collecting header values, the algorithm measures the time from the navigation start (\texttt{navigationStart} event) until the navigation end (\texttt{navigationEnd} event). The measured time is then also stored in a CSV file.
+	\item In the run with the extension disabled, the first and second steps are omitted, implying the extension is not only deactivated but absent from the browser installation. The static delay is, therefore, also not necessary.
+	\item Instead of collecting header values, the algorithm measures the time from the navigation start (\texttt{navigationStart} event) until the navigation end (\texttt{navigationEnd} event). The measured time is then stored in a CSV file.
 \end{itemize}
 
-In both experiment runs, the algorithm is repeated 100 times, collecting request-response times with and without the extension.
+In both experiment runs the algorithm is repeated 100 times, collecting request-response times with and without the extension.
 
 \section{Evaluation of results}
 
@@ -996,7 +1000,7 @@ This section presents the data collected in the previously conducted experiments
 
 \subsection{Experiment 1: HTTP header values}
 
-In the second experiment, the algorithm collected header values from 208 HTTP requests. As the previous section \ref{Section:TestingMethodologyEnv} describes, this experiment examines the variation among all the requests.
+In the first experiment, the algorithm collected header values from 208 HTTP requests. As the previous section \ref{Section:TestingMethodologyEnv} describes, this experiment examines the variation among all the requests.
 
 \medbreak
 
@@ -1033,7 +1037,7 @@ In both runs of the second experiment (with the extension enabled and disabled),
 
 As anticipated, the response times of requests made with the extension disabled (represented in blue) are consistently lower than those with the extension enabled (represented in red). The outcome aligns with the expectations, given that the extension works by defining request-blocking rules.
 
-However, the average difference of 37.03 milliseconds between runs is quite substantial, given that the browser used in experiments had only a single extension installed. With all protections enabled, the extension defines up to 7 rules, one for each HTTP header it modifies. Considering the extension user could have other request-modifying extensions installed, the total time the request is held could be significant.
+However, the average difference of 37.03 milliseconds between runs is quite substantial, given that the browser used in experiments had only a single extension installed. With all protections enabled, the extension defines up to 7 rules, one for each HTTP header it modifies. Considering the extension's user could have other request-modifying extensions installed, the total time the request is slowed down could be significant.
 
 % For compilation piecewise (see projekt.tex), it is necessary to uncomment it
 % \end{document}

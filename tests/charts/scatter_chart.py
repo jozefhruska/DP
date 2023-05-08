@@ -17,8 +17,8 @@ with_extension_data = load_data('../times/output-on.csv')
 
 # Generate scatter plot
 website_indices = range(1, len(without_extension_data) + 1)
-plt.scatter(website_indices, without_extension_data, color='#2563eb', label='Extension disabled')
-plt.scatter(website_indices, with_extension_data, color='#dc2626', label='Extension enabled')
+plt.scatter(website_indices, without_extension_data, marker='.', s=20*2**2, color='#2563eb', label='Extension disabled')
+plt.scatter(website_indices, with_extension_data, marker='+', s=20*2**2, color='#dc2626', label='Extension enabled')
 
 # Label the axes
 plt.xlabel('Iteration')
