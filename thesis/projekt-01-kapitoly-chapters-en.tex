@@ -1039,5 +1039,19 @@ As anticipated, the response times of requests made with the extension disabled 
 
 However, the average difference of 37.03 milliseconds between runs is quite substantial, given that the browser used in experiments had only a single extension installed. With all protections enabled, the extension defines up to 7 rules, one for each HTTP header it modifies. Considering the extension's user could have other request-modifying extensions installed, the total time the request is slowed down could be significant.
 
+\chapter{Conclusion}
+
+In this era of remarkable technological advancement, we enjoy conveniences at the cost of our privacy. For this reason, privacy-enhancing tools are increasingly popular and necessary.
+
+The original goal of this master's thesis was to explore the ways of passive fingerprinting and implement an additional protective shield for the JShelter extension to protect against this type of user tracking. However, due to the ongoing migration of JShelter to Manifest V3, the focus of the work shifted to building a standalone extension that would showcase potential integration opportunities with JShelter.
+
+The implemented extension successfully modifies selected HTTP request headers, focusing on minimizing the unintended user-facing side effects. After changing the header values, the extension modifies relevant Web APIs to ensure consistency between the headers and the browser environment. The testing phase showed that the extension executes the header modifications steadily as desired, despite the expected increased delay.
+
+Unfortunately, the fact that browsers are still adopting the latest Manifest V3 complicated the implementation more than initially expected. Although welcomed, the privacy-oriented changes in Manifest V3 made it more complicated for extensions that want to push privacy protection even further. This slow adoption also caused the extension to be only supported on Chromium-based browsers, as the support on other browser families is often unstable or experimental.
+
+That said, the browser extension showed the potential to mitigate passive fingerprinting, and I am optimistic that, combined with active fingerprinting countermeasures, it would be beneficial to preventing users' privacy.
+
+In light of the challenges faced during the development of this browser extension, future improvements could focus on enhancing its effectiveness and expanding its compatibility. One promising direction is to implement cross-domain tracking countermeasures, as this would significantly interfere with the ability of third-party trackers to follow users across different websites, further protecting their privacy. Additionally, as new techniques of fingerprinting leveraging CSS emerge, exploring the potential to mitigate these threats would contribute to a more comprehensive and robust privacy protection solution. Last but not least, future versions of the extension could merge suitable header-modifying rules to reduce the slowdown of outgoing requests.
+
 % For compilation piecewise (see projekt.tex), it is necessary to uncomment it
 % \end{document}
