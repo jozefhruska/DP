@@ -1,7 +1,7 @@
 {
   "name": "pfpp",
   "version": "1.0.0",
-  "description": "TODO",
+  "description": "A simple extension protecting against passive fingerprinting through HTTP headers.",
   "displayName": "Passive fingerprinting protection",
   "author": "Jozef Hruska <me@jozefhruska.com>",
   "scripts": {

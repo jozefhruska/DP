@@ -9,34 +9,28 @@
 
 \chapter{Introduction}
 
-Although more than 30 years have passed since the invention of the web back in 1989 \cite{WWWProposal}, it is still an integral part of our lives, possibly more than ever before. People worldwide use the web daily to work, learn, consume content and connect with others. Every day our smartphones, tablets, laptops, or even smartwatches and fridges connect to the web.
+Although more than 30 years have passed since the invention of the web back in 1989 \cite{WWWProposal}, it is still an integral part of our lives, possibly more than ever before. People worldwide use the web daily to work, learn, consume content, and connect with others. Every day our smartphones, tablets, laptops, or even smartwatches and fridges connect to the web.
 
-This diverse ecosystem of devices created a need to identify users who use them uniquely. The ability to uniquely identify a user on a single device or across multiple devices allows applications to personalize the content they provide or improve their security.
-One of the methods of user identification is browser fingerprinting, the collection of data from the browser to create a fingerprint of the device. Just as a person's fingerprint can uniquely identify that specific person, given that we have enough data, we can uniquely identify a device and its user and act on this information.
+Identifying a single user in this diverse ecosystem of devices is a rather complex task. Nonetheless, uniquely identifying a user, whether on a single device or across multiple devices, is highly desired. One of the methods of user identification is browser fingerprinting, the collection of data from the browser to create a fingerprint of the device. Just as a person's fingerprint can uniquely identify that specific person, given enough information, services can uniquely identify a device and its user and act on this information.
 
-However, gathering this kind of data can be considered a violation of privacy \cite{WP224Fingerprinting}, which is the primary motivation behind creating privacy-first browsers and browser extensions to fight against fingerprinting. One of the browser extensions set on improving privacy is JShelter\footnote{JShelter is an anti-malware browser extension to mitigate potential threats from JavaScript, including fingerprinting \cite{JShelterHome} (Available at \url{https://jshelter.org/}).} which focuses on preventing active fingerprinting.
+On the one hand, identification enables personalized user experiences through tailored content and interactions. On the other hand, it can lead to intrusive tracking activities like targeted advertising and unauthorized data collection \cite{WP224Fingerprinting}. This dual nature of identification highlights the importance of allowing users to opt out of this data collection by providing them with tools to safeguard their privacy.
 
-Active fingerprinting is a method of obtaining a fingerprint, typically by running JavaScript code to collect data from browser APIs \cite{FingerprintingSurvey}. The other variant is passive fingerprinting, in which the data is collected solely from network traffic, for example, HTTP headers.
+This work aims to design and implement such a tool as a browser extension. As its primary purpose, the extension would alter selected HTTP request headers to counter passive fingerprinting. However, to ensure effectiveness, the altered information must be consistent with what can be obtained through the means of active fingerprinting. If not, fingerprinting applications might detect the evasion attempt and use this information to enhance their fingerprinting capabilities. Thus, it is crucial to balance altering data for privacy protection and maintaining consistency to avoid detection by fingerprinting applications.
 
-This work aims to design and implement a browser extension to prevent the collection of passive fingerprints by altering data in HTTP requests and explore possibilities of integrating this protection into JShelter. It is important to note that the altered data must be consistent with the data obtainable through active fingerprinting methods. Otherwise, the fingerprinting application could recognize an attempt to mitigate the effects of fingerprinting.
-
-Fingerprinting is an ever-evolving field. Chapter \ref{Chapter:BrowserFingerprinting} describes its nature, history, and different approaches to collecting a fingerprint. The last two sections of chapter \ref{Chapter:BrowserFingerprinting} provide an outlook on threats and opportunities fingerprinting brings to the table because, as we know, nothing is purely black and white.
-
-As this work explores the capabilities of mitigating fingerprinting with the help of browser extensions, the following chapter \ref{Chapter:Extensions} gives the reader an insight into the inner working of extensions.
-
-Finally, the last chapter \ref{Chapter:Design} proposes a design of passive fingerprinting protection that works consistently with active solutions to keep user-observable side effects to a minimum.
+The initial chapter, \ref{Chapter:Browsers}, offers an in-depth description of web browsers, extensions, and related technology, which is essential for understanding the context of this work. The following chapter, \ref{Chapter:BrowserFingerprinting}, dives further into fingerprinting, explicitly concentrating on passive fingerprinting and exploring methods to counter it. Chapter \ref{Chapter:Design} then moves on to outline the design of the browser extension. At the same time, chapter \ref{Chapter:Implementation} provides an extensive description of the implementation details and discusses the challenges encountered and how they were overcome during the development process. Finally, the last chapter, \ref{Chapter:Testing}, explains the testing methodology and environment used for evaluating the browser extension, followed by an evaluation of the test results. This assessment aims to shed light on the extension's behavior and performance, offering valuable insights into its effectiveness and potential areas for improvement.
 
 \section{Definitions}
 
 \begin{itemize}
 	\item \textbf{Fingerprint}: A collection of device-specific characteristics gathered for the purpose of identification.
-	\item \textbf{Fingerprinting}: The process of collecting the device information (data) to compute a fingerprint. Terms fingerprinting, device fingerprinting, and browser fingerprinting will be used interchangeably in the following chapters.
+	\item \textbf{Fingerprinting}: The process of collecting the device information (data) to compute a fingerprint. Terms fingerprinting, device fingerprinting, and browser fingerprinting are used interchangeably this work.
 	\item \textbf{Fingerprinter}: An application performing fingerprinting, typically on a third-party remote server.
 \end{itemize}
 
 % -------------------------------------------------------------------- %
 
 \chapter{Web browsers and related technology}
+\label{Chapter:Browsers}
 
 Web browsers are a significant part of the everyday life of people worldwide. We use browsers for work, learning, or entertainment across various operating systems and device form factors.
 
@@ -187,12 +181,13 @@ Apart from the three mandatory fields, the Manifest file supports a wide range o
 In January 2022, the Chrome Web Store began transitioning to the new version of the Manifest file, Manifest V3. The Manifest V3 represents one of the most significant shifts in the extensions platform since its launch \cite{ChromeWebExtensions}. According to the team behind the Chrome browser, it is an answer to raising concerns about privacy, security, and performance of browser extensions. The most notable changes compared to its predecessor Manifest V2 are \cite{ChromeWebExtensions}:
 
 \begin{itemize}
-	\item \textbf{Service workers}: Manifest V3 replaces background pages\footnote{Manifest V2 extensions used background pages to run a single persistent script to manage tasks, or a state of the extension \cite{ChromeManifestV2}.} with extension service workers, similar to traditional web service workers.
+	\item \textbf{Service workers}: With Manifest V3, background scripts\footnote{Manifest V2 extensions used background pages to run a single persistent script to manage tasks, or a state of the extension \cite{ChromeManifestV2}.} are replaced by extension service workers, which closely resemble traditional web service workers. This change is intended to enhance browser extension performance, security, and resource management, aligning them with modern web development practices.
 	\item \textbf{Network request modification}: In the outgoing Manifest V2, extensions could intercept and modify requests procedurally. In contrast, in the Manifest V3, extensions have to define rules and ask the browser engine to modify requests on their behalf. The primary motivation behind this change was privacy, as extensions could previously access requests with little or no limitations.
-	\item \textbf{Support for Promises}: The Chrome team added Promise support to some WebExtensions APIs so that extension developers can use modern JavaScript features such as promise chains or async/await patterns.
+	\item \textbf{Support for Promises}: The Chrome team has incorporated Promise support into some WebExtensions APIs, enabling extension developers to utilize modern JavaScript features such as promise chains or async/await patterns for more efficient and streamlined code execution.
+	\item \textbf{Restriction of remotely hosted code}: Extension developers can no longer run a remotely hosted JavaScript code. Instead, an extension can only run code already included within its package. On the one hand, this decision enables a better reviewability of extensions submitted to the Chrome Web store. On the other hand, it forces developers to include additional code directly in the extension's package, increasing the complexity and size.
 \end{itemize}
 
-Although welcomed from a privacy-concerned standpoint, these changes made it more difficult for developers to create extensions to protect from fingerprinting, mainly because of the network request modification differences.
+Although the changes introduced in Manifest V3 are generally well-received from a privacy-conscious standpoint, they have inadvertently created new challenges for developers working on extensions that protect against fingerprinting, especially passive fingerprinting. The primary obstacle stems from the differences in network request modification, which makes it more difficult for privacy-focused extensions to access and read the original header values. This limitation impacts the ability to effectively alter these values to mitigate fingerprinting risks, posing a more significant challenge for developers seeking to create robust privacy-protection tools.
 
 \bigbreak
 
@@ -687,6 +682,7 @@ Modern operating systems have the option to switch the user interface to a dark 
 % -------------------------------------------------------------------- %
 
 \chapter{Implementation}
+\label{Chapter:Implementation}
 
 % TODO: Update the introduction
 
@@ -934,6 +930,7 @@ While these changes are certainly welcomed from a privacy standpoint, these redu
 % -------------------------------------------------------------------- %
 
 \chapter{Testing}
+\label{Chapter:Testing}
 
 The primary goal of this work is to build a browser extension that protects users against passive fingerprinting through HTTP headers. However, as passive fingerprinting is not transparent to the fingerprinted device, it is not trivial to assess the effectiveness of the browser extension. Any changes to HTTP headers may or may not affect the resulting fingerprint. Moreover, the absence of standardized passive fingerprinting tools further complicates the assessment of the extension's usefulness.
 
