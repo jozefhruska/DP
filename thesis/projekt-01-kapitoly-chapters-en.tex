@@ -617,10 +617,10 @@ The \texttt{User-Agent} string can also be accessed through the JavaScript \text
 
 \bigbreak
 
-\begin{lstlisting}[caption={An example the User-Agent Client Hints API usage \cite{MDN}. This API call returns the same values as the HTTP client hints in example \ref{Listing:HTTPClientHintsExample}.}]
+\begin{lstlisting}[language={TypeScript}, caption={An example the User-Agent Client Hints API usage \cite{MDN}. This API call returns the same values as the HTTP client hints in example \ref{Listing:HTTPClientHintsExample}.}]
 navigator.userAgentData
   .getHighEntropyValues([
-  	"mobile"
+    "mobile"
     "platform",
     "uaFullVersion",
   ])
@@ -684,9 +684,12 @@ Modern operating systems have the option to switch the user interface to a dark 
 \chapter{Implementation}
 \label{Chapter:Implementation}
 
-% TODO: Update the introduction
+This chapter focuses on the implementation of the browser extension created to protect against passive fingerprinting via HTTP headers. This project phase is essential, marking the transition from theory and design to practical application. This chapter details the methods, tools, and technologies used to complete the browser extension.
+
+Section \ref{Section:Environment} briefly overviews the environment and tools used to build the extension, discussing why each was chosen and how it contributed to the project. The following section \ref{Section:Components} describes the components that make up the browser extension. Then, the third section \ref{Section:ProtectionsImplementation} provides an in-depth look at the specific protections, where each protection is an independent module responsible for one or more HTTP headers. The final section \ref{Section:Challenges} of this chapter concludes with a discussion on the challenges faced during the project and how they were addressed.
 
 \section{Development environment and tools}
+\label{Section:Environment}
 
 This section discusses the programming languages, libraries, frameworks, and other tools used to develop the browser extension. The rationale behind choosing these technologies and how they contribute to the effectiveness of the extension is also explained.
 
@@ -713,6 +716,7 @@ Vite\footnote{\url{https://vitejs.dev/}}, a modern build tool and development se
 The \texttt{vite-plugin-web-extension}\footnote{\url{https://github.com/samrum/vite-plugin-web-extension}} installed on top of Vite allows for easier creation of cross-browser extensions with support for ES Modules and HMR\footnote{\url{https://webpack.js.org/concepts/hot-module-replacement/}}.
 
 \section{Browser extension components}
+\label{Section:Components}
 
 This section provides a detailed breakdown of the main components that make up the browser extension, explaining their functionality and how they interact with one another.
 
@@ -755,7 +759,7 @@ As section \ref{Section:GUI} describes, the popup is the only graphical user int
 
 \bigbreak
 
-\begin{lstlisting}[caption={A code snippet in which the React application initializes its storage and creates a subscription for future changes.}]
+\begin{lstlisting}[language={TypeScript}, caption={A code snippet in which the React application initializes its storage and creates a subscription for future changes.}]
 useEffect(() => {
   if (typeof unsubscribe.current === 'function') {
     unsubscribe.current();
@@ -779,7 +783,7 @@ Immediately after the initialization, the React application connects to the exte
 
 \bigbreak
 
-\begin{lstlisting}[caption={A part of the code that updates the HTTP header-modifying rule when a protection is enabled or disabled.}]
+\begin{lstlisting}[language={TypeScript}, caption={A part of the code that updates the HTTP header-modifying rule when a protection is enabled or disabled.}]
 useEffect(() => {
   if (enabled && value !== null) {
     updateHeaderRule(Header.ACCEPT_LANGUAGE, value);
@@ -794,12 +798,13 @@ useEffect(() => {
 The popup interface is separated into multiple sections exclusive to specific protections. Each protection section has a header, a switch to enable or disable the protection, and a preview field with the current header value. If protection has custom preferences, these are also colocated with these primary elements. Whenever a user changes protection-specific preferences, the extension automatically updates the \texttt{value} field in storage, which propagates to the UI. However, the rule modifying the header value is only updated when the protection is enabled or disabled.
 
 \section{Fingerprinting protections}
+\label{Section:ProtectionsImplementation}
 
 This section describes the browser extension's specific strategies to combat passive fingerprinting through HTTP headers. Each method is discussed in detail, accompanied by relevant implementation examples. Furthermore, any deviations from the initial design plan are highlighted and explained throughout this section.
 
 \bigbreak
 
-\begin{lstlisting}[caption={A utility function that removes the old header-modification rule and defines a new one with a new value.}, label={Listing:UpdateRuleFunction}]
+\begin{lstlisting}[language={TypeScript}, caption={A utility function that removes the old header-modification rule and defines a new one with a new value.}, label={Listing:UpdateRuleFunction}]
 export const updateHeaderRule = (header: Header, value: string) => {
   const id = HEADER_RULE_IDS[header];
 
@@ -895,6 +900,7 @@ According to the design discussed in section \ref{SubSection:ExtraHTTPHeader}, t
 \end{figure}
 
 \section{Challenges and limitations}
+\label{Section:Challenges}
 
 This section discusses the challenges encountered throughout the implementation process and the corresponding strategies to address them, where applicable.
 
