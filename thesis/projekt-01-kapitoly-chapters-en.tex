@@ -255,10 +255,6 @@ Like standard web pages, the popup's HTML document can import external CSS and J
 
 Browsers wrap popups in a wrapper element to match the visual styling across all extensions. This wrapper element resizes automatically to fit the content of the popup, and extensions cannot modify their shape or other styles.
 
-% TODO: Extend Manifest V3 section (https://developer.chrome.com/docs/extensions/mv3/intro/platform-vision/)
-
-% TODO: Mention the network request modification changes made it difficult for extensions to alter fingerprints (probably in the implementation section)
-
 % -------------------------------------------------------------------- %
 
 \chapter{Browser fingerprinting}
@@ -701,6 +697,10 @@ TypeScript\footnote{\url{https://www.typescriptlang.org/}}, a statically typed s
 
 React\footnote{\url{https://react.dev/}}, a popular JavaScript library for building user interfaces, was employed for creating the extension's UI components. React's component-based architecture promotes modularity and reusability, simplifying the development process and ensuring maintainable code. Furthermore, React's virtual DOM enhances the performance of the browser extension by reducing the need for frequent DOM manipulations, which can be resource-intensive.
 
+\subsection{Zustand}
+
+Zustand\footnote{\url{https://github.com/pmndrs/zustand}}, a minimalistic state-management solution, is employed within the extension to handle storage management. Zustand helps create a global store for managing state, avoiding prop-drilling issues, and enhancing code readability. It also facilitates the synchronization of browser storage with the internal UI state, ensuring a smooth user experience.
+
 \subsection{Radix UI}
 
 Radix UI\footnote{\url{https://www.radix-ui.com/}}, a set of low-level, unstyled, accessible, and composable UI components for React, was integrated into the project to streamline the browser extension's UI development. Using Radix UI components ensures that the extension's UI adheres to accessibility best practices and provides a solid foundation for customization. Thanks to its focus on accessibility, Radix UI offers a consistent user experience across different platforms and devices.
@@ -711,14 +711,27 @@ Tailwind CSS\footnote{\url{https://tailwindcss.com/}}, a utility-first CSS frame
 
 \subsection{Vite}
 
-Vite\footnote{\url{https://vitejs.dev/}}, a modern build tool and development server, was selected to handle the project's build process and improve the development experience. Vite offers fast development server startup and on-demand compilation, resulting in a more efficient and productive development environment. Additionally, Vite supports various output formats, making integrating the browser extension into different browsers easier. 
+Vite\footnote{\url{https://vitejs.dev/}}, a modern build tool and development server, was selected to handle the project's build process and improve the development experience. Vite offers fast development server startup and on-demand compilation, resulting in a more efficient and productive development environment. Additionally, Vite supports various output formats, making integrating the browser extension into different browsers easier.
+
+
+
+Zustand\footnote{\url{https://github.com/pmndrs/zustand}}, a minimalistic state-management solution, is employed within the extension to handle storage management. Zustand helps create a global store for managing state, avoiding prop-drilling issues and enhancing code readability. It also facilitates the synchronization of browser storage with the internal UI state, ensuring a smooth user experience. Its simple API and seamless integration with React make Zustand a key tool in this project's efficient codebase.
 	
 The \texttt{vite-plugin-web-extension}\footnote{\url{https://github.com/samrum/vite-plugin-web-extension}} installed on top of Vite allows for easier creation of cross-browser extensions with support for ES Modules and HMR\footnote{\url{https://webpack.js.org/concepts/hot-module-replacement/}}.
 
 \section{Browser extension components}
 \label{Section:Components}
 
-This section provides a detailed breakdown of the main components that make up the browser extension, explaining their functionality and how they interact with one another.
+The browser extension is composed of three primary components. Figure \ref{Figure:VisualRepresentation} provides a visual representation of these components, including an illustration of the indirect communication flow facilitated by the storage component.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{obrazky-figures/components_schema}
+    \caption{A visual representation of the browser extension's structure and interaction.}
+    \label{Figure:VisualRepresentation}
+\end{figure}
+
+This section provides a detailed breakdown of the three primary components that make up the browser extension, explaining their functionality and how they interact.
 
 \subsection{Storage and data management}
 
@@ -735,7 +748,7 @@ The storage is the centerpiece of the browser extension. Other components, inclu
 
 \subsection{Service worker}
 
-The browser extension defines only a single service worker script, which serves two primary functions described in the following sections, \ref{SubSubSection:StartupInitialization} and \ref{SubSubSection:APIModifications}.
+The browser extension defines only a single service worker script, which serves two primary functions - extension initialization on browser startup and the modification of specific Web APIs. Both primary functions are described in-depth further down in this section.
 
 Additionally, as a secondary function, when started in the development mode, the service worker also subscribes to the \texttt{onRuleMatchedDebug} event, which the browser emits every time a rule defined by the extension is matched and applied. However, this event is only available on Chromium-based browsers.
 
@@ -755,7 +768,7 @@ The executed script then updates the prototype of the \texttt{Navigator} object,
 
 \subsection{User interface}
 
-As section \ref{Section:GUI} describes, the popup is the only graphical user interface used by the browser extension. The popup consists of one HTML file, which does not directly render UI elements. Instead, it initializes a React application which takes over the rendering. By delegating the rendering process to the React application, the popup benefits from React's dynamic and efficient nature, allowing for enhanced performance, maintainability, and ease of development when managing the extension's user interface.
+As section \ref{Section:GUI} describes, the popup is the only graphical user interface used by the browser extension. All preferences users can modify are accessible through the popup, as the extension does not utilize the options UI. The popup consists of one HTML file, which does not directly render UI elements. Instead, it initializes a React application which takes over the rendering. By delegating the rendering process to the React application, the popup benefits from React's dynamic and efficient nature, allowing for enhanced performance, maintainability, and ease of development when managing the extension's user interface.
 
 \bigbreak
 
@@ -859,8 +872,6 @@ When users enable this protection, it modifies the values of three HTTP client h
 
 While not recommended, users are provided with the option to synchronize versions found in HTTP client hints with those in the \texttt{User-Agent} header, effectively bypassing the browser reductions. If this option is enabled, the protection looks up the browser and the platform versions in the \texttt{User-Agent} header and replaces them with values previously generated for HTTP client hints.
 
-
-% TODO: Content
 
 \subsection{Accept-Language}
 
