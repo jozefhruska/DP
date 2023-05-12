@@ -286,7 +286,7 @@ The practice of fingerprinting is widely recognized for its potential invasion o
 
 The ability to uniquely identify a device and, by extension, its owner allows third parties to modify the behavior of their services and applications. One essential application of browser fingerprinting is to enhance security and user experiences.
 
-Specifically, applications can utilize fingerprinting for payment fraud prevention and detection \cite{FingerprintJSUseCases}.  By doing so, they can identify and block users who attempt to use stolen credit, debit, or checking information to make illicit transactions. In this context, fingerprinting serves as an additional layer of protection for both businesses and consumers, ensuring that financial transactions remain secure and trustworthy.
+Specifically, applications can utilize fingerprinting for payment fraud prevention and detection\footnote{\url{https://fingerprint.com/use-cases/}}.  By doing so, they can identify and block users who attempt to use stolen credit, debit, or checking information to make illicit transactions. In this context, fingerprinting serves as an additional layer of protection for both businesses and consumers, ensuring that financial transactions remain secure and trustworthy.
 
 \subsection{Drawbacks of fingerprinting}
 
@@ -726,7 +726,7 @@ The browser extension is composed of three primary components. Figure \ref{Figur
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{obrazky-figures/components_schema}
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/components_schema}
     \caption{A visual representation of the browser extension's structure and interaction.}
     \label{Figure:VisualRepresentation}
 \end{figure}
@@ -748,7 +748,7 @@ The storage is the centerpiece of the browser extension. Other components, inclu
 
 \subsection{Service worker}
 
-The browser extension defines only a single service worker script, which serves two primary functions - extension initialization on browser startup and the modification of specific Web APIs. Both primary functions are described in-depth further down in this section.
+The browser extension defines only a single service worker script, which serves two primary functions -- extension initialization on browser startup and the modification of specific Web APIs. Both primary functions are described in-depth further down in this section.
 
 Additionally, as a secondary function, when started in the development mode, the service worker also subscribes to the \texttt{onRuleMatchedDebug} event, which the browser emits every time a rule defined by the extension is matched and applied. However, this event is only available on Chromium-based browsers.
 
@@ -772,7 +772,7 @@ As section \ref{Section:GUI} describes, the popup is the only graphical user int
 
 \bigbreak
 
-\begin{lstlisting}[language={TypeScript}, caption={A code snippet in which the React application initializes its storage and creates a subscription for future changes.}]
+\begin{lstlisting}[language={TypeScript}, caption={A code snippet in which the React application initializes its storage and creates a subscription for future changes.}, label={Listing:StorageSubscription}]
 useEffect(() => {
   if (typeof unsubscribe.current === 'function') {
     unsubscribe.current();
@@ -792,11 +792,13 @@ useEffect(() => {
 
 \medbreak
 
-Immediately after the initialization, the React application connects to the extension's storage, copies the content to its internal data storage, and subscribes for future changes. Utilizing an internal storage layer between the application and the browser storage was essential due to the asynchronous nature of the browser storage. If every read or write operation was performed directly on the browser storage, the UI would only be allowed to update once the operation was completed, resulting in a sluggish user experience. The application can mitigate this issue by utilizing an internal storage layer, ensuring a more responsive and seamless interface. Every change to the internal storage is automatically synchronized with the browser storage.
+Immediately after the initialization, the React application connects to the extension's storage, copies the content to its internal data storage, and subscribes for future changes. Listing \ref{Listing:StorageSubscription} shows the creation and destruction of this subscription.
+
+Utilizing an internal storage layer between the application and the browser storage was essential due to the asynchronous nature of the browser storage. If every read or write operation was performed directly on the browser storage, the UI would only be allowed to update once the operation was completed, resulting in a sluggish user experience. The application can mitigate this issue by utilizing an internal storage layer, ensuring a more responsive and seamless interface. Every change to the internal storage is automatically synchronized with the browser storage.
 
 \bigbreak
 
-\begin{lstlisting}[language={TypeScript}, caption={A part of the code that updates the HTTP header-modifying rule when a protection is enabled or disabled.}]
+\begin{lstlisting}[language={TypeScript}, caption={A part of the code that updates the HTTP header-modifying rule when a protection is enabled or disabled.}, label={Listing:UpdateEffect}]
 useEffect(() => {
   if (enabled && value !== null) {
     updateHeaderRule(Header.ACCEPT_LANGUAGE, value);
@@ -808,7 +810,7 @@ useEffect(() => {
 
 \medbreak
 
-The popup interface is separated into multiple sections exclusive to specific protections. Each protection section has a header, a switch to enable or disable the protection, and a preview field with the current header value. If protection has custom preferences, these are also colocated with these primary elements. Whenever a user changes protection-specific preferences, the extension automatically updates the \texttt{value} field in storage, which propagates to the UI. However, the rule modifying the header value is only updated when the protection is enabled or disabled.
+The popup interface is separated into multiple sections exclusive to specific protections. Each protection section has a header, a switch to enable or disable the protection, and a preview field with the current header value. If protection has custom preferences, these are also colocated with these primary elements. Whenever a user changes protection-specific preferences, the extension automatically updates the \texttt{value} field in storage, which propagates to the UI. However, the rule modifying the header value is only updated when the protection is enabled or disabled. The update is handled by React's \texttt{useEffect}, portrayed in Listing \ref{Listing:UpdateEffect}.
 
 \section{Fingerprinting protections}
 \label{Section:ProtectionsImplementation}
@@ -858,7 +860,7 @@ The primary purpose of this protection is to modify selected HTTP headers carryi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{obrazky-figures/screenshot-user-agent}
+    \includegraphics[width=0.55\textwidth]{obrazky-figures/screenshot-user-agent}
     \caption{A screenshot of the User-Agent protection configuration interface.}
 \end{figure}
 
@@ -885,7 +887,7 @@ Upon completion of the transformation algorithms, the main program verifies the 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{obrazky-figures/screenshot-accept-language}
+    \includegraphics[width=0.55\textwidth]{obrazky-figures/screenshot-accept-language}
     \caption{A screenshot of the Accept-Language protection configuration interface.}
 \end{figure}
 
@@ -906,7 +908,7 @@ According to the design discussed in section \ref{SubSection:ExtraHTTPHeader}, t
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{obrazky-figures/screenshot-other}
+    \includegraphics[width=0.55\textwidth]{obrazky-figures/screenshot-other}
     \caption{A screenshot of the Device-Memory and Extra protections configuration interfaces.}
 \end{figure}
 

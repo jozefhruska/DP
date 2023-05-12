@@ -24,19 +24,6 @@ const manifest: Omit<
         },
       }
     : {}),
-  // content_scripts: [
-  //   {
-  //     js: ['src/entries/contentScript/main.ts'],
-  //     run_at: 'document_start',
-  //     matches: ['*://*/*'],
-  //     all_frames: true,
-  //     world: 'MAIN',
-  //   },
-  // ],
-  // content_security_policy: {
-  //   extension_pages:
-  //     "default-src 'self'; style-src-elem 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;",
-  // },
   permissions: [
     'activeTab',
     'declarativeNetRequest',
@@ -57,10 +44,6 @@ const manifest: Omit<
       id: 'pfpp-extension@example.org',
     },
   },
-  // options_ui: {
-  //   page: 'src/entries/options/index.html',
-  //   open_in_tab: true,
-  // },
 };
 
 export function getManifest(): chrome.runtime.ManifestV3 {

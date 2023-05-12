@@ -1,29 +1,16 @@
-# source
+# Passive fingerprinting protection
 
-This template should help get you started developing a react web extension in Vite.
+This is a short documentation explaining how to build and run the web extension.
 
 ## Usage Notes
 
-The extension manifest is defined in `src/manifest.js` and used by `@samrum/vite-plugin-web-extension` in the vite config.
+The extension manifest is defined in `src/manifest.ts` and used in the vite config.
 
-Background, content scripts, options, and popup entry points exist in the `src/entries` directory. 
-
-Content scripts are rendered by `src/entries/contentScript/renderContent.js` which renders content within a ShadowRoot
-and handles style injection for HMR and build modes.
-
-Otherwise, the project functions just like a regular Vite project.
-
-
-
-HMR during development in Manifest V3 requires Chromium version >= 110.0.5480.0.
-
-Refer to [@samrum/vite-plugin-web-extension](https://github.com/samrum/vite-plugin-web-extension) for more usage notes.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Background scripts and popup entry points exist in the `src/entries` directory.
 
 ## Project Setup
+
+To install the dependencies required to build the browser extension:
 
 ```sh
 npm install
@@ -35,13 +22,15 @@ npm install
 
 Hot Module Reloading is used to load changes inline without requiring extension rebuilds and extension/page reloads
 Currently only works in Chromium based browsers.
+
 ```sh
 npm run dev
 ```
 
 #### Development, Watch
 
-Rebuilds extension on file changes. Requires a reload of the extension (and page reload if using content scripts)
+Rebuilds extension on file changes. Requires a reload of the extension (and page reload if using content scripts).
+
 ```sh
 npm run watch
 ```
@@ -49,13 +38,21 @@ npm run watch
 #### Production
 
 Minifies and optimizes extension build
+
 ```sh
-npm run build
+npm run build:chrome
 ```
+
+```sh
+npm run build:firefox
+```
+
+Note: Firefox support is experimental as it lacks several Manifest V3 features this extension requires to run.
 
 ### Load extension in browser
 
-Loads the contents of the dist directory into the specified browser
+Loads the contents of the dist directory into the specified browser.
+
 ```sh
 npm run serve:chrome
 ```
@@ -63,3 +60,11 @@ npm run serve:chrome
 ```sh
 npm run serve:firefox
 ```
+
+It is also possible to load the extension manually:
+
+1. Build the browser extension by following the guide above.
+2. Navigate to the extensions page in your browser (e.g., `chrome://extensions/`).
+3. Enable the developer mode.
+4. Click on "Load unpacked".
+5. Select the `./source/dist` folder.
